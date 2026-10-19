@@ -1,0 +1,53 @@
+---
+import { reviews, rating } from '../data/site';
+const tints = ['#dfe3ff', '#ffe1d6', '#d8f1e6', '#efe3ff'];
+---
+<section class="container section" aria-labelledby="reviews-h">
+  <div class="head" data-reveal><p class="kicker">Reviews</p><h2 class="h2" id="reviews-h">Rated {rating.value} out of 5 on {rating.source}.</h2></div>
+  <div class="grid">
+    {reviews.map((r, i) => (
+      <figure class:list={['rev', { lead: i === 0 }]} data-reveal style={`transition-delay:${i * 60}ms`}>
+        <span class="stars" aria-label="5 out of 5 stars">{Array.from({ length: 5 }).map(() => <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1L12.6 7H19L13.8 11L15.8 18L10 13.8L4.2 18L6.2 11L1 7H7.4Z" fill="#2335ff" /></svg>)}</span>
+        <blockquote>{r.text}</blockquote>
+        <figcaption>
+          <span class="av" style={`background:${tints[i % 4]}`}>{r.name[0]}</span>
+          <span><b>{r.name}</b><small>{r.role}</small></span>
+          <span class="via">Via {rating.source}</span>
+        </figcaption>
+      </figure>
+    ))}
+    <div class="score tint-blue" data-reveal>
+      <div class="glass inner">
+        <span class="lbl lift">{rating.source} rating</span>
+        <span class="num lift">{rating.value}<small> / 5</small></span>
+        <a class="lift" href={rating.href} target="_blank" rel="noopener">Read all reviews →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section { padding-top: 140px; }
+  .head { margin-bottom: 32px; }
+  .head .kicker { margin: 0 0 12px; }
+  .grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; }
+  .rev { margin: 0; background: #fff; border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--line); padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+  .rev.lead { grid-row: span 2; }
+  .stars { display: flex; gap: 3px; }
+  blockquote { margin: 0; font-size: 16px; line-height: 1.55; letter-spacing: -0.01em; }
+  .lead blockquote { font-size: 20px; }
+  figcaption { margin-top: auto; display: flex; align-items: center; gap: 12px; }
+  .av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--ink-2); flex-shrink: 0; }
+  figcaption b { display: block; font-size: 15px; font-weight: 500; }
+  figcaption small { display: block; font-size: 13px; color: #6b7080; }
+  .via { margin-left: auto; font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: #a3a8b6; white-space: nowrap; }
+  .score { border-radius: var(--radius-md); padding: 20px; display: flex; }
+  .inner { flex: 1; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; background: rgba(255,255,255,.7); }
+  .lift { position: relative; z-index: 3; }
+  .lbl { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #6b7080; }
+  .num { font-size: 64px; letter-spacing: -0.05em; font-weight: 500; line-height: 1; }
+  .num small { font-size: 18px; color: #6b7080; letter-spacing: 0; }
+  .inner a { text-decoration: none; font-size: 14px; color: var(--ink-2); }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } .rev.lead { grid-row: auto; grid-column: span 2; } }
+  @media (max-width: 720px) { .section { padding-top: 96px; } .grid { grid-template-columns: 1fr; } .rev.lead { grid-column: auto; } .lead blockquote { font-size: 18px; } .rev { padding: 22px; } }
+</style>

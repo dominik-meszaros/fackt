@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Work from '../../components/Work.astro';
+import Footer from '../../components/Footer.astro';
+const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order).map((e) => ({ slug: e.id, ...e.data }));
+---
+<Base title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt.">
+  <Nav />
+  <main class="pad"><Work projects={all} total={all.length} /></main>
+  <Footer />
+</Base>
+<style>.pad { padding-top: 40px; }</style>

@@ -1,0 +1,71 @@
+{
+ "pages": [
+  {
+   "name": "Brief",
+   "step": "Strategy call",
+   "text": "We map your users, goals and the screens that matter most.",
+   "receive": [
+    "Written brief",
+    "Priorities and scope",
+    "Plan and timeline"
+   ],
+   "layers": [
+    "Brief.doc",
+    "Questions",
+    "Notes"
+   ]
+  },
+  {
+   "name": "Exploration",
+   "step": "Audit and flows",
+   "text": "We review what exists and agree on structure and flows before any pixels.",
+   "receive": [
+    "UX audit notes",
+    "User flows",
+    "First directions"
+   ],
+   "layers": [
+    "User flow",
+    "Directions",
+    "Audit notes"
+   ]
+  },
+  {
+   "name": "First page",
+   "step": "Design and prototype",
+   "text": "The first high fidelity screen, reviewed with you in short cycles.",
+   "receive": [
+    "Key screen in high fidelity",
+    "Clickable prototype",
+    "Review comments"
+   ],
+   "layers": [
+    "Dashboard, v1",
+    "Comments",
+    "Prototype"
+   ]
+  },
+  {
+   "name": "Delivered",
+   "step": "Handoff and support",
+   "text": "Every screen and state, a design system and dev-ready files.",
+   "receive": [
+    "All screens and states",
+    "Design system",
+    "Dev-ready Figma file",
+    "Support while you build"
+   ],
+   "layers": [
+    "Screens",
+    "Design system",
+    "Specs"
+   ]
+  }
+ ],
+ "boards": [
+  "<span class=\"fl\" style=\"left: 30px; top: 34px\">Brief.doc</span><div class=\"fr\" style=\"left: 30px; top: 34px; width: 250px; height: 300px; \"><div style=\"padding: 16px\"><div style=\"font-size: 15px; margin-bottom: 10px\">Project brief</div><div class=\"ln\" style=\"width: 80%\"></div><div class=\"ln\" style=\"width: 60%\"></div><div class=\"ln\" style=\"width: 90%\"></div><div style=\"font-size: 12px; margin: 12px 0 6px\">Users</div><div class=\"ln g\" style=\"width: 70%\"></div><div class=\"ln g\" style=\"width: 50%\"></div><div style=\"font-size: 12px; margin: 10px 0 6px\">Goals</div><div class=\"ln g\" style=\"width: 85%\"></div><div class=\"ln g\" style=\"width: 65%\"></div><div style=\"font-size: 12px; margin: 10px 0 6px\">Screens that matter</div><div class=\"ln g\" style=\"width: 60%\"></div><div class=\"ln g\" style=\"width: 75%\"></div></div></div><div class=\"stk\" style=\"left: 310px; top: 40px; width: 150px; transform: rotate(2deg)\">Who uses it every day?</div><div class=\"stk\" style=\"left: 320px; top: 130px; width: 150px; transform: rotate(-2deg)\">Where do they drop off?</div><div class=\"stk\" style=\"left: 300px; top: 220px; width: 150px; transform: rotate(1deg)\">What does success look like?</div>",
+  "<div class=\"fr\" style=\"left: 24px; top: 60px; width: 104px; height: 44px; display: grid; place-items: center; font-size: 12px\">Sign up</div><div class=\"fr\" style=\"left: 154px; top: 60px; width: 104px; height: 44px; display: grid; place-items: center; font-size: 12px\">Onboard</div><div class=\"fr\" style=\"left: 284px; top: 60px; width: 104px; height: 44px; display: grid; place-items: center; font-size: 12px\">First result</div><div class=\"fr\" style=\"left: 154px; top: 170px; width: 104px; height: 44px; display: grid; place-items: center; font-size: 12px\">Invite team</div><div class=\"fr\" style=\"left: 284px; top: 170px; width: 104px; height: 44px; display: grid; place-items: center; font-size: 12px\">Upgrade</div><div class=\"ar\" style=\"left: 130px; top: 82px; width: 22px\"></div><div class=\"ar\" style=\"left: 260px; top: 82px; width: 22px\"></div><div class=\"ar\" style=\"left: 260px; top: 192px; width: 22px\"></div><div style=\"position: absolute; left: 205px; top: 106px; width: 0; height: 62px; border-left: 2px solid #000\"></div><span class=\"fl\" style=\"left: 24px; top: 46px\">User flow</span><span class=\"fl\" style=\"left: 24px; top: 252px\">Direction A</span><div class=\"fr\" style=\"left: 24px; top: 252px; width: 116px; height: 84px; border-width: 2px\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 60%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div></div></div><span class=\"fl\" style=\"left: 156px; top: 252px\">Direction B</span><div class=\"fr\" style=\"left: 156px; top: 252px; width: 116px; height: 84px; border-width: 2px; outline: 3px solid #000; outline-offset: 3px\"><div style=\"padding: 10px\"><div class=\"ln\" style=\"width: 60%\"></div><div class=\"ln\" style=\"width: 90%\"></div><div class=\"ln\" style=\"width: 70%\"></div></div></div><span class=\"fl\" style=\"left: 288px; top: 252px\">Direction C</span><div class=\"fr\" style=\"left: 288px; top: 252px; width: 116px; height: 84px; border-width: 2px\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 60%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div></div></div>",
+  "<span class=\"fl\" style=\"left: 30px; top: 34px\">Dashboard, v1</span><div class=\"fr\" style=\"left: 30px; top: 34px; width: 430px; height: 290px; overflow: hidden\"></div><div class=\"pshot\" style=\"left: 30px; top: 34px; width: 430px; height: 290px\"><img src=\"/uploads/communi.webp\" alt=\"First high fidelity screen\"></div><div class=\"stk\" style=\"left: 360px; top: 6px; width: 120px\">Looks great, ship it?</div>",
+  "<span class=\"fl\" style=\"left: 24px; top: 28px\">Overview</span><div class=\"fr\" style=\"left: 24px; top: 28px; width: 136px; height: 92px; overflow: hidden\"><img src=\"/uploads/communi.webp\" alt=\"\" style=\"display: block; width: 100%\"></div><span class=\"fl\" style=\"left: 176px; top: 28px\">Members</span><div class=\"fr\" style=\"left: 176px; top: 28px; width: 136px; height: 92px; overflow: hidden\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 50%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div><div class=\"ln g\" style=\"width: 80%\"></div></div></div><span class=\"fl\" style=\"left: 328px; top: 28px\">Onboarding</span><div class=\"fr\" style=\"left: 328px; top: 28px; width: 136px; height: 92px; overflow: hidden\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 50%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div><div class=\"ln g\" style=\"width: 80%\"></div></div></div><span class=\"fl\" style=\"left: 24px; top: 146px\">Empty states</span><div class=\"fr\" style=\"left: 24px; top: 146px; width: 136px; height: 92px; overflow: hidden\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 50%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div><div class=\"ln g\" style=\"width: 80%\"></div></div></div><span class=\"fl\" style=\"left: 176px; top: 146px\">Mobile</span><div class=\"fr\" style=\"left: 176px; top: 146px; width: 136px; height: 92px; overflow: hidden\"><img src=\"/uploads/earntask.webp\" alt=\"\" style=\"display: block; width: 100%\"></div><span class=\"fl\" style=\"left: 328px; top: 146px\">Settings</span><div class=\"fr\" style=\"left: 328px; top: 146px; width: 136px; height: 92px; overflow: hidden\"><div style=\"padding: 10px\"><div class=\"ln g\" style=\"width: 50%\"></div><div class=\"ln g\" style=\"width: 90%\"></div><div class=\"ln g\" style=\"width: 70%\"></div><div class=\"ln g\" style=\"width: 80%\"></div></div></div><span class=\"fl\" style=\"left: 24px; top: 270px\">Design system</span><div class=\"fr\" style=\"left: 24px; top: 270px; width: 440px; height: 64px; \"><div style=\"display: flex; gap: 8px; padding: 12px; align-items: center\"><span style=\"width: 36px; height: 36px; background: #000\"></span><span style=\"width: 36px; height: 36px; background: repeating-linear-gradient(45deg,#000 0 1px,#fff 1px 3px); border: 2px solid #000\"></span><span style=\"width: 36px; height: 36px; border: 2px solid #000\"></span><span style=\"height: 26px; padding: 0 12px; border: 2px solid #000; border-radius: 8px; display: grid; place-items: center; font-size: 12px\">Button</span><span style=\"font-size: 20px\">Aa</span></div></div>"
+ ]
+}

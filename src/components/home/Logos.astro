@@ -1,0 +1,19 @@
+---
+// CMS: Settings > Homepage > Logos. A logo image is optional; without one the name is set in type.
+import { homeSettings } from '../../data/settings';
+const { logosTitle, logos } = homeSettings;
+---
+<section class="m-sec lg" aria-label={logosTitle}>
+  <span class="t">{logosTitle}</span>
+  <ul>
+    {logos.map((l) => <li>{l.logo ? <img src={l.logo} alt={l.name} loading="lazy" /> : l.name}</li>)}
+  </ul>
+</section>
+<style>
+  .lg { padding-top: 64px; }
+  .t { font-size: 12.5px; color: #8a8a86; }
+  ul { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px 10px; width: min(760px, 100%); }
+  li { font-size: 14px; font-weight: 500; color: #a3a3a3; letter-spacing: -.01em; display: flex; align-items: center; justify-content: center; min-height: 24px; }
+  img { max-height: 24px; width: auto; filter: grayscale(1); opacity: .55; }
+  @media (max-width: 720px) { ul { grid-template-columns: repeat(3, 1fr); gap: 16px 8px; } li { font-size: 13px; } }
+</style>

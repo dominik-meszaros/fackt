@@ -1,0 +1,183 @@
+# Fackt CMS (Decap). Open /admin on the live site, log in with GitHub, edit, publish.
+# Every publish commits to the repo and Netlify redeploys the site (about a minute).
+# Local editing without GitHub: run `npx decap-server` next to `npm run dev`, then open /admin.
+
+backend:
+  name: github
+  repo: OWNER/fackt-site # TODO: replace with the GitHub repo, e.g. fackt-studio/fackt-site
+  branch: main
+  commit_messages:
+    create: 'CMS: add {{collection}} "{{slug}}"'
+    update: 'CMS: update {{collection}} "{{slug}}"'
+    delete: 'CMS: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'CMS: upload {{path}}'
+    deleteMedia: 'CMS: delete {{path}}'
+
+local_backend: true
+site_url: https://fackt.io
+display_url: https://fackt.io
+logo_url: /favicon.svg
+
+media_folder: public/uploads
+public_folder: /uploads
+
+# Editing happens in the form; check the live site after publishing.
+collections:
+  # ---------- single pages ----------
+  - name: settings
+    editor: { preview: false }
+    label: Settings
+    files:
+      - name: home
+        label: Homepage
+        file: src/content/settings/home.json
+        format: json
+        fields:
+          - { name: heroTitle, label: "Hero title", widget: string }
+          - { name: heroTitleMuted, label: "Hero title, grey line", widget: string }
+          - { name: heroText, label: "Hero text", widget: text }
+          - name: askHints
+            label: Ask bar, rotating example questions
+            widget: list
+            field: { name: hint, label: "Question", widget: string }
+          - name: ask
+            label: Ask bar, suggestions
+            label_singular: Suggestion
+            hint: 'Work suggestions switch the project in the hero stage. Answer suggestions show the answer inline. Only state facts that are on the site.'
+            widget: list
+            summary: '{{fields.question}}'
+            fields:
+              - { name: question, label: "Question", widget: string }
+              - { name: type, label: "Type", widget: select, options: [{ label: 'Shows a project', value: work }, { label: 'Shows an answer', value: answer }], default: answer }
+              - { name: project, label: "Project (for \"Shows a project\")", widget: relation, collection: work, value_field: '{{slug}}', search_fields: [name, service], display_fields: ['{{name}}, {{service}}'], required: false }
+              - { name: answer, label: "Answer (for \"Shows an answer\")", widget: text, required: false }
+              - { name: linkLabel, label: "Answer link label", widget: string, required: false }
+              - { name: linkHref, label: "Answer link", widget: string, required: false, hint: 'e.g. /#pricing, /#process, /book' }
+          - { name: logosTitle, label: "Logos title", widget: string }
+          - name: logos
+            label: Logos
+            label_singular: Logo
+            widget: list
+            summary: '{{fields.name}}'
+            fields:
+              - { name: name, label: "Company name", widget: string }
+              - { name: logo, label: "Logo image (optional, shown in grey)", widget: image, required: false, choose_url: false }
+          - name: rating
+            label: Rating line in testimonials
+            widget: object
+            fields:
+              - { name: value, label: "Rating", widget: string }
+              - { name: source, label: "Source", widget: string }
+      - name: pricing
+        label: Pricing
+        file: src/content/settings/pricing.json
+        format: json
+        fields:
+          - { name: title, label: "Section title", widget: string }
+          - { name: text, label: "Section text", widget: string }
+          - name: plans
+            label: Plans
+            label_singular: Plan
+            widget: list
+            summary: '{{fields.name}}, {{fields.price}}'
+            fields:
+              - { name: name, label: "Name", widget: string }
+              - { name: prefix, label: "Before price (e.g. \"from\")", widget: string, required: false }
+              - { name: price, label: "Price", widget: string }
+              - { name: period, label: "After price (e.g. \"/ month\")", widget: string, required: false }
+              - { name: badge, label: "Badge", widget: string, required: false }
+              - { name: text, label: "Short description", widget: string }
+              - { name: items, label: "Included", widget: list, field: { name: item, label: "Item", widget: string } }
+              - { name: cta, label: "Button label", widget: string }
+              - { name: ctaHref, label: "Button link", widget: string, default: /book }
+              - { name: dark, label: "Dark card", widget: boolean, default: false }
+
+  # ---------- lists ----------
+  - name: quotes
+    editor: { preview: false }
+    label: Hero quotes
+    label_singular: Hero quote
+    folder: src/content/quotes
+    format: json
+    extension: json
+    create: true
+    slug: '{{name}}'
+    identifier_field: name
+    summary: '{{name}}, {{role}}'
+    sortable_fields: [order, name]
+    fields:
+      - { name: name, label: "Name", widget: string }
+      - { name: role, label: "Role and company", widget: string }
+      - { name: quote, label: "Quote (word for word from the review)", widget: text }
+      - { name: photo, label: "Photo (optional, otherwise initials)", widget: image, required: false, choose_url: false }
+      - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
+
+  - name: work
+    editor: { preview: false }
+    label: Work
+    label_singular: Project
+    folder: src/content/work
+    format: frontmatter
+    extension: md
+    create: true
+    slug: '{{name}}'
+    identifier_field: name
+    summary: '{{name}}, {{service}}'
+    sortable_fields: [order, name]
+    fields:
+      - { name: name, label: "Name", widget: string }
+      - { name: service, label: "Service", widget: string }
+      - { name: category, label: "Category", widget: select, options: [product, web, mobile, branding, motion] }
+      - { name: summary, label: "Summary", widget: text }
+      - { name: image, label: "Image", widget: image, choose_url: false }
+      - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone], default: desktop }
+      - { name: tint, label: "Case study tint", widget: select, options: [blue, peach, mint, lilac], default: blue }
+      - { name: keywords, label: "Search keywords", widget: list, required: false, hint: 'Words people might type in the ask bar to find this project.' }
+      - { name: year, label: "Year", widget: string, required: false }
+      - { name: featured, label: "Show in Selected work", widget: boolean, default: false }
+      - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
+      - { name: stage, label: "Show in hero stage", widget: boolean, default: false }
+      - { name: stageLabel, label: "Hero chip label (e.g. \"SaaS dashboard\")", widget: string, required: false }
+      - { name: stageQuery, label: "Hero phrase (e.g. \"a SaaS dashboard\")", widget: string, required: false }
+      - { name: stageOrder, label: "Hero order", widget: number, value_type: int, default: 99 }
+      - { name: body, label: "Case study", widget: markdown }
+
+  - name: videos
+    editor: { preview: false }
+    label: Video testimonials
+    label_singular: Video testimonial
+    folder: src/content/videos
+    format: json
+    extension: json
+    create: true
+    slug: '{{name}}'
+    identifier_field: name
+    summary: '{{name}}, {{company}}'
+    sortable_fields: [order, name]
+    fields:
+      - { name: name, label: "Name", widget: string }
+      - { name: role, label: "Role", widget: string }
+      - { name: company, label: "Company", widget: string }
+      - { name: duration, label: "Duration (e.g. 0:42)", widget: string, required: false }
+      - { name: thumbnail, label: "Thumbnail (portrait 4:5)", widget: image, choose_url: false }
+      - { name: video, label: "Video URL (mp4, optional)", widget: string, required: false, hint: 'Paste a link to an mp4 (for example from Mux, Cloudflare Stream or Bunny). With a link the tile plays the video.' }
+      - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
+
+  - name: reviews
+    editor: { preview: false }
+    label: Written reviews
+    label_singular: Written review
+    folder: src/content/reviews
+    format: json
+    extension: json
+    create: true
+    slug: '{{name}}'
+    identifier_field: name
+    summary: '{{name}}, {{role}}'
+    sortable_fields: [order, name]
+    fields:
+      - { name: name, label: "Name", widget: string }
+      - { name: role, label: "Role and company", widget: string }
+      - { name: highlight, label: "Highlight (a phrase from the review)", widget: string }
+      - { name: text, label: "Full review", widget: text }
+      - { name: order, label: "Order", widget: number, value_type: int, default: 99 }

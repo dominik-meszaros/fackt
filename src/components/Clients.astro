@@ -1,0 +1,21 @@
+---
+import { clients } from '../data/site';
+---
+<section class="container clients" aria-label="Clients">
+  <span class="label">Trusted by teams at</span>
+  <div class="rail">
+    <div class="track">
+      {[...clients, ...clients].map((c, i) => <span aria-hidden={i >= clients.length ? 'true' : undefined}>{c}</span>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .clients { margin-top: 120px; display: flex; align-items: center; gap: 32px; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-2); white-space: nowrap; }
+  .rail { flex: 1; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .track { display: flex; gap: 48px; width: max-content; animation: marquee 40s linear infinite; font-size: 18px; letter-spacing: -0.01em; font-weight: 500; color: #9196a5; }
+  .rail:hover .track { animation-play-state: paused; }
+  @keyframes marquee { to { transform: translateX(calc(-50% - 24px)); } }
+  @media (max-width: 720px) { .clients { flex-direction: column; align-items: flex-start; gap: 16px; margin-top: 80px; } .rail { width: 100%; } }
+</style>

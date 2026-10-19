@@ -1,0 +1,41 @@
+---
+import Emblem from './Emblem.astro';
+import { site } from '../data/site';
+---
+<section id="book" class="container section">
+  <div class="box tint-peach" data-reveal>
+    <Emblem size={190} id="cta" class="mark" />
+    <h2 class="h2">Tell us what you're building.</h2>
+    <p>A free 30 minute strategy call with Dom. You leave with clear next steps for your product, whether we work together or not.</p>
+    <form class="bar glass glass-strong" action={site.bookPage} method="get">
+      <label class="sr-only" for="brief">Describe your product</label>
+      <input id="brief" name="notes" type="text" placeholder="We are building a B2B analytics platform for..." autocomplete="off" />
+      <button class="btn btn-dark" type="submit">Book a free call</button>
+    </form>
+    <a class="mail" href={`mailto:${site.email}`}>Or email {site.email}</a>
+  </div>
+</section>
+
+<style>
+  .section { padding-top: 140px; }
+  .box { position: relative; overflow: hidden; border-radius: 40px; padding: 90px 60px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
+  .box :global(.mark) { position: absolute; right: 48px; top: 40px; transform: rotate(-8deg); animation: float 7s ease-in-out infinite; }
+  @keyframes float { 50% { transform: rotate(-4deg) translateY(-10px); } }
+  .h2 { font-size: clamp(36px, 5vw, 56px); max-width: 760px; position: relative; }
+  p { margin: 0; font-size: 17px; color: var(--muted); max-width: 520px; line-height: 1.55; position: relative; }
+  .bar { width: min(720px, 100%); height: 76px; border-radius: 999px; padding: 0 10px 0 28px; display: flex; align-items: center; gap: 14px; }
+  .bar input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font-size: 18px; position: relative; z-index: 3; caret-color: var(--blue); }
+  .bar input::placeholder { color: #9196a5; }
+  .bar .btn { position: relative; z-index: 3; padding: 16px 20px; }
+  .bar:focus-within { box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 4px rgba(35,53,255,.12), 0 24px 60px rgba(20,30,90,.18); }
+  .mail { position: relative; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-2); text-decoration: none; }
+  .mail:hover { color: var(--ink); }
+  @media (max-width: 720px) {
+    .section { padding-top: 96px; }
+    .box { padding: 64px 20px 28px; border-radius: 28px; }
+    .box :global(.mark) { position: relative; right: auto; top: auto; width: 72px; height: 72px; margin-bottom: -6px; }
+    .bar { height: auto; flex-direction: column; border-radius: 24px; padding: 12px; }
+    .bar input { width: 100%; padding: 10px 8px; font-size: 16px; }
+    .bar .btn { width: 100%; }
+  }
+</style>

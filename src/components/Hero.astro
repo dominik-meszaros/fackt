@@ -1,0 +1,174 @@
+---
+import Emblem from './Emblem.astro';
+import { site, searchChips, searchSynonyms } from '../data/site';
+
+interface Project {
+  slug: string; name: string; service: string; category: string; summary: string;
+  keywords: string[]; image: string; imageKind: 'desktop' | 'phone'; tint: string;
+}
+interface Props { projects: Project[] }
+const { projects } = Astro.props;
+const first = projects[0];
+const index = { projects, synonyms: searchSynonyms, booking: site.bookPage };
+---
+<section class="hero">
+  <div class="container intro">
+    <div class="intro-l">
+      <Emblem size={56} id="hero" class="hero-mark" />
+      <h1>Product design for SaaS <span>that people pay for.</span></h1>
+    </div>
+    <div class="intro-r">
+      <p>Fackt is an independent UI/UX and product design studio for SaaS and tech companies, including Communi, BlackBox AI, Viewmax and Engain.</p>
+      <div class="ctas">
+        <a class="btn btn-dark" href={site.bookPage}>Book a strategy call</a>
+        <a class="btn glass" href="#work"><span class="lift">View work</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container stage-wrap">
+    <div class={`stage tint-${first.tint}`} id="stage" aria-live="polite">
+      <span class="stage-label" id="stage-label">{first.name} / {first.service}</span>
+      {projects.map((p, i) => (
+        <a
+          href={`/work/${p.slug}`}
+          class:list={['shot', p.imageKind, { active: i === 0 }]}
+          data-slug={p.slug}
+          tabindex={i === 0 ? 0 : -1}
+          aria-hidden={i === 0 ? undefined : 'true'}
+        >
+          <img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+        </a>
+      ))}
+    </div>
+
+    <div class="search-slot" id="search-slot">
+    <div class="search" id="search">
+      <button class="dock-close glass" type="button" id="dock-close" aria-label="Close search"><span class="lift">×</span></button>
+      <form class="bar glass glass-strong" role="search" action={site.bookPage} method="get" id="search-form">
+        <span class="sheen" aria-hidden="true"></span>
+        <svg class="icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8" /><path d="M13 13L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+        <label class="sr-only" for="q">Search our work</label>
+        <input
+          id="q" name="notes" type="text" autocomplete="off" spellcheck="false"
+          placeholder="Show me a SaaS dashboard you designed"
+          role="combobox" aria-expanded="false" aria-controls="results" aria-autocomplete="list"
+        />
+        <button class="go" type="submit" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10H16M11 5L16 10L11 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+      </form>
+      <ul class="results glass glass-strong" id="results" role="listbox" hidden></ul>
+      <div class="chips" aria-label="Popular searches">
+        {searchChips.map((c, i) => (
+          <button type="button" class:list={['chip', 'glass', { on: i === 0 }]} data-q={c.query}><span class="lift">{c.label}</span></button>
+        ))}
+      </div>
+    </div>
+    </div>
+  </div>
+  <button class="search-pill glass glass-strong" type="button" id="search-pill" aria-label="Search the work" tabindex="-1">
+    <svg class="lift" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="2" /><path d="M13 13L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+    <span class="lift">Search the work</span>
+    <span class="lift pill-k">⌘K</span>
+  </button>
+  <script type="application/json" id="search-index" set:html={JSON.stringify(index)} />
+</section>
+
+<style>
+  .hero { padding-top: 150px; }
+  .intro { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; }
+  .intro-l { display: flex; flex-direction: column; gap: 22px; max-width: 680px; }
+  h1 { margin: 0; font-size: clamp(40px, 5.4vw, 64px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
+  h1 span { display: block; color: #9196a5; }
+  .hero-mark { margin-left: -4px; animation: mark-in .9s var(--ease-spring) both; }
+  @keyframes mark-in { from { opacity: 0; transform: translateY(10px) rotate(-12deg) scale(.8); } }
+  .intro-r { max-width: 390px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 6px; }
+  .intro-r p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+  .ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+  .lift { position: relative; z-index: 3; }
+
+  .stage-wrap { position: relative; margin-top: 64px; }
+  .stage { position: relative; height: 660px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(20,30,90,.05); transition: background .6s ease; }
+  .stage::before { content: ""; position: absolute; left: -10%; top: -30%; width: 60%; height: 90%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,.9), rgba(255,255,255,0)); filter: blur(10px); }
+  .stage-label { position: absolute; left: 24px; top: 22px; z-index: 2; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #6b7080; }
+  .shot { position: absolute; left: 50%; top: 64px; opacity: 0; transform: translate(-50%, 28px) scale(.97); transition: opacity .5s ease, transform .8s var(--ease-out); pointer-events: none; }
+  .shot.active { opacity: 1; transform: translate(-50%, 0) scale(1); pointer-events: auto; }
+  .shot img { border-radius: 14px; box-shadow: 0 40px 80px rgba(20,30,90,.16), 0 0 0 1px rgba(20,30,90,.05); }
+  .shot.desktop img { width: min(860px, 86vw); }
+  .shot.phone img { width: 300px; border-radius: 46px; }
+
+  .search-slot { position: relative; margin-top: -70px; min-height: 148px; }
+  .search { position: relative; z-index: 5; width: min(720px, 100%); margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .bar { width: 100%; height: 76px; border-radius: 999px; padding: 0 10px 0 26px; display: flex; align-items: center; gap: 14px; overflow: hidden; transition: box-shadow .3s; }
+  .bar:focus-within { box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 4px rgba(35,53,255,.12), 0 24px 60px rgba(20,30,90,.18); }
+  .icon { flex-shrink: 0; position: relative; z-index: 3; }
+  .bar input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; outline: none; font-size: 20px; letter-spacing: -0.01em; position: relative; z-index: 3; caret-color: var(--blue); }
+  .bar input::placeholder { color: #6b7080; opacity: 1; }
+  .go { width: 56px; height: 56px; flex-shrink: 0; border: 0; border-radius: 50%; cursor: pointer; color: #fff; position: relative; z-index: 3; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 35% 30%, #6f7cff, var(--blue) 60%, #1420b8); box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 20px rgba(35,53,255,.35); transition: transform .3s var(--ease-spring); }
+  .go:hover { transform: scale(1.06); }
+  .sheen { position: absolute; top: 0; bottom: 0; width: 30%; z-index: 1; pointer-events: none; background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.6), rgba(255,255,255,0)); animation: sheen 6s ease-in-out infinite; }
+  @keyframes sheen { 0% { transform: translateX(-140%); } 55%, 100% { transform: translateX(400%); } }
+
+  .results { position: absolute; top: 86px; left: 0; right: 0; margin: 0; padding: 8px; list-style: none; border-radius: 24px; z-index: 6; }
+  .results[hidden] { display: none; }
+  .results :global(li) { position: relative; z-index: 3; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; cursor: pointer; }
+  .results :global(li[aria-selected='true']) { background: rgba(35,53,255,.08); }
+  .results :global(.r-thumb) { width: 44px; height: 30px; border-radius: 6px; object-fit: cover; object-position: top left; box-shadow: 0 0 0 1px var(--line); background: #fff; }
+  .results :global(.r-name) { font-weight: 500; }
+  .results :global(.r-meta) { color: var(--muted); font-size: 14px; }
+  .results :global(.r-go) { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted-2); }
+  .results :global(.r-cta .r-icon) { width: 44px; height: 30px; border-radius: 6px; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .results :global(.r-play .r-icon) { background: var(--blue); font-size: 11px; }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .chip { border: 0; cursor: pointer; border-radius: 999px; padding: 10px 16px; font-size: 14px; transition: transform .25s var(--ease-spring), color .2s, background .2s; }
+  .chip:hover { transform: translateY(-2px); }
+  .chip.on { background: var(--ink); color: #fff; }
+  .chip.on::before { opacity: .25; }
+
+
+  /* Docked: the search follows you down the page once opened */
+  .dock-close { display: none; position: absolute; right: -8px; top: -16px; z-index: 8; width: 32px; height: 32px; border: 0; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1; align-items: center; justify-content: center; }
+  .search.docked { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(720px, calc(100% - 32px)); z-index: 60; gap: 0; animation: dock-in .5s var(--ease-spring) both; }
+  .search.docked .chips, .search.docked .sheen { display: none; }
+  .search.docked .dock-close { display: flex; }
+  .search.docked .bar { box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 24px 70px rgba(20,30,90,.22), 0 2px 8px rgba(20,30,90,.08); }
+  .search.docked .results { top: auto; bottom: 88px; }
+  .search.docked .bar, .results, .search-pill { background: linear-gradient(135deg, #ffffff, #f6f7fb); }
+  @keyframes dock-in { from { opacity: 0; transform: translate(-50%, 40px) scale(.96); } }
+  .search-pill { position: fixed; left: 50%; bottom: 24px; z-index: 55; display: flex; align-items: center; gap: 10px; border: 0; border-radius: 999px; padding: 12px 14px 12px 16px; font-size: 15px; cursor: pointer; opacity: 0; pointer-events: none; transform: translate(-50%, 140%); transition: transform .5s var(--ease-spring), opacity .3s; }
+  .search-pill.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  .search-pill:hover { transform: translate(-50%, -2px); }
+  .pill-k { font-family: var(--mono); font-size: 11px; color: var(--muted-2); border: 1px solid rgba(20,30,90,.1); border-radius: 999px; padding: 3px 7px; }
+  @media (max-width: 720px) {
+    .search.docked { bottom: 16px; }
+    .search.docked .results { bottom: 70px; }
+    .search-pill { bottom: 16px; }
+    .pill-k { display: none; }
+  }
+
+  @media (max-width: 960px) {
+    .intro { flex-direction: column; align-items: flex-start; gap: 28px; }
+  }
+  @media (max-width: 720px) {
+    .hero { padding-top: 112px; }
+    .stage-wrap { margin-top: 40px; }
+    .stage { height: 440px; }
+    .shot { top: 54px; }
+    .shot.desktop img { width: 640px; max-width: none; border-radius: 10px; }
+    .shot.desktop { left: 24px; transform: translate(0, 28px); }
+    .shot.desktop.active { transform: none; }
+    .shot.phone img { width: 230px; border-radius: 36px; }
+    .search-slot { margin-top: -38px; min-height: 170px; }
+    .bar { height: 60px; padding-left: 18px; gap: 10px; }
+    .bar input { font-size: 16px; }
+    .go { width: 44px; height: 44px; }
+    .results { top: 68px; }
+  }
+</style>
+
+<script>
+  import { initSearch } from '../scripts/search';
+  initSearch();
+</script>

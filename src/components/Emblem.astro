@@ -1,0 +1,22 @@
+---
+// The glass F: Fackt's mark rendered as a glossy blue object.
+interface Props { size?: number; id?: string; class?: string }
+const { size = 24, id = 'em', class: cls } = Astro.props;
+const F = 'M1.03 0H18.97V6.67H13.57V13.33H7.55V20H1.03Z';
+---
+<svg class={cls} width={size} height={size} viewBox="-4 -4 30 30" aria-hidden="true">
+  <defs>
+    <linearGradient id={`${id}-b`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7d89ff" /><stop offset=".55" stop-color="#2335ff" /><stop offset="1" stop-color="#1420b8" />
+    </linearGradient>
+    <linearGradient id={`${id}-h`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".85" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+    <filter id={`${id}-s`} x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" flood-color="#1420b8" flood-opacity=".35" />
+    </filter>
+  </defs>
+  <path d={F} fill={`url(#${id}-b)`} filter={`url(#${id}-s)`} />
+  <path d="M1.75 0.75H18.25V3.2Q10 2.4 1.75 3.9Z" fill={`url(#${id}-h)`} />
+  <path d={F} fill="none" stroke="#fff" stroke-opacity=".55" stroke-width=".5" />
+</svg>

@@ -1,0 +1,178 @@
+---
+// Top bar. States (see the "Nav on scroll" spec on the canvas):
+// top: in the page, no surface. pinned (scrollY >= 24 or scrolling up): floating white bar.
+// hidden: past 640px while scrolling down. The link of the section in view is marked.
+import Mark from './home/Mark.astro';
+import { site } from '../data/site';
+
+const left = [
+  { label: 'Work', href: '/#work', id: 'work' },
+  { label: 'Services', href: '/#services', id: 'services' },
+  { label: 'Pricing', href: '/#pricing', id: 'pricing' },
+];
+const menu = [
+  { label: 'Work', href: '/#work', id: 'work' },
+  { label: 'Services', href: '/#services', id: 'services' },
+  { label: 'How we work', href: '/#process', id: 'process' },
+  { label: 'Reviews', href: '/#reviews', id: 'reviews' },
+  { label: 'Pricing', href: '/#pricing', id: 'pricing' },
+];
+---
+<header class="hd" data-nav>
+  <nav class="bar" aria-label="Main">
+    <div class="l">
+      {left.map((n) => <a href={n.href} data-sec={n.id}>{n.label}</a>)}
+    </div>
+    <a class="brand" href="/" aria-label="Fackt home"><Mark size={18} />Fackt<span class="sx" data-sec-label></span></a>
+    <div class="r">
+      <a href="/#reviews" class="rv" data-sec="reviews">Reviews</a>
+      <a class="m-btn dk cta" href={site.bookPage}>Book a call</a>
+      <button class="mbtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-menu-open>
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5H16M2 9H16M2 13H11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"></path></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="hd-space" aria-hidden="true"></div>
+
+<div class="mm" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="mmt">
+    <a class="brand" href="/"><Mark size={18} />Fackt</a>
+    <button class="mx" type="button" aria-label="Close menu" data-menu-close>
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4L14 14M14 4L4 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"></path></svg>
+    </button>
+  </div>
+  <nav class="ml" aria-label="Sections">
+    {menu.map((n, i) => (
+      <a class="mi" href={n.href} data-sec={n.id}>
+        <span class="mn">0{i + 1}</span><span class="mt">{n.label}</span><span class="here">You are here</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 7H11M7.5 3.5L11 7L7.5 10.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+      </a>
+    ))}
+  </nav>
+  <div class="mmb">
+    <a class="mcta" href={site.bookPage}>Book a free call</a>
+    <p>Free 30 minute strategy call with Dom.</p>
+    <div class="mso">
+      {site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hd { position: fixed; top: 0; left: 0; right: 0; z-index: 50; pointer-events: none; transition: transform .24s ease-in; }
+  .hd-space { height: 72px; }
+  .bar { pointer-events: auto; position: relative; width: min(960px, 100% - 32px); height: 72px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; font-size: 13.5px; color: #111; border-radius: 3px; transition: height .2s ease-out, margin-top .2s ease-out, background .2s ease-out, box-shadow .2s ease-out, padding .2s ease-out; }
+  .bar a { color: inherit; text-decoration: none; }
+  .l, .r { display: flex; align-items: center; gap: 22px; }
+  .r { justify-content: flex-end; gap: 18px; }
+  .l a, .rv { position: relative; color: #3f3f3f; }
+  .l a:hover, .rv:hover { color: #111; }
+  .l a.on, .rv.on { color: #111; font-weight: 500; }
+  .l a.on::after, .rv.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 1.5px; background: #111; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 15px; }
+  .sx { display: none; font-weight: 400; font-size: 13px; color: #8a8a86; }
+
+  .hd.pin .bar { height: 56px; margin-top: 12px; padding: 0 8px 0 16px; background: #fff; box-shadow: 0 0 0 1px #dcdcd8, 0 10px 24px -16px rgba(0, 0, 0, .35); }
+  .hd.hide { transform: translateY(-140%); }
+  .hd.pin:not(.hide) { transition: transform .2s ease-out; }
+
+  /* menu sheet */
+  .mm { position: fixed; inset: 0; z-index: 80; background: #fff; display: flex; flex-direction: column; padding: 0 16px; color: #111; }
+  .mm[hidden] { display: none; }
+  .mm.in { animation: mm-in .22s ease-out; }
+  @keyframes mm-in { from { opacity: 0; transform: translateY(-12px); } }
+  .mm a { color: inherit; text-decoration: none; }
+  .mmt { height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ececea; margin: 0 -16px; padding: 0 16px; }
+  .mx, .mbtn { all: unset; cursor: pointer; box-sizing: border-box; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; color: #111; }
+  .ml { display: flex; flex-direction: column; margin-top: 12px; }
+  .mi { display: grid; grid-template-columns: 34px 1fr auto auto; align-items: center; gap: 8px; height: 62px; border-bottom: 1px solid #ececea; }
+  .mn { font-size: 12px; color: #8a8a86; font-variant-numeric: tabular-nums; }
+  .mt { font-family: var(--m-serif); font-size: 28px; line-height: 1; }
+  .here { display: none; font-size: 11px; color: #fff; background: #111; padding: 3px 7px; border-radius: 2px; }
+  .mi svg { color: #b2b2ae; }
+  .mi.on .here { display: inline-block; }
+  .mi.on .mn, .mi.on svg { color: #111; }
+  .r .mbtn { display: none; }
+  .bar .cta { color: #fff; }
+  .mmb { margin-top: auto; padding: 0 0 26px; }
+  .mcta { display: flex; align-items: center; justify-content: center; height: 50px; border-radius: 3px; background: #111; color: #fff !important; font-weight: 500; font-size: 15px; box-shadow: 2px 2px 0 #c8c8c4; }
+  .mmb p { margin: 10px 0 0; text-align: center; font-size: 12.5px; color: #8a8a86; }
+  .mso { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; margin-top: 18px; font-size: 13px; }
+  .mso a { color: #3f3f3f; }
+
+  @media (max-width: 760px) {
+    .hd-space { height: 60px; }
+    .bar { display: flex; height: 60px; }
+    .l, .rv { display: none; }
+    .brand { margin-right: auto; }
+    .r { gap: 8px; }
+    .cta { height: 40px; }
+    .r .mbtn { display: grid; }
+    .hd.pin .bar { width: calc(100% - 16px); height: 52px; margin-top: 8px; padding: 0 6px 0 12px; }
+    .hd.pin .cta { height: 36px; padding: 0 12px; }
+    .hd.pin .mbtn { width: 36px; height: 36px; }
+    .hd.pin .sx:not(:empty) { display: inline; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hd.hide { transform: none; }
+  }
+</style>
+
+<script>
+  const hd = document.querySelector<HTMLElement>('[data-nav]');
+  const label = document.querySelector<HTMLElement>('[data-sec-label]');
+  const menu = document.getElementById('menu');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ids = ['work', 'services', 'process', 'reviews', 'pricing'];
+  const names: Record<string, string> = { work: 'Work', services: 'Services', process: 'How we work', reviews: 'Reviews', pricing: 'Pricing' };
+  const secs = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+
+  let lastY = scrollY, anchor = scrollY, dir = 0, current = '';
+
+  function setActive(id: string) {
+    if (id === current) return;
+    current = id;
+    document.querySelectorAll<HTMLElement>('[data-sec]').forEach((a) => a.classList.toggle('on', a.dataset.sec === id));
+    if (label) label.textContent = id ? `/ ${names[id]}` : '';
+  }
+
+  function onScroll() {
+    if (!hd) return;
+    const y = scrollY;
+    const d = y > lastY ? 1 : y < lastY ? -1 : 0;
+    if (d && d !== dir) { dir = d; anchor = lastY; }
+    lastY = y;
+    const moved = Math.abs(y - anchor) >= 8;
+    hd.classList.toggle('pin', y >= 24);
+    if (!reduce && moved) hd.classList.toggle('hide', dir > 0 && y >= 640);
+    if (y < 24) hd.classList.remove('hide');
+    // Section in view: the last one whose top has crossed 40% of the viewport.
+    let id = '';
+    for (const s of secs) if (s.getBoundingClientRect().top <= innerHeight * 0.4) id = s.id;
+    setActive(id);
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  function openMenu() {
+    if (!menu) return;
+    menu.hidden = false; menu.classList.add('in');
+    document.documentElement.style.overflow = 'hidden';
+    openBtn?.setAttribute('aria-expanded', 'true');
+    closeBtn?.focus();
+  }
+  function closeMenu() {
+    if (!menu) return;
+    menu.hidden = true; menu.classList.remove('in');
+    document.documentElement.style.overflow = '';
+    openBtn?.setAttribute('aria-expanded', 'false');
+  }
+  openBtn?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', () => { closeMenu(); openBtn?.focus(); });
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu && !menu.hidden) closeMenu(); });
+</script>

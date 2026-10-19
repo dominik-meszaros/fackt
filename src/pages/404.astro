@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Emblem from '../components/Emblem.astro';
+---
+<Base title="Page not found | Fackt">
+  <Nav />
+  <main class="container nf">
+    <Emblem size={72} id="nf" />
+    <h1>This page doesn't exist.</h1>
+    <p>Try the search on the homepage, or press ⌘K.</p>
+    <a class="btn btn-dark" href="/">Back to Fackt</a>
+  </main>
+</Base>
+<style>
+  .nf { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
+  h1 { margin: 0; font-size: 44px; letter-spacing: -0.04em; font-weight: 500; }
+  p { margin: 0; color: var(--muted); }
+</style>

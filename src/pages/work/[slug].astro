@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: all[(i + 1) % all.length] } }));
+}
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const p = entry.data;
+---
+<Base title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={p.image}>
+  <Nav />
+  <main class="container case">
+    <a class="back" href="/#work">← All work</a>
+    <p class="kicker">{p.service}</p>
+    <h1>{p.name}</h1>
+    <p class="lede">{p.summary}</p>
+    <div class={`shot tint-${p.tint} ${p.imageKind}`}><img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} /></div>
+    <div class="body"><Content /></div>
+    <div class="nextbar">
+      <a class="next" href={`/work/${next.id}`}><span>Next project</span><b>{next.data.name} →</b></a>
+      <a class="btn btn-dark" href={site.bookPage}>Book a strategy call</a>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .case { padding-top: 140px; }
+  .back { text-decoration: none; color: var(--muted); font-size: 15px; }
+  .kicker { margin: 40px 0 12px; }
+  h1 { margin: 0; font-size: clamp(44px, 7vw, 88px); letter-spacing: -0.05em; font-weight: 500; line-height: 1; }
+  .lede { max-width: 640px; font-size: 20px; color: var(--muted); line-height: 1.5; margin: 20px 0 48px; }
+  .shot { border-radius: var(--radius-lg); padding: 64px; display: flex; justify-content: center; }
+  .shot img { border-radius: 12px; box-shadow: 0 40px 80px rgba(20,30,90,.16); width: 100%; max-width: 980px; }
+  .shot.phone img { width: 320px; border-radius: 46px; }
+  .body { max-width: 680px; margin: 56px 0; font-size: 18px; line-height: 1.7; color: var(--ink-2); }
+  .nextbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .next { text-decoration: none; display: flex; flex-direction: column; gap: 4px; }
+  .next span { font-size: 13px; color: var(--muted-2); }
+  .next b { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+  @media (max-width: 720px) { .case { padding-top: 110px; } .shot { padding: 20px; } .nextbar { flex-direction: column; align-items: flex-start; } }
+</style>

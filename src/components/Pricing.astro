@@ -1,0 +1,53 @@
+---
+import { pricing, site } from '../data/site';
+const { retainer, project } = pricing;
+---
+<section id="pricing" class="container section">
+  <div class="head" data-reveal>
+    <div><p class="kicker">Pricing</p><h2 class="h2">Two simple ways to work with us.</h2></div>
+    <p class="side">No hidden fees. Start with a free strategy call.</p>
+  </div>
+  <div class="grid">
+    <div class="feat tint-blue" data-reveal>
+      <div class="glass card">
+        <div class="row lift"><h3>{retainer.name}</h3><span class="badge">{retainer.badge}</span></div>
+        <div class="price lift">{retainer.price}<small> {retainer.period}</small></div>
+        <p class="lift">{retainer.text}</p>
+        <ul class="lift">{retainer.items.map((x) => <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#2335ff" fill-opacity=".12" /><path d="M4.5 8.2L7 10.5L11.5 5.8" fill="none" stroke="#2335ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{x}</li>)}</ul>
+        <a class="btn btn-dark lift wide" href={site.bookPage}>{retainer.cta}</a>
+      </div>
+    </div>
+    <div class="plain card" data-reveal style="transition-delay:80ms">
+      <h3>{project.name}</h3>
+      <div class="price"><small>{project.prefix} </small>{project.price}</div>
+      <p>{project.text}</p>
+      <ul>{project.items.map((x) => <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#12141a" fill-opacity=".08" /><path d="M4.5 8.2L7 10.5L11.5 5.8" fill="none" stroke="#12141a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>{x}</li>)}</ul>
+      <a class="btn btn-line wide" href={site.bookPage}>{project.cta}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section { padding-top: 140px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; margin-bottom: 32px; }
+  .head .kicker { margin: 0 0 12px; }
+  .side { margin: 0; font-size: 15px; color: var(--muted); max-width: 320px; text-align: right; padding-bottom: 6px; }
+  .grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; align-items: stretch; }
+  .feat { border-radius: var(--radius-lg); padding: 20px; display: flex; }
+  .card { display: flex; flex-direction: column; gap: 22px; }
+  .feat .card { flex: 1; border-radius: var(--radius-md); padding: 32px; background: rgba(255,255,255,.72); }
+  .plain { border-radius: var(--radius-lg); box-shadow: 0 0 0 1px var(--line); padding: 52px 36px 36px; }
+  .lift { position: relative; z-index: 3; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  h3 { margin: 0; font-size: 18px; font-weight: 500; }
+  .badge { background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+  .price { font-size: clamp(56px, 6vw, 72px); letter-spacing: -0.05em; font-weight: 500; line-height: 1; }
+  .price small { font-size: 18px; color: #6b7080; letter-spacing: 0; }
+  p { margin: 0; font-size: 16px; color: var(--muted); }
+  ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  li svg { flex-shrink: 0; }
+  .wide { width: 100%; padding: 16px; margin-top: auto; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } .head { flex-direction: column; align-items: flex-start; gap: 16px; } .side { text-align: left; } }
+  @media (max-width: 720px) { .section { padding-top: 96px; } ul { grid-template-columns: 1fr; } .feat { padding: 12px; } .feat .card, .plain { padding: 24px; } }
+</style>

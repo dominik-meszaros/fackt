@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import EasterGame from '../components/EasterGame.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import Step from '../components/home/Step.astro';
+import Hero from '../components/home/Hero.astro';
+import Logos from '../components/home/Logos.astro';
+import Work from '../components/home/Work.astro';
+import Services from '../components/home/Services.astro';
+import Process from '../components/home/Process.astro';
+import Proof from '../components/home/Proof.astro';
+import Pricing from '../components/home/Pricing.astro';
+import Working from '../components/home/Working.astro';
+import Postcard from '../components/home/Postcard.astro';
+
+const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
+const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id, ...e.data }));
+const stage = all.filter((p) => p.stage).sort((a, b) => a.stageOrder - b.stageOrder);
+const featured = all.filter((p) => p.featured);
+const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
+const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
+const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
+---
+<Base>
+  <div class="m-page">
+    <SketchDefs />
+    <Nav />
+    <main>
+      <Hero stage={stage} all={all} quotes={quotes} />
+      <Logos />
+      <Step />
+      <Work projects={featured} total={all.length} />
+      <Step />
+      <Services />
+      <Step />
+      <Process />
+      <Step />
+      <Proof videos={videos} reviews={reviews} />
+      <Step />
+      <Pricing />
+      <Step />
+      <Working />
+      <Step />
+      <Postcard />
+    </main>
+    <Footer />
+    <EasterGame />
+  </div>
+</Base>

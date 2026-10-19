@@ -1,0 +1,42 @@
+/* Fackt mono system: black, white and greys, flat, small radii, hard shadows. */
+:root {
+  --m-ink: #111;
+  --m-ink-2: #3f3f3f;
+  --m-mu: #6a6a66;
+  --m-mu-2: #8a8a86;
+  --m-line: #dcdcd8;
+  --m-line-2: #ececea;
+  --m-soft: #f2f2f0;
+  --m-hard: #c8c8c4;
+  --m-serif: 'Newsreader', Georgia, serif;
+  --m-wrap: 960px;
+  --m-ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+.m-page { background: #fff; color: var(--m-ink); font-size: 15px; line-height: 1.55; }
+.m-page section[id] { scroll-margin-top: 88px; }
+.m-wrap { width: min(var(--m-wrap), 100% - 32px); margin-inline: auto; }
+
+.m-sec { padding: 54px 16px 60px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.m-h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.15; letter-spacing: -.01em; }
+.m-lede { margin: 10px auto 0; max-width: 460px; color: var(--m-mu); font-size: 15px; }
+.m-sk { display: block; width: 84px; height: 84px; margin: 0 auto 12px; overflow: visible; }
+
+.m-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 3px; font-size: 13.5px; font-weight: 500; text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; transition: transform .3s cubic-bezier(.3, 1.4, .4, 1), background .2s; }
+.m-btn:hover { transform: translateY(-1px); }
+.m-btn:active { transform: none; }
+.m-btn.dk { background: var(--m-ink); color: #fff; box-shadow: 2px 2px 0 var(--m-hard); }
+.m-btn.lt { background: #fff; color: var(--m-ink); box-shadow: inset 0 0 0 1px var(--m-ink); }
+
+.m-step { display: block; width: min(960px, 100% - 32px); height: auto; margin: 0 auto; }
+.m-step path { stroke: #cfcfcb; }
+
+.m-page :focus-visible { outline: 2px solid var(--m-ink); outline-offset: 3px; border-radius: 2px; }
+
+@media (max-width: 720px) {
+  .m-page { font-size: 14px; }
+  .m-sec { padding: 40px 16px 44px; }
+  .m-h2 { font-size: 26px; }
+  .m-lede { font-size: 14px; max-width: 330px; }
+  .m-sk { width: 64px; height: 64px; margin-bottom: 8px; }
+}

@@ -1,0 +1,63 @@
+---
+// "How we work" as a 1-bit design file. Click the pages to see what you get at every step.
+import SectionHead from './SectionHead.astro';
+import Mark from './Mark.astro';
+import data from '../../generated/process.json';
+import '../../generated/process.css';
+const P = data.pages;
+---
+<section class="m-sec" id="process">
+  <SectionHead icon="process" title="How we work" lede="Click through the pages to see what you get at every step, from brief to the delivered file." />
+  <div class="pw" data-pw>
+    <div class="mb"><Mark size={14} color="#000" /><span>File</span><span>Edit</span><span>View</span><span>Pages</span><span class="r">Your product.fig</span></div>
+    <div class="win">
+      <div class="tb"><i></i><span>Your product.fig</span></div>
+      <div class="app">
+        <div class="side">
+          <span class="ph">Pages</span>
+          {P.map((p, i) => <button type="button" class:list={['pg', { on: i === 0 }]} data-pg={i} aria-pressed={i === 0 ? 'true' : 'false'}><span>0{i + 1} {p.name}</span></button>)}
+          <div class="lay"><span class="ph" style="padding: 0 12px">Layers</span>{P[0].layers.map((l) => <div data-layer>{l}</div>)}</div>
+        </div>
+        <div class="cv">
+          {data.boards.map((b, i) => <div class="board" data-board={i} hidden={i !== 0} style="position: absolute; inset: 0"><Fragment set:html={b} /></div>)}
+        </div>
+        <div class="props">
+          {P.map((p, i) => (
+            <div data-prop={i} hidden={i !== 0}>
+              <span class="ph">Step 0{i + 1}, {p.step}</span>
+              <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.3">{p.text}</p>
+              <span class="ph" style="display: block; margin-top: 14px">You receive</span>
+              <ul>{p.receive.map((x) => <li>{x}</li>)}</ul>
+            </div>
+          ))}
+          <div class="stp">{P.map((_, i) => <i class={i === 0 ? 'f' : ''} data-st={i}></i>)}</div>
+          <button type="button" class="nx" data-next>Next: {P[1].name}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  import data from '../../generated/process.json';
+  const root = document.querySelector<HTMLElement>('[data-pw]');
+  if (root) {
+    const P = data.pages;
+    let g = 0;
+    const go = (i: number) => {
+      g = i;
+      root.querySelectorAll<HTMLElement>('[data-pg]').forEach((b) => { const on = Number(b.dataset.pg) === i; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+      root.querySelectorAll<HTMLElement>('[data-board]').forEach((b) => { b.hidden = Number(b.dataset.board) !== i; });
+      root.querySelectorAll<HTMLElement>('[data-prop]').forEach((b) => { b.hidden = Number(b.dataset.prop) !== i; });
+      root.querySelectorAll<HTMLElement>('[data-st]').forEach((b) => b.classList.toggle('f', Number(b.dataset.st) <= i));
+      root.querySelectorAll<HTMLElement>('[data-layer]').forEach((b, j) => { b.textContent = P[i].layers[j] ?? ''; });
+      const nx = root.querySelector<HTMLElement>('[data-next]');
+      if (nx) nx.textContent = i < P.length - 1 ? `Next: ${P[i + 1].name}` : 'Book a call';
+    };
+    root.querySelectorAll<HTMLElement>('[data-pg]').forEach((b) => b.addEventListener('click', () => go(Number(b.dataset.pg))));
+    root.querySelector('[data-next]')?.addEventListener('click', () => { if (g < P.length - 1) go(g + 1); else location.href = '/book'; });
+    // On narrow screens the canvas is scaled to fit its column.
+    const cv = root.querySelector<HTMLElement>('.cv');
+    const fit = () => { if (!cv) return; const s = Math.min(1, cv.clientWidth / 528); root.style.setProperty('--cvs', String(s)); root.style.setProperty('--cvh', `${Math.round(345 * s)}px`); };
+    addEventListener('resize', fit); fit();
+  }
+</script>

@@ -1,0 +1,38 @@
+---
+import Mark from './home/Mark.astro';
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="ft">
+  <div class="row">
+    <a class="fb" href="/"><span data-egg-trigger class="egg-mark"><Mark size={16} /></span><b>Fackt</b></a>
+    <nav aria-label="Footer">
+      <a href="/#work">Work</a><a href="/#services">Services</a><a href="/#pricing">Pricing</a><a href={site.bookPage}>Book a call</a>
+    </nav>
+    <div class="so">{site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}</div>
+  </div>
+  <div class="row r2">
+    <span>Product design for SaaS, {site.location}</span>
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    <span>&copy; {year} Fackt</span>
+  </div>
+</footer>
+
+<style>
+  .ft { width: min(960px, 100% - 32px); margin: 0 auto; padding: 26px 0 30px; border-top: 1px solid #dcdcd8; font-size: 13.5px; color: #111; }
+  .ft a { color: inherit; text-decoration: none; }
+  .ft a:hover { text-decoration: underline; }
+  .row { display: flex; align-items: center; gap: 24px; }
+  .fb { display: flex; align-items: center; gap: 8px; }
+  .fb b { font-weight: 500; }
+  .egg-mark { display: inline-flex; cursor: pointer; }
+  nav { display: flex; gap: 22px; margin-left: 24px; }
+  .so { display: flex; gap: 18px; margin-left: auto; }
+  .r2 { margin-top: 18px; font-size: 12.5px; color: #8a8a86; justify-content: space-between; }
+  @media (max-width: 720px) {
+    .row { flex-wrap: wrap; gap: 14px 18px; }
+    nav { margin-left: 0; flex-basis: 100%; order: 2; flex-wrap: wrap; gap: 12px 18px; }
+    .so { order: 1; }
+    .r2 { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>

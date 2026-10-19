@@ -1,0 +1,94 @@
+---
+import { testimonials } from '../data/site';
+---
+<section id="testimonials" class="container section">
+  <div class="head" data-reveal>
+    <div><p class="kicker">Video testimonials</p><h2 class="h2">What founders say about working with Fackt.</h2></div>
+    <span class="count glass"><span class="lift">{testimonials.length} founders on camera</span></span>
+  </div>
+  <div class="grid">
+    {testimonials.map((t, i) => (
+      <button
+        type="button"
+        class:list={['tile', { wide: t.wide }]}
+        data-video={t.video || undefined}
+        data-title={`${t.name}, ${t.role}, ${t.company}`}
+        data-reveal
+        style={`transition-delay:${(i % 4) * 50}ms`}
+        aria-label={`Play video testimonial from ${t.name}, ${t.role} at ${t.company} (${t.duration})`}
+      >
+        <img src={`/uploads/${t.id}.webp`} alt="" loading="lazy" decoding="async" />
+        <span class="shade" aria-hidden="true"></span>
+        <span class="play glass" aria-hidden="true"><svg width="18" height="20" viewBox="0 0 18 20"><path d="M0 0L18 10L0 20Z" fill="#fff" /></svg></span>
+        <span class="who glass">
+          <span class="lift"><b>{t.name}</b><small>{t.role}, {t.company}</small></span>
+          <span class="dur lift">{t.duration}</span>
+        </span>
+      </button>
+    ))}
+  </div>
+  <dialog class="player" id="player">
+    <button class="close" type="button" aria-label="Close video">×</button>
+    <div class="frame"><video controls playsinline preload="none"></video><p class="soon">Video coming soon.</p></div>
+    <p class="title"></p>
+  </dialog>
+</section>
+
+<style>
+  .section { padding-top: 140px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; margin-bottom: 32px; }
+  .head .kicker { margin: 0 0 12px; }
+  .count { border-radius: 999px; padding: 9px 14px; font-size: 14px; white-space: nowrap; margin-bottom: 6px; }
+  .lift { position: relative; z-index: 3; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .tile { position: relative; height: 343px; border: 0; padding: 0; border-radius: 20px; overflow: hidden; background: #e9eaee; cursor: pointer; text-align: left; }
+  .tile.wide { grid-column: span 2; }
+  .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
+  .tile:hover img { transform: scale(1.04); }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.25)); }
+  .play { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.35); transition: transform .4s var(--ease-spring); }
+  .play svg { position: relative; z-index: 3; margin-left: 3px; }
+  .tile:hover .play { transform: scale(1.12); }
+  .who { position: absolute; left: 12px; right: 12px; bottom: 12px; border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,.75); color: var(--ink); }
+  .who b { display: block; font-size: 14px; font-weight: 500; }
+  .who small { display: block; font-size: 12px; color: var(--muted); }
+  .dur { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .player { border: 0; padding: 0; background: transparent; width: min(960px, 92vw); overflow: visible; }
+  .player::backdrop { background: rgba(10,12,20,.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .frame { position: relative; border-radius: 20px; overflow: hidden; background: #0d0e12; aspect-ratio: 16 / 9; }
+  .frame video { width: 100%; height: 100%; display: block; }
+  .soon { position: absolute; inset: 0; margin: 0; display: none; align-items: center; justify-content: center; color: #b9bdc8; }
+  .player.no-video video { display: none; }
+  .player.no-video .soon { display: flex; }
+  .title { color: #fff; margin: 12px 4px 0; font-size: 15px; }
+  .close { position: absolute; right: -6px; top: -48px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: #fff; font-size: 22px; cursor: pointer; }
+  @media (max-width: 960px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile { height: 300px; } }
+  @media (max-width: 720px) {
+    .section { padding-top: 96px; }
+    .head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .grid { gap: 10px; }
+    .tile { height: 240px; border-radius: 16px; }
+    .who { left: 8px; right: 8px; bottom: 8px; padding: 8px 10px; }
+    .who small, .dur { display: none; }
+    .play { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+  }
+</style>
+
+<script>
+  const dlg = document.getElementById('player') as HTMLDialogElement | null;
+  const video = dlg?.querySelector('video');
+  const title = dlg?.querySelector('.title');
+  document.querySelectorAll<HTMLButtonElement>('.tile').forEach((tile) => {
+    tile.addEventListener('click', () => {
+      if (!dlg || !video || !title) return;
+      const src = tile.dataset.video;
+      title.textContent = tile.dataset.title ?? '';
+      dlg.classList.toggle('no-video', !src);
+      if (src) { video.src = src; video.play().catch(() => {}); }
+      dlg.showModal();
+    });
+  });
+  dlg?.querySelector('.close')?.addEventListener('click', () => dlg.close());
+  dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg?.addEventListener('close', () => { if (video) { video.pause(); video.removeAttribute('src'); video.load(); } });
+</script>

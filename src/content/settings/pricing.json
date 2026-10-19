@@ -1,0 +1,44 @@
+{
+  "title": "Two ways to work together",
+  "text": "No hidden fees. Pause, cancel or scale when you need to.",
+  "plans": [
+    {
+      "name": "Monthly retainer",
+      "price": "$6,900",
+      "prefix": "",
+      "period": "/ month",
+      "badge": "Pause or cancel any time",
+      "text": "For teams needing fast, reliable design support.",
+      "items": [
+        "Senior designer",
+        "Weekly check-ins",
+        "One active request",
+        "Unlimited design requests",
+        "24h turnaround",
+        "Dedicated Slack channel"
+      ],
+      "cta": "Start today",
+      "ctaHref": "/book",
+      "dark": true
+    },
+    {
+      "name": "One-time project",
+      "price": "$5,000",
+      "prefix": "from",
+      "period": "",
+      "badge": "",
+      "text": "Fixed scope, milestone-driven delivery.",
+      "items": [
+        "Daily design support",
+        "Milestones, 4 to 12 weeks",
+        "Clearly defined scope",
+        "End-to-end project support",
+        "Scale as you grow",
+        "AI, SaaS and tech expertise"
+      ],
+      "cta": "Book a strategy call",
+      "ctaHref": "/book",
+      "dark": false
+    }
+  ]
+}

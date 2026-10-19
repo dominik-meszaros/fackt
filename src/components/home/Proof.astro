@@ -1,0 +1,87 @@
+---
+// CMS: Video testimonials and Written reviews.
+import SectionHead from './SectionHead.astro';
+import { homeSettings } from '../../data/settings';
+interface Video { name: string; role: string; company: string; duration: string; thumbnail: string; video: string }
+interface Review { name: string; role: string; highlight: string; text: string }
+interface Props { videos: Video[]; reviews: Review[] }
+const { videos, reviews } = Astro.props;
+const r = homeSettings.rating;
+const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
+const count = words[videos.length] ?? String(videos.length);
+---
+<section class="m-sec" id="reviews">
+  <SectionHead icon="quote" title="What founders say" lede={`Rated ${r.value} out of 5 on ${r.source}. ${count} of them said it on camera.`} />
+  <div class="vids">
+    {videos.map((v) => (
+      v.video ? (
+        <button type="button" class="vid" data-video={v.video} aria-label={`Play video testimonial from ${v.name}, ${v.role} at ${v.company}`}>
+          <img src={v.thumbnail} alt="" loading="lazy" decoding="async" />
+          <span class="pl" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 2L10 6L3 10Z" fill="currentColor"></path></svg></span>
+          <span class="who"><b>{v.name}</b>{v.company}{v.duration && `, ${v.duration}`}</span>
+        </button>
+      ) : (
+        <div class="vid">
+          <img src={v.thumbnail} alt={`${v.name}, ${v.role} at ${v.company}`} loading="lazy" decoding="async" />
+          <span class="who"><b>{v.name}</b>{v.company}{v.duration && `, ${v.duration}`}</span>
+        </div>
+      )
+    ))}
+  </div>
+  <div class="revs">
+    {reviews.map((x) => (
+      <figure class="rev">
+        <p class="k">&#8220;{x.highlight}&#8221;</p>
+        <blockquote>{x.text}</blockquote>
+        <figcaption><b>{x.name}</b>, {x.role}</figcaption>
+      </figure>
+    ))}
+  </div>
+  <dialog class="vd" data-vd aria-label="Video testimonial">
+    <button type="button" class="vx" data-vd-close aria-label="Close video">&#215;</button>
+    <video controls playsinline data-vd-video></video>
+  </dialog>
+</section>
+<style>
+  .vids { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 40px; width: min(960px, 100%); }
+  .vid { all: unset; box-sizing: border-box; position: relative; aspect-ratio: 4 / 5; border-radius: 3px; overflow: hidden; text-align: left; background: #ddd; }
+  button.vid { cursor: pointer; }
+  .vid img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.05); transition: transform .6s; }
+  .vid:hover img { transform: scale(1.04); }
+  .vid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55)); }
+  .who { position: absolute; left: 12px; bottom: 10px; right: 12px; z-index: 2; color: #fff; font-size: 12.5px; line-height: 1.3; }
+  .who b { display: block; font-weight: 500; }
+  .pl { position: absolute; right: 10px; top: 10px; z-index: 2; width: 28px; height: 28px; border-radius: 2px; display: grid; place-items: center; color: #111; background: rgba(255,255,255,.92); }
+  .revs { columns: 2; column-gap: 16px; margin-top: 16px; width: min(960px, 100%); text-align: left; }
+  .rev { break-inside: avoid; margin: 0 0 16px; background: #f4f4f2; border-radius: 3px; padding: 24px 26px; }
+  .k { font-family: var(--m-serif); font-size: 19px; line-height: 1.3; margin: 0; }
+  blockquote { margin: 10px 0 0; font-size: 13.5px; color: #6f6f6f; line-height: 1.55; }
+  figcaption { margin-top: 14px; font-size: 12.5px; color: #8a8a8a; }
+  figcaption b { color: #141414; font-weight: 500; }
+  .vd { padding: 0; border: 0; border-radius: 4px; background: #000; width: min(420px, 92vw); }
+  .vd::backdrop { background: rgba(0,0,0,.6); }
+  .vd video { display: block; width: 100%; max-height: 80vh; }
+  .vx { position: absolute; right: 8px; top: 8px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 2px; background: #fff; font-size: 20px; cursor: pointer; }
+  @media (max-width: 900px) and (min-width: 721px) { .vids { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) {
+    .vids { display: flex; gap: 8px; width: calc(100% + 32px); margin: 28px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
+    .vid { flex: 0 0 140px; }
+    .revs { display: flex; columns: auto; gap: 12px; width: calc(100% + 32px); margin: 12px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
+    .rev { flex: 0 0 290px; margin: 0; padding: 20px; }
+    .k { font-size: 17px; }
+  }
+</style>
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('[data-vd]');
+  const vid = document.querySelector<HTMLVideoElement>('[data-vd-video]');
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((b) => b.addEventListener('click', () => {
+    if (!dlg || !vid) return;
+    vid.src = b.dataset.video!;
+    dlg.showModal();
+    vid.play().catch(() => {});
+  }));
+  const stop = () => { if (vid) { vid.pause(); vid.removeAttribute('src'); vid.load(); } };
+  document.querySelector('[data-vd-close]')?.addEventListener('click', () => { dlg?.close(); });
+  dlg?.addEventListener('close', stop);
+  dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+</script>

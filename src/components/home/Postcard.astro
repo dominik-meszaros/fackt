@@ -1,0 +1,85 @@
+---
+// The closing postcard is a real form (Netlify Forms, name "postcard").
+// Submissions show up in Netlify under Forms, and can be emailed to you from there.
+import Mark from './Mark.astro';
+---
+<section class="m-sec pc-sec" aria-label="Send us a note">
+  <form class="pc" name="postcard" method="POST" data-netlify="true" netlify-honeypot="company_site" action="/?sent=1" data-pc>
+    <input type="hidden" name="form-name" value="postcard" />
+    <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off" /></label></p>
+    <div class="msg">
+      <p class="pr">Building software keeps getting easier. Building software people understand does not.</p>
+      <label class="lb" for="pc-note">Your note</label>
+      <textarea id="pc-note" class="wr" name="note" rows="5" required placeholder="Dear Fackt, we are building... and we need help with..."></textarea>
+      <p class="sg">Write a few lines, we reply by email.</p>
+    </div>
+    <div class="div" aria-hidden="true"></div>
+    <div class="to">
+      <div class="stamp" aria-hidden="true"><div><Mark size={40} color="#111" /></div></div>
+      <div class="pm" aria-hidden="true" hidden data-pc-pm><span>RECEIVED</span><small>FACKT, SLOVAKIA</small></div>
+      <label class="lb" for="pc-name">From</label><input id="pc-name" class="ln" name="name" required autocomplete="name" placeholder="Your name" />
+      <label class="lb" for="pc-email">Email</label><input id="pc-email" class="ln" type="email" name="email" required autocomplete="email" placeholder="you@company.com" />
+      <label class="lb" for="pc-product">Product</label><input id="pc-product" class="ln" name="product" autocomplete="url" placeholder="yourproduct.com" />
+      <button class="m-btn dk snd" type="submit" data-pc-btn>Send postcard</button>
+      <p class="st" role="status" data-pc-status></p>
+    </div>
+  </form>
+</section>
+<style>
+  .pc-sec { padding: 50px 16px 60px; }
+  .pc { position: relative; width: min(760px, 100%); min-height: 440px; background: #fff; box-shadow: 4px 4px 0 #111, 0 0 0 1px #111; transform: rotate(-1deg); text-align: left; display: grid; grid-template-columns: 1fr 1px 250px; gap: 34px; padding: 36px 40px 32px; }
+  .hp { position: absolute; left: -9999px; }
+  .msg { font-family: var(--m-serif); color: #2c2c2c; }
+  .pr { margin: 0 0 18px; font-size: 17px; line-height: 1.5; }
+  .lb { display: block; font-family: 'Geist Mono', monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: #8a8a86; margin: 14px 0 4px; }
+  .wr { display: block; width: 100%; border: 0; outline: 0; resize: none; background: transparent; font-family: var(--m-serif); font-style: italic; font-size: 18px; line-height: 32px; color: #111; padding: 0; background-image: repeating-linear-gradient(transparent 0 31px, #dcdcd8 31px 32px); }
+  .wr::placeholder, .ln::placeholder { color: #b2b2ae; }
+  .sg { font-size: 12.5px; color: #8a8a86; margin: 12px 0 0; }
+  .div { background: #dcdcd8; }
+  .to { position: relative; padding-top: 150px; }
+  .stamp { position: absolute; right: 0; top: 0; width: 92px; height: 112px; padding: 7px; background: #fff; border: 2px dotted #111; transform: rotate(4deg); }
+  .stamp div { height: 100%; border: 1.5px solid #111; display: grid; place-items: center; }
+  .pm { position: absolute; left: -10px; top: 40px; transform: rotate(-12deg); border: 2px solid #111; border-radius: 2px; padding: 6px 12px; text-align: center; font-family: 'Geist Mono', monospace; color: #111; background: rgba(251,250,247,.85); }
+  .pm[hidden] { display: none; }
+  .pm span { display: block; font-size: 18px; font-weight: 500; letter-spacing: .14em; }
+  .pm small { display: block; font-size: 8.5px; letter-spacing: .08em; margin-top: 2px; }
+  .ln { display: block; width: 100%; border: 0; border-bottom: 1px solid #cfcfcb; outline: 0; background: transparent; font: 15px Geist, system-ui, sans-serif; color: #111; padding: 4px 0 6px; border-radius: 0; }
+  .ln:focus, .wr:focus { border-color: #111; }
+  .snd { margin-top: 22px; width: 100%; height: 40px; }
+  .snd[disabled] { opacity: .7; cursor: default; }
+  .st { margin: 8px 0 0; font-size: 12px; color: #6a6a66; min-height: 1em; }
+  @media (max-width: 720px) {
+    .pc { transform: rotate(-.6deg); grid-template-columns: 1fr; gap: 18px; padding: 24px 20px 22px; }
+    .div { display: none; }
+    .to { padding-top: 0; position: static; }
+    .stamp { right: 16px; top: 18px; width: 64px; height: 78px; transform: rotate(5deg); }
+    .stamp :global(svg) { width: 28px; height: 28px; }
+    .msg { padding-right: 70px; }
+    .pr { font-size: 16px; }
+    .pm { left: auto; right: 8px; top: 40px; }
+    .snd { margin-top: 18px; }
+  }
+</style>
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-pc]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-pc-btn]');
+  const pm = document.querySelector<HTMLElement>('[data-pc-pm]');
+  const status = document.querySelector<HTMLElement>('[data-pc-status]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!btn) return;
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+      const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+      if (!res.ok) throw new Error(String(res.status));
+      if (pm) pm.hidden = false;
+      btn.textContent = 'Sent, thank you';
+      if (status) status.textContent = 'Your postcard arrived. We reply by email.';
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input:not([type=hidden]), textarea').forEach((el) => (el.readOnly = true));
+    } catch {
+      btn.disabled = false; btn.textContent = 'Send postcard';
+      if (status) status.textContent = 'That did not go through. Try again, or email dominik@fackt.io.';
+    }
+  });
+</script>

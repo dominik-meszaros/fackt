@@ -1,0 +1,111 @@
+{
+  "heroTitle": "Product design for SaaS",
+  "heroTitleMuted": "that people pay for.",
+  "heroText": "An independent UI/UX and product design studio for SaaS and tech companies.",
+  "askHints": [
+    "How much is a monthly retainer?",
+    "Show me a SaaS dashboard you designed",
+    "How does your process work?",
+    "Do you design mobile apps?"
+  ],
+  "ask": [
+    {
+      "question": "Show me a SaaS dashboard you designed",
+      "type": "work",
+      "project": "communi"
+    },
+    {
+      "question": "How much is a monthly retainer?",
+      "type": "answer",
+      "answer": "$6,900 per month. A senior designer, unlimited requests worked one at a time, 24h turnaround and a dedicated Slack channel. Pause or cancel any time.",
+      "linkLabel": "See pricing",
+      "linkHref": "/#pricing"
+    },
+    {
+      "question": "How does your process work?",
+      "type": "answer",
+      "answer": "Four steps: a written brief, exploration of flows and directions, the first page designed, then the full delivered file with specs.",
+      "linkLabel": "See how we work",
+      "linkHref": "/#process"
+    },
+    {
+      "question": "Do you design mobile apps?",
+      "type": "work",
+      "project": "earntask"
+    },
+    {
+      "question": "What does a one-time project cost?",
+      "type": "answer",
+      "answer": "Fixed-scope projects start from $5,000 and are delivered in milestones over 4 to 12 weeks.",
+      "linkLabel": "See pricing",
+      "linkHref": "/#pricing"
+    },
+    {
+      "question": "Can we talk before we start?",
+      "type": "answer",
+      "answer": "Yes. Every engagement starts with a free 30 minute strategy call with Dom, with clear next steps whether we work together or not.",
+      "linkLabel": "Book a free call",
+      "linkHref": "/book"
+    },
+    {
+      "question": "Show me a landing page you designed",
+      "type": "work",
+      "project": "blackbox-ai"
+    }
+  ],
+  "logosTitle": "Trusted by founders and teams at",
+  "logos": [
+    {
+      "name": "ClickUp",
+      "logo": ""
+    },
+    {
+      "name": "Viewmax",
+      "logo": ""
+    },
+    {
+      "name": "BlackBox AI",
+      "logo": ""
+    },
+    {
+      "name": "Communi",
+      "logo": ""
+    },
+    {
+      "name": "DevSignal",
+      "logo": ""
+    },
+    {
+      "name": "Shredder",
+      "logo": ""
+    },
+    {
+      "name": "Earntask",
+      "logo": ""
+    },
+    {
+      "name": "Engain",
+      "logo": ""
+    },
+    {
+      "name": "Flashloop",
+      "logo": ""
+    },
+    {
+      "name": "Raena",
+      "logo": ""
+    },
+    {
+      "name": "Livis",
+      "logo": ""
+    },
+    {
+      "name": "Quittr",
+      "logo": ""
+    }
+  ],
+  "rating": {
+    "value": "4.96",
+    "source": "Contra"
+  }
+}

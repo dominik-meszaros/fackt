@@ -1,0 +1,9 @@
+---
+import sketch from '../../generated/sketch.json';
+interface Props { icon: keyof typeof sketch.sections; title: string; lede?: string }
+const { icon, title, lede } = Astro.props;
+const svg = sketch.sections[icon].replace('class="sk"', 'class="m-sk"');
+---
+<Fragment set:html={svg} />
+<h2 class="m-h2">{title}</h2>
+{lede && <p class="m-lede">{lede}</p>}

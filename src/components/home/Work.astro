@@ -1,0 +1,42 @@
+---
+import SectionHead from './SectionHead.astro';
+interface Project { slug: string; name: string; service: string; summary: string; image: string; imageKind: string }
+interface Props { projects: Project[]; total: number }
+const { projects, total } = Astro.props;
+---
+<section class="m-sec" id="work">
+  <SectionHead icon="work" title="Selected work" lede="SaaS platforms, dashboards, mobile apps and sites. A few recent ones." />
+  <div class="grid">
+    {projects.map((p) => (
+      <a class="card" href={`/work/${p.slug}`}>
+        <div class:list={['im', { ph: p.imageKind === 'phone' }]}><img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" /></div>
+        <div class="cap"><b>{p.name}</b> <span>&#183; {p.service}</span></div>
+        <p>{p.summary}</p>
+        <span class="more">View case study &#8594;</span>
+      </a>
+    ))}
+  </div>
+  <a class="m-btn lt all" href="/work">All {total} projects &#8594;</a>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px 28px; margin-top: 40px; width: min(960px, 100%); text-align: left; }
+  .card { color: inherit; text-decoration: none; }
+  .im { position: relative; height: 256px; border-radius: 4px; overflow: hidden; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; }
+  .im img { position: absolute; left: 50%; top: 36px; width: min(380px, 84%); transform: translateX(-50%); border-radius: 3px; box-shadow: 0 0 0 1px #111; transition: transform .6s var(--m-ease); }
+  .im.ph img { width: 150px; top: 26px; border-radius: 12px; }
+  .card:hover .im img { transform: translateX(-50%) translateY(-6px); }
+  .cap { margin-top: 14px; font-size: 14px; }
+  .cap b { font-weight: 500; } .cap span { color: #8a8a86; }
+  p { margin: 4px 0 0; font-size: 14px; color: #6f6f6f; max-width: 400px; }
+  .more { display: inline-block; margin-top: 8px; font-size: 13px; color: #a3a3a3; }
+  .all { margin-top: 40px; }
+  @media (max-width: 720px) {
+    .grid { display: flex; gap: 14px; width: calc(100% + 32px); margin: 28px -16px 0; padding: 0 16px 6px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; scrollbar-width: none; }
+    .card { flex: 0 0 300px; scroll-snap-align: start; }
+    .im { height: 210px; }
+    .im img { width: 260px; top: 30px; }
+    .im.ph img { width: 110px; top: 20px; border-radius: 14px; }
+    p { font-size: 13.5px; }
+    .all { margin-top: 24px; }
+  }
+</style>

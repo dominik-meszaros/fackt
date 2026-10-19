@@ -1,0 +1,316 @@
+---
+// Easter egg: "Pixel Perfect", a one-button stacking game.
+// Opens from: typing "play" (or "/play") in the search, or clicking the footer F five times.
+// Anything can open it with: document.dispatchEvent(new Event('fackt:play'))
+import Emblem from './Emblem.astro';
+import { site } from '../data/site';
+---
+<dialog class="egg" id="egg" aria-labelledby="egg-title" tabindex="-1">
+  <div class="egg-card">
+    <div class="egg-head">
+      <Emblem size={34} id="egg" />
+      <span class="egg-t"><b id="egg-title">Pixel Perfect</b><small>Stack it. Ship it.</small></span>
+      <button class="egg-x" type="button" data-egg-close aria-label="Close game">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+    <div class="egg-stats">
+      <div class="egg-stat"><small>Layers</small><b data-egg="score">0</b></div>
+      <div class="egg-stat" data-egg="streakBox"><small>Streak</small><b data-egg="streak">0</b></div>
+      <div class="egg-stat"><small>Best</small><b data-egg="best">0</b></div>
+    </div>
+    <div class="egg-area" data-egg="area">
+      <div class="egg-world" data-egg="world"></div>
+      <div class="egg-toast" data-egg="toast" hidden></div>
+      <div class="egg-ruler" data-egg="ruler">grid 8px</div>
+      <div class="egg-ov" data-egg="start">
+        <div class="egg-ovc">
+          <span class="egg-gem"><Emblem size={36} id="egg2" /></span>
+          <b>Ready to stack?</b>
+          <p>Click or press <kbd>Space</kbd> to drop a layer. Land it within 3px for a perfect.</p>
+          <div class="egg-row"><button class="egg-b dk" type="button" data-egg-start>Start game</button></div>
+        </div>
+      </div>
+      <div class="egg-ov" data-egg="over" hidden>
+        <div class="egg-ovc">
+          <div class="egg-big"><span data-egg="final">0</span><small data-egg="unit">layers</small></div>
+          <p data-egg="verdict"></p>
+          <span class="egg-badge" data-egg="newBest" hidden>New best</span>
+          <div class="egg-row">
+            <button class="egg-b lt" type="button" data-egg-start>Play again</button>
+            <a class="egg-b dk" href={site.bookPage}>Book a call
+              <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12H19M13 6L19 12L13 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="egg-foot"><span><kbd>Space</kbd> or tap to drop</span><span><kbd>Esc</kbd> to close</span></div>
+  </div>
+</dialog>
+
+<style is:global>
+  .egg:focus { outline: none; }
+  .egg { border: 0; padding: 0; background: transparent; max-width: none; max-height: none; overflow: visible; color: var(--ink); }
+  .egg::backdrop { background: rgba(244, 246, 251, .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .egg[open] .egg-card { animation: egg-in .55s var(--ease-spring) both; }
+  @keyframes egg-in { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+  .egg-card { width: min(560px, calc(100vw - 24px)); border-radius: 32px; padding: 20px;
+    background: linear-gradient(180deg, #fff, #fbfcfe);
+    box-shadow: 0 0 0 1px rgba(18,20,26,.06), 0 40px 90px -20px rgba(20,32,120,.3), 0 12px 30px rgba(18,20,26,.08); }
+  .egg-head { display: flex; align-items: center; gap: 12px; padding: 4px 4px 0; }
+  .egg-t { flex: 1; }
+  .egg-t b { display: block; font-weight: 500; font-size: 19px; letter-spacing: -.02em; }
+  .egg-t small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-2); margin-top: 2px; }
+  .egg-x { width: 38px; height: 38px; border-radius: 50%; border: 0; display: grid; place-items: center; background: #f3f4f8; color: var(--ink-2); cursor: pointer; transition: transform .3s var(--ease-spring); }
+  .egg-x:hover { transform: rotate(90deg); }
+  .egg-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0 12px; }
+  .egg-stat { padding: 12px 14px; border-radius: 16px; background: #f6f7fb; box-shadow: inset 0 0 0 1px var(--line); transition: background .3s, box-shadow .3s; }
+  .egg-stat small { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted-2); }
+  .egg-stat b { display: block; margin-top: 4px; font-size: 26px; font-weight: 500; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .egg-stat.hot { background: var(--blue-soft); box-shadow: inset 0 0 0 1px #d9ddff; }
+  .egg-stat.hot b { color: var(--blue); }
+  .egg-area { position: relative; height: min(600px, calc(100dvh - 300px)); min-height: 360px; border-radius: 22px; overflow: hidden; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    background-color: #f8f9fc;
+    background-image: linear-gradient(rgba(35,53,255,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(35,53,255,.055) 1px, transparent 1px);
+    background-size: 8px 8px; box-shadow: inset 0 0 0 1px #e6e8f0; }
+  .egg-area::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(248,249,252,.95), rgba(248,249,252,0) 120px); }
+  .egg-world { position: absolute; left: 24px; right: 24px; top: 0; bottom: 0; transform-origin: 50% 100%; transition: transform .45s var(--ease-out); }
+  .egg-world.zoom { transition-duration: .8s; }
+  .egg-bar { position: absolute; height: 22px; border-radius: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(0,0,0,.08), 0 2px 6px rgba(20,32,184,.14); }
+  .egg-bar.base { background: var(--ink); box-shadow: 0 2px 8px rgba(18,20,26,.2); }
+  .egg-bar.cur { box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 20px rgba(35,53,255,.3), 0 0 0 2px rgba(255,255,255,.9); }
+  .egg-bar.pf { animation: egg-pf .5s var(--ease-out); }
+  @keyframes egg-pf { from { box-shadow: 0 0 0 0 rgba(35,53,255,.6); } to { box-shadow: 0 0 0 14px rgba(35,53,255,0); } }
+  .egg-deb { position: absolute; height: 22px; border-radius: 6px; background: #ff5a5f; }
+  .egg-toast { position: absolute; left: 50%; top: 22px; z-index: 3; transform: translateX(-50%); padding: 8px 14px; border-radius: 999px; font-family: var(--mono); font-size: 12.5px; white-space: nowrap; background: var(--ink); color: #fff; box-shadow: 0 10px 24px rgba(18,20,26,.2); }
+  .egg-toast.ok { background: var(--blue); box-shadow: 0 10px 24px rgba(35,53,255,.35); }
+  .egg-toast.pop { animation: egg-t .35s var(--ease-spring); }
+  @keyframes egg-t { from { transform: translate(-50%, -8px) scale(.9); opacity: 0; } }
+  .egg-ruler { position: absolute; left: 20px; top: 18px; z-index: 2; font-family: var(--mono); font-size: 10.5px; color: #a0a5b3; white-space: pre; }
+  .egg-ov { position: absolute; inset: 0; z-index: 4; display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px 0; background: linear-gradient(180deg, rgba(248,249,252,.75), rgba(248,249,252,0) 65%); cursor: default; }
+  .egg-ov[hidden] { display: none; }
+  .egg-ovc { width: 340px; max-width: 100%; padding: 26px 24px 22px; border-radius: 24px; text-align: center; background: rgba(255,255,255,.97); box-shadow: 0 0 0 1px rgba(18,20,26,.06), 0 30px 60px -12px rgba(20,32,120,.25); animation: egg-in .5s var(--ease-spring) both; }
+  .egg-ovc > b { display: block; font-size: 22px; font-weight: 500; letter-spacing: -.03em; }
+  .egg-ovc p { margin: 10px 0 0; font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+  .egg-gem { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 20px; background: var(--blue-soft); margin-bottom: 14px; animation: egg-bob 1.6s var(--ease-spring) infinite; }
+  @keyframes egg-bob { 50% { transform: translateY(-6px); } }
+  .egg-big { font-size: 64px; line-height: 1; font-weight: 500; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+  .egg-big small { font-size: 20px; letter-spacing: -.02em; color: var(--muted-2); margin-left: 6px; }
+  .egg-badge { display: inline-flex; margin-top: 12px; padding: 6px 10px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+  .egg-badge[hidden] { display: none; }
+  .egg-row { display: flex; gap: 8px; margin-top: 20px; }
+  .egg-b { flex: 1; height: 46px; border: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 14.5px; font-weight: 500; text-decoration: none; cursor: pointer; transition: transform .3s var(--ease-spring); }
+  .egg-b:hover { transform: translateY(-1px); }
+  .egg-b.dk { background: var(--ink); color: #fff; }
+  .egg-b.lt { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px #e3e5ec; }
+  .egg kbd { font-family: var(--mono); font-size: 12px; padding: 2px 6px; border-radius: 6px; background: #f1f2f6; box-shadow: inset 0 0 0 1px #e3e5ec; color: var(--ink); }
+  .egg-foot { display: flex; justify-content: space-between; align-items: center; padding: 14px 6px 0; font-size: 13px; color: var(--muted); }
+  @media (max-width: 560px) {
+    .egg-card { padding: 14px; border-radius: 26px; }
+    .egg-stat { padding: 10px 12px; }
+    .egg-stat b { font-size: 22px; }
+    .egg-world { left: 12px; right: 12px; }
+    .egg-foot span:last-child { display: none; }
+  }
+  /* The hero F wobbles more with every click on the way to five */
+  :global([data-egg-trigger]).egg-wob { animation: egg-wob .45s var(--ease-spring); }
+  @keyframes egg-wob { 30% { transform: rotate(calc(var(--w, 1) * -6deg)) scale(calc(1 + var(--w, 1) * .03)); } 65% { transform: rotate(calc(var(--w, 1) * 4deg)); } }
+</style>
+
+<script>
+  const dlg = document.getElementById('egg') as HTMLDialogElement | null;
+  if (dlg) {
+    const $ = (k: string) => dlg.querySelector<HTMLElement>(`[data-egg="${k}"]`)!;
+    const area = $('area'), world = $('world'), toast = $('toast'), ruler = $('ruler');
+    const ui = { score: $('score'), streak: $('streak'), streakBox: $('streakBox'), best: $('best'), start: $('start'), over: $('over'), final: $('final'), verdict: $('verdict'), newBest: $('newBest') };
+
+    const H = 24, B = 16, RAMP = ['#2335ff', '#3a4bff', '#5363ff', '#6d7cff', '#8794ff', '#a1acff', '#8794ff', '#6d7cff', '#5363ff', '#3a4bff'];
+    const col = (i: number) => `linear-gradient(180deg, ${RAMP[i % RAMP.length]}, ${RAMP[(i + 1) % RAMP.length]})`;
+    type Layer = { x: number; w: number; el: HTMLDivElement };
+    type Bit = { x: number; w: number; y: number; vy: number; r: number; vr: number; o: number; el: HTMLDivElement };
+
+    let AW = 464, W0 = 280;
+    let mode: 'idle' | 'play' | 'over' = 'idle';
+    let stack: Layer[] = [], cur: Layer | null = null, dir = 1, sp = 2.6, streak = 0;
+    let bits: Bit[] = [], raf = 0, last = 0, toastT = 0;
+    let best = 0;
+    try { best = Number(localStorage.getItem('fackt-stack-best')) || 0; } catch {}
+    ui.best.textContent = String(best);
+
+    function bar(x: number, w: number, i: number, cls = '') {
+      const el = document.createElement('div');
+      el.className = `egg-bar ${i === 0 ? 'base' : ''} ${cls}`;
+      el.style.background = i === 0 ? '' : col(i);
+      place(el, x, B + i * H, w);
+      world.appendChild(el);
+      return el;
+    }
+    function place(el: HTMLElement, x: number, y: number, w: number) {
+      el.style.left = `${x}px`; el.style.bottom = `${y}px`; el.style.width = `${w}px`;
+    }
+    function camera() {
+      const n = stack.length, h = area.clientHeight;
+      world.classList.toggle('zoom', mode !== 'play');
+      if (mode === 'play') {
+        world.style.transform = `translateY(${Math.max(0, B + n * H - (h - 200))}px)`;
+      } else {
+        const top = B + (n + 1) * H + 40;
+        world.style.transform = `scale(${Math.min(1, (h - 60) / top).toFixed(3)})`;
+      }
+    }
+    function say(text: string, ok: boolean) {
+      toast.textContent = text;
+      toast.className = `egg-toast pop${ok ? ' ok' : ''}`;
+      toast.hidden = false;
+      void toast.offsetWidth;
+      toastT = 1100;
+    }
+    function stats() {
+      ui.score.textContent = String(Math.max(0, stack.length - 1));
+      ui.streak.textContent = String(streak);
+      ui.streakBox.classList.toggle('hot', streak > 1);
+      ui.best.textContent = String(best);
+    }
+
+    // A demo tower so the idle screen is not empty.
+    function demo() {
+      world.replaceChildren();
+      const w = AW;
+      const d = [[0, 280], [0, 280], [6, 274], [6, 274], [12, 262], [12, 262], [12, 262], [18, 250], [18, 250], [26, 236]];
+      stack = d.map(([dx, ww], i) => { const x = (w - 280) / 2 + dx; return { x, w: ww, el: bar(x, ww, i) }; });
+      cur = null; mode = 'idle'; camera();
+    }
+
+    function start() {
+      AW = world.clientWidth;
+      W0 = Math.min(280, Math.round(AW * 0.6));
+      world.replaceChildren(); bits = [];
+      const x0 = (AW - W0) / 2;
+      stack = [{ x: x0, w: W0, el: bar(x0, W0, 0) }];
+      streak = 0; sp = 2.6; dir = 1;
+      mode = 'play';
+      next();
+      ui.start.hidden = true; ui.over.hidden = true; toast.hidden = true;
+      stats(); camera();
+      dlg!.focus({ preventScroll: true });
+    }
+    function next() {
+      const k = stack.length, w = stack[k - 1].w, fromLeft = k % 2 === 1;
+      cur = { x: fromLeft ? -w * 0.5 : AW - w * 0.5, w, el: bar(0, w, k, 'cur') };
+      place(cur.el, cur.x, B + k * H, w);
+      dir = fromLeft ? 1 : -1;
+    }
+    function fall(x: number, w: number, y: number, left: boolean) {
+      const el = document.createElement('div');
+      el.className = 'egg-deb';
+      world.appendChild(el);
+      bits.push({ x, w, y, vy: 0, r: 0, vr: left ? -2.5 : 2.5, o: 1, el });
+    }
+
+    function drop() {
+      if (mode !== 'play' || !cur) { start(); return; }
+      const prev = stack[stack.length - 1];
+      const l = Math.max(cur.x, prev.x), r = Math.min(cur.x + cur.w, prev.x + prev.w), ov = r - l;
+      const d = Math.round(cur.x - prev.x), y = B + stack.length * H;
+      if (ov <= 0) {
+        cur.el.remove(); fall(cur.x, cur.w, y, cur.x < prev.x); cur = null;
+        return end();
+      }
+      let nx: number, nw: number;
+      if (Math.abs(d) <= 3) {
+        nx = prev.x; nw = prev.w; streak++;
+        if (streak % 3 === 0 && nw < W0) {
+          const g = Math.min(12, W0 - nw); nw += g; nx = Math.max(0, nx - g / 2);
+          say(`Perfect x${streak}, layer grows`, true);
+        } else say(streak > 1 ? `Perfect x${streak}` : 'Perfect', true);
+        cur.el.classList.add('pf');
+      } else {
+        nx = l; nw = ov; streak = 0;
+        if (cur.x < prev.x) fall(cur.x, prev.x - cur.x, y, true); else fall(r, cur.x + cur.w - r, y, false);
+        say(`Off by ${Math.abs(d)}px, trimmed`, false);
+      }
+      cur.el.classList.remove('cur');
+      place(cur.el, nx, y, nw);
+      stack.push({ x: nx, w: nw, el: cur.el });
+      sp = Math.min(7.5, 2.6 + (stack.length - 1) * 0.17);
+      next(); stats(); camera();
+    }
+
+    function end() {
+      mode = 'over';
+      const score = stack.length - 1, isBest = score > best && score > 0;
+      if (isBest) { best = score; try { localStorage.setItem('fackt-stack-best', String(best)); } catch {} }
+      say('Missed', false);
+      ui.final.textContent = String(score);
+      $('unit').textContent = score === 1 ? 'layer' : 'layers';
+      ui.verdict.textContent = score < 5 ? 'Rough first draft. Happens to everyone.' : score < 12 ? 'Solid. Ready for a first review.' : score < 25 ? 'Clean work. Ready for handoff.' : 'Pixel perfect. You would fit right in.';
+      ui.newBest.hidden = !isBest;
+      stats();
+      setTimeout(() => { if (mode === 'over') { ui.over.hidden = false; toast.hidden = true; camera(); } }, 450);
+    }
+
+    function loop(t: number) {
+      const k = Math.min(3, (t - (last || t)) / 16.67);
+      last = t;
+      if (mode === 'play' && cur) {
+        let x = cur.x + dir * sp * k;
+        const lo = -cur.w * 0.5, hi = AW - cur.w * 0.5;
+        if (x > hi) { x = hi; dir = -1; }
+        if (x < lo) { x = lo; dir = 1; }
+        cur.x = x;
+        cur.el.style.left = `${x}px`;
+        ruler.textContent = `x ${Math.round(x)}  w ${Math.round(cur.w)}`;
+      }
+      bits = bits.filter((b) => {
+        b.vy += 0.55 * k; b.y -= b.vy * k; b.r += b.vr * k; b.o -= 0.012 * k;
+        if (b.o <= 0) { b.el.remove(); return false; }
+        place(b.el, b.x, b.y, b.w);
+        b.el.style.transform = `rotate(${b.r}deg)`; b.el.style.opacity = String(b.o);
+        return true;
+      });
+      if (toastT > 0) { toastT -= 16.67 * k; if (toastT <= 0) toast.hidden = true; }
+      raf = requestAnimationFrame(loop);
+    }
+
+    function open() {
+      if (dlg!.open) return;
+      dlg!.showModal();
+      ui.start.hidden = false; ui.over.hidden = true; toast.hidden = true;
+      AW = world.clientWidth; demo(); stats();
+      last = 0; raf = requestAnimationFrame(loop);
+      (dlg!.querySelector('[data-egg-start]') as HTMLElement).focus();
+    }
+    function close() { dlg!.close(); }
+    dlg.addEventListener('close', () => { cancelAnimationFrame(raf); mode = 'idle'; });
+
+    area.addEventListener('pointerdown', (e) => {
+      if ((e.target as HTMLElement).closest('.egg-ovc')) return;
+      e.preventDefault(); drop();
+    });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.key === ' ' || (e.key === 'Enter' && mode === 'play')) {
+        if ((e.target as HTMLElement).closest('a') ) return;
+        e.preventDefault(); drop();
+      }
+    });
+    dlg.querySelectorAll('[data-egg-start]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); start(); }));
+    dlg.querySelector('[data-egg-close]')?.addEventListener('click', close);
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    document.addEventListener('fackt:play', open);
+
+    // Trigger: click the footer F five times (within a few seconds of each other).
+    const mark = document.querySelector<HTMLElement>('[data-egg-trigger]');
+    let clicks = 0, timer = 0;
+    mark?.addEventListener('click', () => {
+      clicks++;
+      clearTimeout(timer); timer = window.setTimeout(() => { clicks = 0; }, 1600);
+      mark.style.setProperty('--w', String(clicks));
+      mark.classList.remove('egg-wob'); void mark.getBoundingClientRect(); mark.classList.add('egg-wob');
+      if (clicks >= 5) { clicks = 0; setTimeout(open, 250); }
+    });
+
+    // Console hint for the curious.
+    console.log('%cFackt%c  Psst. Type "play" in the search.', 'font:600 14px Geist,sans-serif;color:#2335ff', 'font:13px Geist,sans-serif;color:#5c6070');
+  }
+</script>

@@ -1,0 +1,62 @@
+---
+interface Project { slug: string; name: string; service: string; image: string; imageKind: string; tint: string }
+interface Props { projects: Project[]; total: number; title?: string; id?: string }
+const { projects, total, title = 'Selected work', id = 'work' } = Astro.props;
+// First two cards are large. The rest fill rows of three, or two halves, or one full row.
+const rest = projects.length - 2;
+const size = (i: number) => {
+  if (i < 2 && projects.length > 1) return 'big';
+  if (projects.length === 1 || (rest === 1 && i === 2)) return 'full';
+  return rest % 3 === 0 ? 'small' : 'big';
+};
+---
+<section id={id} class="container section">
+  <div class="head" data-reveal>
+    <h2 class="h2">{title}</h2>
+    <a class="all" href="/work">All {total} projects →</a>
+  </div>
+  <div class="grid">
+    {projects.map((p, i) => (
+      <a href={`/work/${p.slug}`} class:list={['card', `tint-${p.tint}`, size(i), p.imageKind]} data-reveal style={`transition-delay:${(i % 3) * 60}ms`}>
+        <img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" />
+        <span class="cap glass">
+          <span class="lift"><b>{p.name}</b> <span class="svc">{p.service}</span></span>
+          <span class="arrow lift" aria-hidden="true">↗</span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section { padding-top: 140px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+  .all { text-decoration: none; color: #4a4f5e; font-size: 15px; }
+  .all:hover { color: var(--ink); }
+  .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; }
+  .card { position: relative; border-radius: var(--radius-md); overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--ink); box-shadow: inset 0 0 0 1px rgba(20,30,90,.05); }
+  .card.big { grid-column: span 3; height: 440px; }
+  .card.small { grid-column: span 2; height: 400px; }
+  .card.full { grid-column: span 6; height: 480px; }
+  .card.full img { width: 60%; }
+  .card img { width: 84%; border-radius: 8px; box-shadow: 0 24px 50px rgba(20,30,90,.14); margin-bottom: 44px; transition: transform .7s var(--ease-out); }
+  .card.phone img { width: auto; height: 82%; border-radius: 26px; margin: 34px 0 -60px; }
+  .card:hover img { transform: translateY(-6px) scale(1.015); }
+  .cap { position: absolute; left: 18px; bottom: 18px; border-radius: 999px; padding: 8px 8px 8px 16px; display: flex; align-items: center; gap: 12px; font-size: 14px; z-index: 3; transition: transform .4s var(--ease-spring); }
+  .card:hover .cap { transform: translateY(-3px); }
+  .cap b { font-weight: 500; }
+  .svc { color: #6b7080; margin-left: 6px; }
+  .arrow { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: transform .3s var(--ease-spring); }
+  .card:hover .arrow { transform: rotate(45deg); }
+  .lift { position: relative; z-index: 3; }
+  @media (max-width: 960px) {
+    .card.big, .card.small, .card.full { grid-column: span 6; height: 380px; }
+    .card.full img { width: 84%; }
+  }
+  @media (max-width: 720px) {
+    .section { padding-top: 96px; }
+    .card.big, .card.small, .card.full { height: 300px; }
+    .card img { width: 90%; }
+    .svc { display: none; }
+  }
+</style>
