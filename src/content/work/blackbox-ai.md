@@ -7,7 +7,7 @@ keywords: [ai, website, landing, marketing, developer, coding, web]
 image: /uploads/blackbox-ai.webp
 tint: lilac
 featured: true
-order: 5
+order: 6
 stage: true
 stageLabel: Landing page
 stageQuery: a landing page

@@ -7,7 +7,7 @@ keywords: [app store, screenshots, mobile, ios, aso]
 image: /uploads/shredder.webp
 imageKind: phone
 tint: mint
-order: 8
+order: 9
 ---
 
 Case study coming soon.
