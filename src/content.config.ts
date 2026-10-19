@@ -23,6 +23,20 @@ const work = defineCollection({
     stageLabel: z.string().optional(),
     stageQuery: z.string().optional(),
     stageOrder: z.number().default(99),
+    // Case study page (all optional: sections only show when filled in).
+    platform: z.string().optional(),
+    scope: z.string().optional(),
+    challengeTitle: z.string().optional(),
+    challenge: z.string().optional(),
+    approachTitle: z.string().optional(),
+    approach: z.string().optional(),
+    resultsTitle: z.string().optional(),
+    results: z.array(z.object({ value: z.string(), label: z.string() })).optional().default([]),
+    gallery: z.array(z.object({ image: z.string(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone']).default('desktop') })).optional().default([]),
+    quote: z.string().optional(),
+    quoteName: z.string().optional(),
+    quoteRole: z.string().optional(),
+    quotePhoto: z.string().optional(),
   }),
 });
 
