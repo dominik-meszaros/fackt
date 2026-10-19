@@ -127,7 +127,7 @@ export const servicePages: ServicePage[] = [
     headline: 'Brand identities for tech products and startups.',
     lede: 'We build the visual language, voice and feeling that makes you immediately recognisable, and make sure it works inside your product, not just on a logo sheet.',
     tint: 'mint',
-    work: ['promote', 'livis'],
+    work: ['promote', 'floxy-brand', 'livis'],
     deliverables: [
       { title: 'Logo and wordmark', text: 'A mark that works from app icon to billboard.' },
       { title: 'Visual identity', text: 'Color, typography, imagery and graphic elements.' },

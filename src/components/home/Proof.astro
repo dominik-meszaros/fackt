@@ -83,9 +83,10 @@ const count = words[videos.length] ?? String(videos.length);
   .vd[open] { animation: vin .35s var(--m-ease); }
   .vd::backdrop { background: rgba(17,17,17,.72); }
   @keyframes vin { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-  .vbox { display: grid; grid-template-columns: 1fr 300px; background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px #111, 6px 6px 0 #111; height: min(640px, 100vh - 64px); }
-  .vplay { background: #111; display: grid; place-items: center; min-width: 0; min-height: 0; }
-  .vplay video { display: block; width: 100%; height: 100%; object-fit: contain; background: #111; }
+  .vbox { display: grid; grid-template-columns: minmax(0, 1fr) 300px; grid-template-rows: minmax(0, 1fr); background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px #111, 6px 6px 0 #111; height: min(640px, 100vh - 64px); }
+  /* The video is taken out of the layout so any resolution or orientation fits the same frame */
+  .vplay { position: relative; overflow: hidden; background: #111; min-width: 0; min-height: 0; }
+  .vplay video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; background: #111; }
   .vside { display: flex; flex-direction: column; padding: 18px 18px 18px; min-height: 0; text-align: left; }
   .vtop { display: flex; justify-content: space-between; align-items: center; }
   .vn { font-size: 12px; color: #8a8a86; font-variant-numeric: tabular-nums; }
@@ -117,7 +118,7 @@ const count = words[videos.length] ?? String(videos.length);
     .rev { flex: 0 0 290px; margin: 0; padding: 20px; }
     .k { font-size: 17px; }
     .vd { width: 100vw; height: 100dvh; margin: 0; }
-    .vbox { position: relative; grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; height: 100dvh; border-radius: 0; box-shadow: none; }
+    .vbox { position: relative; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; height: 100dvh; border-radius: 0; box-shadow: none; }
     .vside { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; align-items: center; padding: 14px 16px 18px; }
     .vtop { position: absolute; top: 12px; left: 16px; right: 16px; z-index: 2; }
     .vn { color: #fff; background: rgba(17,17,17,.6); padding: 3px 7px; border-radius: 2px; }

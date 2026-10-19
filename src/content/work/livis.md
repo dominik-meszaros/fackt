@@ -7,7 +7,7 @@ keywords: [branding, brand, identity, logo, visual identity]
 image: /uploads/livis.webp
 tint: lilac
 featured: true
-order: 11
+order: 12
 stage: true
 stageLabel: Branding
 stageQuery: a brand identity

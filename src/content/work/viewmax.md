@@ -7,7 +7,7 @@ keywords: [video, platform, library, media, saas, website, landing, streaming]
 image: /uploads/viewmax.webp
 tint: peach
 featured: true
-order: 5
+order: 6
 stage: true
 stageLabel: Video platform
 stageQuery: a video platform
