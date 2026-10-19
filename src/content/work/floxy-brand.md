@@ -8,7 +8,7 @@ image: /uploads/floxy-brand-tiles.webp
 preview: /uploads/floxy-brand-preview.webp
 tint: blue
 featured: false
-order: 8
+order: 10
 platform: Brand identity
 scope: Logo design, visual identity, brand guidelines, typography, color system and brand assets, in three weeks
 challengeTitle: Security and performance, without the cliches

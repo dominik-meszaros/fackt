@@ -31,7 +31,7 @@ export const servicePages: ServicePage[] = [
     headline: 'SaaS product design that users understand and pay for.',
     lede: 'We design SaaS platforms, dashboards and mobile apps, from the first user flow to dev-ready UI, so your product is easier to adopt and easier to sell.',
     tint: 'blue',
-    work: ['communi', 'floxy', 'glowtify', 'engain', 'viewmax', 'earntask'],
+    work: ['communi', 'floxy', 'glowtify', 'promote-app', 'engain', 'viewmax', 'earntask'],
     deliverables: [
       { title: 'UX audit', text: 'A clear review of where users get stuck, with prioritised fixes.' },
       { title: 'User flows and structure', text: 'Onboarding, core workflows and navigation mapped before any pixels.' },

@@ -8,7 +8,7 @@ image: /uploads/earntask.webp
 imageKind: phone
 tint: mint
 featured: true
-order: 9
+order: 11
 ---
 
 Case study coming soon.
