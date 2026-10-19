@@ -61,7 +61,7 @@ Editors work at `/admin`. Everything on the homepage that changes often is a con
 
 Uploaded images go to `public/uploads`.
 
-Hosting is Cloudflare Pages (free). The `functions/` folder runs on Cloudflare:
+Hosting is Cloudflare (free). `wrangler.jsonc` + `worker/index.js` serve `dist` as a Worker and route the API (the `functions/` folder is used as-is, so Cloudflare Pages works too):
 - `functions/api/auth.js` and `callback.js`: GitHub login for the CMS
 - `functions/api/form.js`: emails the free audit and postcard forms to you through Resend
 

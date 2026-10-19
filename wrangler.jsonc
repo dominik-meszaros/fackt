@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers: the site in ./dist plus the API routes in worker/index.js.
+  "name": "fackt",
+  "main": "worker/index.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  }
+}
