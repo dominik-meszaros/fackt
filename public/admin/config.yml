@@ -111,7 +111,27 @@ collections:
               - { name: icon, label: "Icon", widget: select, options: [video, doc] }
               - { name: title, label: "Title", widget: string }
               - { name: text, label: "Text", widget: text }
-          - { name: steps, label: "How it works (steps)", widget: list, field: { name: step, label: Step, widget: string } }
+          - { name: steps, label: "Old short steps (not shown on the page)", widget: list, required: false, field: { name: step, label: Step, widget: string } }
+          - { name: ticks, label: "Ticks under the intro", widget: list, required: false, field: { name: tick, label: Tick, widget: string } }
+          - { name: videoLength, label: "Video length note", widget: string, required: false }
+          - name: how
+            label: How it works
+            label_singular: Step
+            widget: list
+            required: false
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: "Title", widget: string }
+              - { name: text, label: "Text", widget: text }
+          - name: faq
+            label: Questions
+            label_singular: Question
+            widget: list
+            required: false
+            summary: '{{fields.q}}'
+            fields:
+              - { name: q, label: "Question", widget: string }
+              - { name: a, label: "Answer", widget: text }
           - { name: focusOptions, label: "Form: what should we look at? (options)", widget: list, field: { name: option, label: Option, widget: string } }
           - { name: stageOptions, label: "Form: where is the product now? (options)", widget: list, field: { name: option, label: Option, widget: string } }
           - { name: button, label: "Button label", widget: string }

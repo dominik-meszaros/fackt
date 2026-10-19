@@ -1,115 +1,102 @@
 ---
+// Book a call: agenda on the left, the live Cal.com calendar in the card on the right.
+// Notes typed into the homepage ask bar arrive as ?notes=... and are prefilled into the booking.
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Emblem from '../components/Emblem.astro';
-import { site, reviews, rating, testimonials } from '../data/site';
+import { site } from '../data/site';
 
-const steps = [
+const agenda = [
   { t: 'Your product and goals', d: 'What you are building, who it is for, and what success looks like.' },
   { t: 'A look at what exists', d: 'Bring your product, site or Figma file. We go through it together.' },
   { t: 'Clear next steps', d: 'You leave with a plan for your product, whether we work together or not.' },
 ];
-const quote = reviews[0];
-const faces = testimonials.slice(0, 5);
 ---
 <Base
   title="Book a free strategy call | Fackt"
   description="Book a free 30 minute strategy call with Fackt, a UI/UX and product design studio for SaaS and tech companies."
 >
-  <Nav />
-  <main class="container book">
-    <div class="left">
-      <a class="back" href="/">← Back to Fackt</a>
-      <Emblem size={52} id="book" />
-      <p class="kicker">Free strategy call</p>
-      <h1>Let's talk about your product.</h1>
-      <p class="lede">30 minutes with Dom, founder of Fackt. No pitch deck, no pressure.</p>
+  <div class="m-page">
+    <Nav />
+    <main class="bk">
+      <div class="left">
+        <span class="crumb"><a href="/">Fackt</a> <span>/</span> <b>Book a call</b></span>
+        <h1>Let&#8217;s talk about your product.</h1>
+        <p class="lede">30 minutes with Dom, founder of Fackt. No pitch deck, no pressure.</p>
 
-      <div class="from glass" id="from" hidden>
-        <span class="lift k">From your search</span>
-        <span class="lift q" id="from-q"></span>
+        <div class="from" id="from" hidden>
+          <span class="k">From your search</span>
+          <span class="q" id="from-q"></span>
+        </div>
+
+        <ol>
+          {agenda.map((a, i) => <li><i>0{i + 1}</i><div><b>{a.t}</b><span>{a.d}</span></div></li>)}
+        </ol>
+
+        <p class="xp">Framer and Rive experts &#183; Based in {site.location}</p>
+        <p class="alt">Not ready for a call? <a class="lnk" href="/audit">Get a free audit of your product</a> instead.</p>
       </div>
 
-      <ol class="steps">
-        {steps.map((s, i) => (
-          <li><span class="n">0{i + 1}</span><span><b>{s.t}</b><small>{s.d}</small></span></li>
-        ))}
-      </ol>
-
-      <figure class="quote">
-        <blockquote>"{quote.text.split('. ').slice(0, 2).join('. ')}."</blockquote>
-        <figcaption>
-          <span class="faces" aria-hidden="true">{faces.map((f) => <img src={`/uploads/${f.id}.webp`} alt="" width="32" height="32" loading="lazy" />)}</span>
-          <span><b>{quote.name}</b>, {quote.role}<br /><small>Rated {rating.value} out of 5 on {rating.source}</small></span>
-        </figcaption>
-      </figure>
-    </div>
-
-    <div class="right">
-      <div class="frame tint-blue">
-        <div class="card glass glass-strong">
-          <div class="cal lift" id="cal-inline" data-cal-link={site.calLink}>
-            <div class="loading" id="cal-loading">
-              <span class="spin" aria-hidden="true"></span>
-              <span>Loading available times…</span>
-            </div>
+      <div class="cal">
+        <div class="ch"><b>30 min strategy call</b><span>Free</span></div>
+        <div class="bd" id="cal-inline" data-cal-link={site.calLink}>
+          <div class="loading" id="cal-loading">
+            <span class="spin" aria-hidden="true"></span>
+            <span>Loading available times...</span>
           </div>
         </div>
+        <div class="ft2"><span>Times in your time zone</span><span>Not loading? <a href={site.booking} target="_blank" rel="noopener">Open it on Cal.com</a></span></div>
       </div>
-      <p class="alt">Calendar not loading? <a href={site.booking} target="_blank" rel="noopener">Open it on Cal.com</a> or email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
-    </div>
-  </main>
-  <Footer />
+    </main>
+    <Footer />
+  </div>
 </Base>
 
 <style>
-  .book { padding-top: 130px; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 64px; align-items: start; }
-  .left { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 18px; }
-  .back { text-decoration: none; color: var(--muted); font-size: 15px; margin-bottom: 18px; }
-  .kicker { margin: 6px 0 0; }
-  h1 { margin: 0; font-size: clamp(40px, 5vw, 60px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
-  .lede { margin: 0; font-size: 18px; color: var(--muted); line-height: 1.55; max-width: 440px; }
-  .lift { position: relative; z-index: 3; }
-  .from { border-radius: 16px; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; max-width: 440px; }
+  .bk { width: min(960px, 100% - 32px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 540px; gap: 56px; padding: 48px 0 72px; align-items: start; }
+  .left { position: sticky; top: 96px; }
+  .crumb { font-size: 12.5px; color: #8a8a86; display: flex; gap: 8px; align-items: center; }
+  .crumb a { color: inherit; text-decoration: none; }
+  .crumb b { color: #111; font-weight: 500; }
+  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.06; letter-spacing: -.02em; }
+  .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 460px; }
+  .from { margin-top: 20px; padding: 10px 14px; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; display: flex; flex-direction: column; gap: 2px; }
   .from[hidden] { display: none; }
-  .from .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
-  .from .q { font-size: 16px; }
-  .steps { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; }
-  .steps li { display: grid; grid-template-columns: 44px 1fr; padding: 16px 0; border-top: 1px solid var(--line); }
-  .steps .n { font-family: var(--mono); font-size: 12px; color: var(--muted-2); padding-top: 3px; }
-  .steps b { display: block; font-weight: 500; font-size: 17px; }
-  .steps small { display: block; margin-top: 4px; color: var(--muted); font-size: 15px; line-height: 1.5; }
-  .quote { margin: 10px 0 0; padding: 22px; border-radius: var(--radius-md); background: #fafbfc; box-shadow: inset 0 0 0 1px var(--line); }
-  .quote blockquote { margin: 0; font-size: 16px; line-height: 1.55; }
-  .quote figcaption { margin-top: 16px; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
-  .quote b { color: var(--ink); font-weight: 500; }
-  .faces { display: flex; flex-shrink: 0; }
-  .faces img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; margin-left: -8px; }
-  .faces img:first-child { margin-left: 0; }
+  .from .k { font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; }
+  .from .q { font-size: 14.5px; }
+  ol { list-style: none; margin: 28px 0 0; padding: 0; border-top: 1px solid #dcdcd8; }
+  ol li { display: grid; grid-template-columns: 30px 1fr; gap: 8px; padding: 16px 0; border-bottom: 1px solid #ececea; }
+  ol i { font-style: normal; font-size: 12px; color: #8a8a86; padding-top: 2px; font-variant-numeric: tabular-nums; }
+  ol b { display: block; font-weight: 500; }
+  ol span { font-size: 13.5px; color: #6a6a66; }
+  .xp { margin: 22px 0 0; font-size: 12.5px; color: #8a8a86; }
+  .alt { margin: 14px 0 0; font-size: 13.5px; color: #6a6a66; }
+  .lnk { color: #111; font-weight: 500; text-decoration: none; border-bottom: 1px solid #111; }
 
-  .frame { border-radius: var(--radius-lg); padding: 16px; }
-  .card { border-radius: var(--radius-md); padding: 8px; background: rgba(255,255,255,.78); }
-  .cal { min-height: 680px; border-radius: 18px; overflow: hidden; background: #fff; }
-  .loading { height: 680px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); font-size: 15px; }
-  .spin { width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid var(--blue-soft); border-top-color: var(--blue); animation: spin .8s linear infinite; }
+  .cal { display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; border-radius: 3px; overflow: hidden; }
+  .cal .ch { padding: 18px 22px; border-bottom: 1px solid #ececea; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+  .cal .ch b { font-weight: 500; }
+  .cal .ch span { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 2px; background: #111; color: #fff; }
+  .cal .bd { min-height: 560px; }
+  .loading { height: 560px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #6a6a66; font-size: 14px; }
+  .spin { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #dcdcd8; border-top-color: #111; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .alt { margin: 14px 4px 0; font-size: 14px; color: var(--muted); }
-  .alt a { color: var(--ink); }
+  .cal .ft2 { padding: 12px 22px; border-top: 1px solid #ececea; font-size: 12px; color: #8a8a86; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cal .ft2 a { color: #111; }
 
   @media (max-width: 960px) {
-    /* Calendar right after the headline on small screens, details below it */
-    .book { display: flex; flex-direction: column; gap: 18px; }
+    /* calendar right after the headline, the agenda below it */
+    .bk { display: flex; flex-direction: column; gap: 0; padding-top: 28px; }
     .left { display: contents; }
-    .back { margin-bottom: 0; }
-    .right { order: 2; margin: 10px 0 16px; }
-    .steps, .quote { order: 3; }
+    .cal { order: 2; margin: 24px 0 8px; }
+    ol, .xp, .alt { order: 3; }
   }
   @media (max-width: 720px) {
-    .book { padding-top: 104px; }
-    .frame { padding: 8px; }
-    .card { padding: 4px; }
-    .cal, .loading { min-height: 620px; }
+    h1 { font-size: 36px; }
+    .lede { font-size: 14.5px; }
+    .cal .ch { padding: 14px 16px; }
+    .cal .ft2 { padding: 10px 16px; }
+    .cal .bd, .loading { min-height: 520px; }
   }
 </style>
 
@@ -162,8 +149,8 @@ const faces = testimonials.slice(0, 5);
       theme: 'light',
       hideEventTypeDetails: false,
       layout: 'month_view',
-      cssVarsPerTheme: { light: { 'cal-brand': '#12141a' } },
-      styles: { branding: { brandColor: '#12141a' } },
+      cssVarsPerTheme: { light: { 'cal-brand': '#111111' } },
+      styles: { branding: { brandColor: '#111111' } },
     });
     Cal.ns.fackt('on', {
       action: 'linkReady',
