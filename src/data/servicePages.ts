@@ -31,7 +31,7 @@ export const servicePages: ServicePage[] = [
     headline: 'SaaS product design that users understand and pay for.',
     lede: 'We design SaaS platforms, dashboards and mobile apps, from the first user flow to dev-ready UI, so your product is easier to adopt and easier to sell.',
     tint: 'blue',
-    work: ['communi', 'floxy', 'glowtify', 'promote-app', 'engain', 'viewmax', 'earntask'],
+    work: ['communi', 'floxy', 'glowtify', 'promote-app', 'viewmax', 'earntask'],
     deliverables: [
       { title: 'UX audit', text: 'A clear review of where users get stuck, with prioritised fixes.' },
       { title: 'User flows and structure', text: 'Onboarding, core workflows and navigation mapped before any pixels.' },
@@ -63,7 +63,7 @@ export const servicePages: ServicePage[] = [
     headline: 'Websites for SaaS and tech that turn visitors into signups.',
     lede: 'From pre-launch landing pages to complete marketing site redesigns, we design and build sites that explain your product fast and make the next step obvious.',
     tint: 'peach',
-    work: ['blackbox-ai', 'viewmax', 'raena'],
+    work: ['viewmax', 'story-story', 'tradox', 'earntask'],
     deliverables: [
       { title: 'Landing pages', text: 'Focused pages for launches, campaigns and paid traffic.' },
       { title: 'Marketing site redesigns', text: 'Structure, messaging hierarchy and visuals rebuilt around your product.' },
@@ -95,7 +95,7 @@ export const servicePages: ServicePage[] = [
     headline: 'Motion that explains your product and makes it feel alive.',
     lede: 'We use animation and interaction to guide attention, communicate state, and make every action in your product and on your site feel satisfying.',
     tint: 'lilac',
-    work: [],
+    work: ['tradox'],
     deliverables: [
       { title: 'Product animations', text: 'Short loops that show what your product does at a glance.' },
       { title: 'Interaction design', text: 'Micro-interactions and transitions specified for your developers.' },
@@ -127,7 +127,7 @@ export const servicePages: ServicePage[] = [
     headline: 'Brand identities for tech products and startups.',
     lede: 'We build the visual language, voice and feeling that makes you immediately recognisable, and make sure it works inside your product, not just on a logo sheet.',
     tint: 'mint',
-    work: ['promote', 'floxy-brand', 'livis'],
+    work: ['promote', 'floxy-brand'],
     deliverables: [
       { title: 'Logo and wordmark', text: 'A mark that works from app icon to billboard.' },
       { title: 'Visual identity', text: 'Color, typography, imagery and graphic elements.' },

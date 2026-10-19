@@ -54,12 +54,16 @@ const agenda = [
 </Base>
 
 <style>
-  .bk { width: min(960px, 100% - 32px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 540px; gap: 56px; padding: 48px 0 72px; align-items: start; }
-  .left { position: sticky; top: 96px; }
+  .bk { width: min(960px, 100% - 32px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 56px; padding: 48px 0 72px; align-items: start; }
+  /* headline and agenda side by side on top, the calendar full width below so Cal.com shows the month and times next to each other */
+  .left { display: contents; }
+  .crumb, h1, .lede, .from, .xp, .alt { grid-column: 1; }
+  ol { grid-column: 2; grid-row: 1 / span 6; align-self: start; margin-top: 0 !important; }
+  .cal { grid-column: 1 / -1; margin-top: 36px; }
   .crumb { font-size: 12.5px; color: #8a8a86; display: flex; gap: 8px; align-items: center; }
   .crumb a { color: inherit; text-decoration: none; }
   .crumb b { color: #111; font-weight: 500; }
-  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.06; letter-spacing: -.02em; }
+  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 46px; line-height: 1.06; letter-spacing: -.02em; }
   .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 460px; }
   .from { margin-top: 20px; padding: 10px 14px; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; display: flex; flex-direction: column; gap: 2px; }
   .from[hidden] { display: none; }
@@ -78,7 +82,7 @@ const agenda = [
   .cal .ch { padding: 18px 22px; border-bottom: 1px solid #ececea; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
   .cal .ch b { font-weight: 500; }
   .cal .ch span { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 2px; background: #111; color: #fff; }
-  .cal .bd { min-height: 560px; }
+  .cal .bd { min-height: 520px; }
   .loading { height: 560px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #6a6a66; font-size: 14px; }
   .spin { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #dcdcd8; border-top-color: #111; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -88,7 +92,6 @@ const agenda = [
   @media (max-width: 960px) {
     /* calendar right after the headline, the agenda below it */
     .bk { display: flex; flex-direction: column; gap: 0; padding-top: 28px; }
-    .left { display: contents; }
     .cal { order: 2; margin: 24px 0 8px; }
     ol, .xp, .alt { order: 3; }
   }
@@ -148,7 +151,7 @@ const agenda = [
     Cal.ns.fackt('inline', { elementOrSelector: '#cal-inline', calLink, config });
     Cal.ns.fackt('ui', {
       theme: 'light',
-      hideEventTypeDetails: false,
+      hideEventTypeDetails: true,
       layout: 'month_view',
       cssVarsPerTheme: { light: { 'cal-brand': '#111111' } },
       styles: { branding: { brandColor: '#111111' } },

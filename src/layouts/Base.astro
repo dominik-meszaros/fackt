@@ -7,8 +7,11 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
+  type?: string;
+  schema?: Record<string, unknown>[];
 }
-const { title = site.title, description = site.description, image = '/og/home.jpg' } = Astro.props;
+const { title = site.title, description = site.description, image = '/og/home.jpg', noindex = false, type = 'website', schema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const ld = {
   '@context': 'https://schema.org',
@@ -19,8 +22,13 @@ const ld = {
   description: site.description,
   areaServed: 'Worldwide',
   address: { '@type': 'PostalAddress', addressCountry: 'SK' },
+  logo: new URL('/icon-512.png', site.url).toString(),
+  image: new URL('/og/home.jpg', site.url).toString(),
+  founder: { '@type': 'Person', name: 'Dominik Mészáros' },
   sameAs: site.socials.map((s) => s.href),
 };
+const web = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: site.url };
+const ogImage = new URL(image, site.url).toString();
 ---
 <!doctype html>
 <html lang="en">
@@ -30,23 +38,30 @@ const ld = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.ico" sizes="48x48" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico?v=2" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
     <meta name="theme-color" content="#ffffff" />
-    <meta property="og:type" content="website" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta property="og:site_name" content="Fackt" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, site.url).toString()} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={new URL(image, site.url).toString()} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:site" content="@kcinimoDM" />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Pixelify+Sans:wght@400;500&display=swap" rel="stylesheet" />
-    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <script type="application/ld+json" set:html={JSON.stringify([ld, web, ...schema])} />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>

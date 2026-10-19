@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 // Every collection here is editable in the CMS at /admin (see public/admin/config.yml).
 
 const work = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/work' }),
+  loader: glob({ pattern: '*.md', base: './src/content/work' }),
   schema: z.object({
     name: z.string(),
     service: z.string(),

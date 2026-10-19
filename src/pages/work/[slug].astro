@@ -32,9 +32,17 @@ const blocks = [
 ].filter(Boolean) as { id: string; label: string }[];
 const showBody = blocks.length === 0 || !bodyIsStub;
 if (showBody && !bodyIsStub) blocks.unshift({ id: 'overview', label: 'Overview' });
+const caseSchema = [
+  { '@context': 'https://schema.org', '@type': 'CreativeWork', name: `${p.name}: ${p.service}`, about: p.summary, description: p.summary, url: new URL(`/work/${entry.id}`, site.url).toString(), image: new URL(p.preview ?? p.image, site.url).toString(), creator: { '@type': 'Organization', name: 'Fackt', url: site.url }, genre: p.service },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Fackt', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Work', item: new URL('/work', site.url).toString() },
+    { '@type': 'ListItem', position: 3, name: p.name, item: new URL(`/work/${entry.id}`, site.url).toString() },
+  ] },
+];
 const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 ---
-<Base title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
+<Base type="article" schema={caseSchema} title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
   <div class="m-page">
     <Nav />
     <main>
