@@ -4,7 +4,7 @@
 
 backend:
   name: github
-  repo: OWNER/fackt-site # TODO: replace with the GitHub repo, e.g. fackt-studio/fackt-site
+  repo: dominik-meszaros/fackt
   branch: main
   commit_messages:
     create: 'CMS: add {{collection}} "{{slug}}"'

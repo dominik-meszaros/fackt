@@ -62,7 +62,7 @@ Editors work at `/admin`. Everything on the homepage that changes often is a con
 Uploaded images go to `public/uploads`.
 
 One-time setup:
-1. Push this folder to a GitHub repo and set `backend.repo` in `public/admin/config.yml` (e.g. `fackt-studio/fackt-site`).
+1. The code lives in GitHub at `dominik-meszaros/fackt` (set as `backend.repo` in `public/admin/config.yml`).
 2. In Netlify, link the site to that repo (Site configuration > Build & deploy > Link repository). Every CMS publish is then a commit that redeploys the site.
 3. Create a GitHub OAuth app (Homepage URL: your site, Callback URL: `https://api.netlify.com/auth/done`), then add it in Netlify under Site configuration > Access & security > OAuth > Install provider > GitHub.
 4. Open `/admin`, log in with GitHub (anyone with write access to the repo can edit).
