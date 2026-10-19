@@ -6,6 +6,7 @@ backend:
   name: github
   repo: dominik-meszaros/fackt
   branch: main
+  auth_endpoint: api/auth # base_url is set to the site's own address in admin/index.html
   commit_messages:
     create: 'CMS: add {{collection}} "{{slug}}"'
     update: 'CMS: update {{collection}} "{{slug}}"'

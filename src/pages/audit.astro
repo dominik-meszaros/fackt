@@ -1,6 +1,6 @@
 ---
 // Free product audit: for people who would rather not book a call yet.
-// Content is edited in the CMS under Settings > Free audit page. The form is the Netlify form "audit".
+// Content is edited in the CMS under Settings > Free audit page. The form posts to /api/form (functions/api/form.js), which emails it to you.
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -51,7 +51,7 @@ const ICONS: Record<string, string> = {
 
       <section class="card" aria-labelledby="audit-form-title">
         <div class="ch"><h2 id="audit-form-title">Request your audit</h2><span class="tag">{audit.turnaround}</span></div>
-        <form name="audit" method="POST" data-netlify="true" netlify-honeypot="company_site" action="/audit?sent=1" data-audit>
+        <form name="audit" method="POST" action="/audit?sent=1" data-audit>
           <input type="hidden" name="form-name" value="audit" />
           <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off" /></label></p>
           <div class="grid">
@@ -159,7 +159,7 @@ const ICONS: Record<string, string> = {
     btn.disabled = true; btn.textContent = 'Sending...';
     try {
       const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
-      const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+      const res = await fetch('/api/form', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
       if (!res.ok) throw new Error(String(res.status));
       form.hidden = true;
       if (done) { done.hidden = false; done.querySelector('a')?.focus(); }

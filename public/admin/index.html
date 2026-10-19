@@ -8,6 +8,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 </head>
 <body>
+  <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
+  <script>
+    // Log in through this site's own /api/auth (functions/api), on whatever domain it runs.
+    CMS.init({ config: { backend: { name: 'github', repo: 'dominik-meszaros/fackt', branch: 'main', base_url: location.origin, auth_endpoint: 'api/auth' } } });
+  </script>
 </body>
 </html>

@@ -61,12 +61,13 @@ Editors work at `/admin`. Everything on the homepage that changes often is a con
 
 Uploaded images go to `public/uploads`.
 
-One-time setup:
-1. The code lives in GitHub at `dominik-meszaros/fackt` (set as `backend.repo` in `public/admin/config.yml`).
-2. In Netlify, link the site to that repo (Site configuration > Build & deploy > Link repository). Every CMS publish is then a commit that redeploys the site.
-3. Create a GitHub OAuth app (Homepage URL: your site, Callback URL: `https://api.netlify.com/auth/done`), then add it in Netlify under Site configuration > Access & security > OAuth > Install provider > GitHub.
-4. Open `/admin`, log in with GitHub (anyone with write access to the repo can edit).
+Hosting is Cloudflare Pages (free). The `functions/` folder runs on Cloudflare:
+- `functions/api/auth.js` and `callback.js`: GitHub login for the CMS
+- `functions/api/form.js`: emails the free audit and postcard forms to you through Resend
+
+Cloudflare Pages settings: build command `npm run build`, output `dist`, and these variables:
+`NODE_VERSION=22`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (secret), `RESEND_API_KEY` (secret), `FORM_TO` (your email), optional `FORM_FROM`.
+
+GitHub OAuth app callback URL: `https://<your site>/api/callback`.
 
 Local editing: `npm run dev` and `npx decap-server`, then open `http://localhost:4321/admin/index.html`.
-
-The postcard at the bottom of the homepage is a Netlify Form called `postcard`. Turn on form detection in Netlify (Forms) and add an email notification there.
