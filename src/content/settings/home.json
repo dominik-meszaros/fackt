@@ -41,6 +41,13 @@
       "linkHref": "/#pricing"
     },
     {
+      "question": "Can you audit my product for free?",
+      "type": "answer",
+      "answer": "Yes. Send us your product and within 2 days you get a video walkthrough and a written audit of what to fix first.",
+      "linkLabel": "Request a free audit",
+      "linkHref": "/audit"
+    },
+    {
       "question": "Can we talk before we start?",
       "type": "answer",
       "answer": "Yes. Every engagement starts with a free 30 minute strategy call with Dom, with clear next steps whether we work together or not.",

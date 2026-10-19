@@ -52,7 +52,7 @@ const menu = [
   </nav>
   <div class="mmb">
     <a class="mcta" href={site.bookPage}>Book a free call</a>
-    <p>Free 30 minute strategy call with Dom.</p>
+    <a class="maud" href="/audit">Or get a free product audit &#8594;</a>
     <div class="mso">
       {site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}
       <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -98,7 +98,7 @@ const menu = [
   .bar .cta { color: #fff; }
   .mmb { margin-top: auto; padding: 0 0 26px; }
   .mcta { display: flex; align-items: center; justify-content: center; height: 50px; border-radius: 3px; background: #111; color: #fff !important; font-weight: 500; font-size: 15px; box-shadow: 2px 2px 0 #c8c8c4; }
-  .mmb p { margin: 10px 0 0; text-align: center; font-size: 12.5px; color: #8a8a86; }
+  .maud { display: block; margin-top: 12px; text-align: center; font-size: 13.5px; font-weight: 500; }
   .mso { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; margin-top: 18px; font-size: 13px; }
   .mso a { color: #3f3f3f; }
 

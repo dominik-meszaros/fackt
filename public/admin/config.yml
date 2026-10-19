@@ -92,6 +92,30 @@ collections:
               - { name: ctaHref, label: "Button link", widget: string, default: /book }
               - { name: dark, label: "Dark card", widget: boolean, default: false }
 
+      - name: audit
+        label: Free audit page
+        file: src/content/settings/audit.json
+        format: json
+        fields:
+          - { name: eyebrow, label: "Label above the title", widget: string }
+          - { name: title, label: "Title", widget: string }
+          - { name: text, label: "Intro text", widget: text }
+          - { name: turnaround, label: "Turnaround tag on the form", widget: string }
+          - name: deliverables
+            label: What they get
+            label_singular: Item
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: icon, label: "Icon", widget: select, options: [video, doc] }
+              - { name: title, label: "Title", widget: string }
+              - { name: text, label: "Text", widget: text }
+          - { name: steps, label: "How it works (steps)", widget: list, field: { name: step, label: Step, widget: string } }
+          - { name: focusOptions, label: "Form: what should we look at? (options)", widget: list, field: { name: option, label: Option, widget: string } }
+          - { name: stageOptions, label: "Form: where is the product now? (options)", widget: list, field: { name: option, label: Option, widget: string } }
+          - { name: button, label: "Button label", widget: string }
+          - { name: success, label: "Message after sending", widget: string }
+
   # ---------- lists ----------
   - name: quotes
     editor: { preview: false }

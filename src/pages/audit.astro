@@ -1,0 +1,171 @@
+---
+// Free product audit: for people who would rather not book a call yet.
+// Content is edited in the CMS under Settings > Free audit page. The form is the Netlify form "audit".
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Mark from '../components/home/Mark.astro';
+import audit from '../content/settings/audit.json';
+import { homeSettings } from '../data/settings';
+import { site } from '../data/site';
+import { getCollection } from 'astro:content';
+
+const faces = (await getCollection('videos')).sort((a, b) => a.data.order - b.data.order).slice(0, 5).map((e) => e.data);
+const r = homeSettings.rating;
+const ICONS: Record<string, string> = {
+  video: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11"/><path d="M8.5 7.5L12.5 10L8.5 12.5Z" fill="currentColor"/></svg>',
+  doc: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5H12L15.5 6V17.5H5Z"/><path d="M12 2.5V6H15.5M7.5 10H13M7.5 12.5H13M7.5 15H10.5"/></svg>',
+};
+---
+<Base title="Free product audit | Fackt" description={audit.text}>
+  <div class="m-page">
+    <Nav />
+    <main class="au">
+      <section class="intro">
+        <span class="eb"><Mark size={14} />{audit.eyebrow}</span>
+        <h1>{audit.title}</h1>
+        <p class="lede">{audit.text}</p>
+
+        <div class="proof">
+          <span class="faces" aria-hidden="true">{faces.map((f) => <img src={f.thumbnail} alt="" width="26" height="26" loading="lazy" />)}</span>
+          <span>Rated {r.value} on {r.source}</span>
+        </div>
+
+        <a class="m-btn dk jump" href="#audit-form-title">{audit.button} &#8595;</a>
+
+        <ul class="dl">
+          {audit.deliverables.map((d) => (
+            <li>
+              <span class="di"><Fragment set:html={ICONS[d.icon] ?? ICONS.doc} /></span>
+              <span><b>{d.title}</b><small>{d.text}</small></span>
+            </li>
+          ))}
+        </ul>
+
+        <ol class="steps">
+          {audit.steps.map((s, i) => <li><i>0{i + 1}</i>{s}</li>)}
+        </ol>
+
+        <p class="alt">Rather talk it through? <a href={site.bookPage}>Book a free 30 minute call</a>.</p>
+      </section>
+
+      <section class="card" aria-labelledby="audit-form-title">
+        <div class="ch"><h2 id="audit-form-title">Request your audit</h2><span class="tag">{audit.turnaround}</span></div>
+        <form name="audit" method="POST" data-netlify="true" netlify-honeypot="company_site" action="/audit?sent=1" data-audit>
+          <input type="hidden" name="form-name" value="audit" />
+          <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off" /></label></p>
+          <div class="grid">
+            <label class="f"><span>Name</span><input name="name" required autocomplete="name" /></label>
+            <label class="f"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+            <label class="f wide"><span>Website or app</span><input name="product" required placeholder="yourproduct.com" autocomplete="url" /></label>
+            <label class="f"><span>What should we look at?</span>
+              <select name="focus" required><option value="" disabled selected>Pick one</option>{audit.focusOptions.map((o) => <option>{o}</option>)}</select>
+            </label>
+            <label class="f"><span>Where is the product now?</span>
+              <select name="stage" required><option value="" disabled selected>Pick one</option>{audit.stageOptions.map((o) => <option>{o}</option>)}</select>
+            </label>
+            <label class="f wide"><span>Anything we should know? <em>(optional)</em></span>
+              <textarea name="message" rows="4" placeholder="Who it is for, what is bugging you, what you have tried"></textarea>
+            </label>
+          </div>
+          <button class="m-btn dk go" type="submit" data-audit-btn>{audit.button}</button>
+          <p class="st" role="status" data-audit-status></p>
+        </form>
+        <div class="done" hidden data-audit-done>
+          <span class="pm" aria-hidden="true"><b>RECEIVED</b><small>FACKT, {site.location.toUpperCase()}</small></span>
+          <p>{audit.success}</p>
+          <a class="m-btn lt" href="/">Back to the homepage</a>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  .au { width: min(960px, 100% - 32px); margin: 0 auto; padding: 48px 0 80px; display: grid; grid-template-columns: 1fr 440px; gap: 48px; align-items: start; }
+  .eb { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 500; padding: 5px 10px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; }
+  h1 { margin: 18px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 44px; line-height: 1.08; letter-spacing: -.02em; }
+  .lede { margin: 14px 0 0; color: #6a6a66; font-size: 15.5px; max-width: 470px; }
+  .proof { display: flex; align-items: center; gap: 10px; margin-top: 20px; font-size: 12.5px; color: #8a8a86; }
+  .faces { display: flex; }
+  .faces img { width: 26px; height: 26px; border-radius: 2px; object-fit: cover; filter: grayscale(1); box-shadow: 0 0 0 2px #fff; margin-left: -4px; }
+  .faces img:first-child { margin-left: 0; }
+  .dl { list-style: none; margin: 32px 0 0; padding: 22px 0 0; border-top: 1px solid #ececea; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .dl li { display: flex; gap: 12px; align-items: flex-start; }
+  .di { flex-shrink: 0; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; }
+  .dl b { display: block; font-weight: 500; font-size: 14.5px; }
+  .dl small { display: block; margin-top: 3px; font-size: 13px; color: #6a6a66; line-height: 1.45; }
+  .steps { list-style: none; margin: 26px 0 0; padding: 18px 0 0; border-top: 1px solid #ececea; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+  .steps li { display: flex; gap: 12px; align-items: baseline; }
+  .steps i { font-style: normal; font-size: 12px; color: #8a8a86; font-variant-numeric: tabular-nums; }
+  .jump { display: none; }
+  .alt { margin: 26px 0 0; font-size: 13.5px; color: #6a6a66; }
+  .alt a { color: #111; font-weight: 500; }
+
+  .card { position: sticky; top: 92px; background: #fff; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; border-radius: 3px; padding: 24px 24px 22px; }
+  .ch { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid #ececea; }
+  h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 22px; }
+  .tag { font-size: 12px; font-weight: 500; padding: 4px 9px; border-radius: 2px; background: #111; color: #fff; white-space: nowrap; }
+  .hp { position: absolute; left: -9999px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; margin-top: 16px; }
+  .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .f.wide { grid-column: 1 / -1; }
+  .f span { font-size: 12.5px; color: #3f3f3f; font-weight: 500; }
+  .f em { font-style: normal; font-weight: 400; color: #8a8a86; }
+  .f input, .f select, .f textarea { font: 14.5px Geist, system-ui, sans-serif; color: #111; background: #f6f6f4; border: 0; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; padding: 0 12px; height: 42px; width: 100%; outline: 0; }
+  .f select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5L5 6.5L8 3.5' fill='none' stroke='%23111' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+  .f select:invalid { color: #8a8a86; }
+  .f textarea { height: auto; padding: 10px 12px; resize: vertical; line-height: 1.45; }
+  .f input::placeholder, .f textarea::placeholder { color: #a3a3a0; }
+  .f input:focus, .f select:focus, .f textarea:focus { box-shadow: inset 0 0 0 1.5px #111; background: #fff; }
+  .go { margin-top: 18px; width: 100%; height: 44px; font-size: 14.5px; }
+  .go[disabled] { opacity: .7; cursor: default; }
+  .st { margin: 8px 0 0; font-size: 12.5px; color: #6a6a66; min-height: 1em; }
+  .done { padding: 28px 4px 8px; text-align: center; }
+  .done[hidden] { display: none; }
+  .pm { display: inline-block; transform: rotate(-8deg); border: 2px solid #111; border-radius: 2px; padding: 6px 14px; font-family: 'Geist Mono', monospace; }
+  .pm b { display: block; font-size: 20px; font-weight: 500; letter-spacing: .14em; }
+  .pm small { display: block; font-size: 9px; letter-spacing: .08em; margin-top: 2px; }
+  .done p { margin: 22px auto 18px; max-width: 320px; font-size: 15px; }
+
+  @media (max-width: 900px) {
+    .au { grid-template-columns: 1fr; gap: 32px; padding-top: 28px; }
+    .card { position: static; scroll-margin-top: 80px; }
+    .jump { display: inline-flex; margin-top: 18px; height: 42px; }
+  }
+  @media (max-width: 720px) {
+    h1 { font-size: 34px; }
+    .lede { font-size: 14.5px; }
+    .dl { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; }
+    .card { padding: 20px 16px 18px; }
+    .f input, .f select, .f textarea { font-size: 16px; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-audit]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-audit-btn]');
+  const done = document.querySelector<HTMLElement>('[data-audit-done]');
+  const status = document.querySelector<HTMLElement>('[data-audit-status]');
+  // Prefill the product when coming from the ask bar (?product=...)
+  const pre = new URLSearchParams(location.search).get('product');
+  if (pre && form) (form.elements.namedItem('product') as HTMLInputElement).value = pre;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!btn) return;
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+      const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+      if (!res.ok) throw new Error(String(res.status));
+      form.hidden = true;
+      if (done) { done.hidden = false; done.querySelector('a')?.focus(); }
+    } catch {
+      btn.disabled = false; btn.textContent = label;
+      if (status) status.textContent = 'That did not go through. Try again, or email dominik@fackt.io.';
+    }
+  });
+</script>
