@@ -13,8 +13,12 @@ export async function getStaticPaths() {
   return all.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: all[(i + 1) % all.length] } }));
 }
 const { entry, next } = Astro.props;
+const said = (await getCollection('videos')).map((v) => v.data).find((v) => v.video && v.company.toLowerCase() === entry.data.name.toLowerCase());
 const { Content } = await render(entry);
 const p = entry.data;
+// Full-width presentation boards (kind: board) show edge to edge under the write-up; screens show in the column.
+const boards = p.gallery.filter((g) => g.kind === 'board');
+const shots = p.gallery.filter((g) => g.kind !== 'board');
 const body = (entry.body ?? '').trim();
 // The starter text in each project is an instruction for the editor, never show it on the site.
 const bodyIsStub = !body || /Replace this text/i.test(body);
@@ -23,6 +27,7 @@ const blocks = [
   p.challenge || p.challengeTitle ? { id: 'challenge', label: 'The challenge' } : null,
   p.approach || p.approachTitle ? { id: 'approach', label: 'What we did' } : null,
   p.results.length || p.resultsTitle ? { id: 'results', label: 'Results' } : null,
+  said ? { id: 'words', label: 'In their words' } : null,
   p.gallery.length ? { id: 'screens', label: 'Screens' } : null,
 ].filter(Boolean) as { id: string; label: string }[];
 const showBody = blocks.length === 0 || !bodyIsStub;
@@ -83,11 +88,18 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               {p.results.length > 0 && <div class="nums">{p.results.map((r) => <div><b>{r.value}</b><span>{r.label}</span></div>)}</div>}
             </div>
           )}
-          {p.gallery.length > 0 && (
-            <div class="blk" id="screens">
+          {said && (
+            <div class="blk" id="words">
+              <span class="eb">In their words</span>
+              <h2>{said.name}, {said.role} at {said.company}</h2>
+              <div class="said"><video controls playsinline preload="none" poster={said.thumbnail} src={said.video}></video></div>
+            </div>
+          )}
+          {shots.length > 0 && (
+            <div class="blk" id={boards.length ? undefined : 'screens'}>
               <span class="eb">Screens</span>
-              <div class:list={['gal', { one: p.gallery.length === 1 }]}>
-                {p.gallery.map((g) => (
+              <div class:list={['gal', { one: shots.length === 1 }]}>
+                {shots.map((g) => (
                   <figure>
                     <div class:list={['gst', { ph: g.kind === 'phone' }]}><img src={g.image} alt={g.caption || `${p.name} screen`} loading="lazy" decoding="async" /></div>
                     {g.caption && <figcaption>{g.caption}</figcaption>}
@@ -105,6 +117,20 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               </div>
             </figure>
           )}
+
+        </div>
+      </section>
+      {boards.length > 0 && (
+        <section class="boards" id="screens" aria-label={`${p.name} screens`}>
+          {boards.map((g, i) => (
+            <figure class="bd">
+              <img src={g.image} alt={g.caption || `${p.name} design`} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+              {g.caption && <figcaption><i>{String(i + 1).padStart(2, '0')}</i>{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </section>
+      )}
+      <div class="nxw">
           <a class="next" href={`/work/${next.id}`}>
             <span class="mu2">Next case study</span>
             <span class="nx">
@@ -112,8 +138,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               <img src={next.data.image} alt="" loading="lazy" />
             </span>
           </a>
-        </div>
-      </section>
+      </div>
       <WorkCta title="Want results like this?" />
     </main>
     <Footer />
@@ -166,6 +191,14 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .nums b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 36px; line-height: 1; }
   .nums span { display: block; margin-top: 8px; font-size: 13px; color: var(--m-mu-2); }
 
+  .boards { width: min(1120px, 100% - 32px); margin: 8px auto 0; display: flex; flex-direction: column; gap: 20px; scroll-margin-top: 96px; }
+  .bd { margin: 0; }
+  .bd img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 0 0 1px var(--m-line); background: var(--m-soft); }
+  .bd figcaption { display: flex; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--m-mu-2); }
+  .bd figcaption i { font-style: normal; color: var(--m-ink); font-variant-numeric: tabular-nums; }
+  .nxw { width: min(960px, 100% - 32px); margin: 48px auto 0; }
+  .said { margin-top: 18px; max-width: 420px; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; background: #111; }
+  .said video { display: block; width: 100%; max-height: 560px; }
   .gal { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 8px; }
   .gal.one { grid-template-columns: 1fr; }
   .gal figure { margin: 0; }

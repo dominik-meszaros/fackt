@@ -175,7 +175,7 @@ collections:
       - { name: category, label: "Category", widget: select, options: [product, web, mobile, branding, motion] }
       - { name: summary, label: "Summary", widget: text }
       - { name: image, label: "Image", widget: image, choose_url: false }
-      - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone], default: desktop }
+      - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone, board], default: desktop, hint: "board = full-width presentation image under the write-up" }
       - { name: tint, label: "Case study tint", widget: select, options: [blue, peach, mint, lilac], default: blue }
       - { name: keywords, label: "Search keywords", widget: list, required: false, hint: 'Words people might type in the ask bar to find this project.' }
       - { name: year, label: "Year", widget: string, required: false }
@@ -206,7 +206,7 @@ collections:
         fields:
           - { name: image, label: "Image", widget: image, choose_url: false }
           - { name: caption, label: "Caption", widget: string, required: false }
-          - { name: kind, label: "Shape", widget: select, options: [desktop, phone], default: desktop }
+          - { name: kind, label: "Shape", widget: select, options: [desktop, phone, board], default: desktop, hint: "board = full-width presentation image under the write-up" }
       - { name: quote, label: "Client quote (word for word)", widget: text, required: false }
       - { name: quoteName, label: "Quote: name", widget: string, required: false }
       - { name: quoteRole, label: "Quote: role and company", widget: string, required: false }

@@ -32,7 +32,7 @@ const work = defineCollection({
     approach: z.string().optional(),
     resultsTitle: z.string().optional(),
     results: z.array(z.object({ value: z.string(), label: z.string() })).optional().default([]),
-    gallery: z.array(z.object({ image: z.string(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone']).default('desktop') })).optional().default([]),
+    gallery: z.array(z.object({ image: z.string(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone', 'board']).default('desktop') })).optional().default([]),
     quote: z.string().optional(),
     quoteName: z.string().optional(),
     quoteRole: z.string().optional(),
