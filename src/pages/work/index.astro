@@ -30,7 +30,7 @@ const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter(
         <div class="wg">
           {all.map((p) => (
             <a class="wc" href={`/work/${p.slug}`} data-c={p.category}>
-              <div class:list={['im', { ph: p.imageKind === 'phone' }]}><img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
+              <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
               <div class="cap"><span><b>{p.name}</b> <span class="mu2">&#183; {p.service}</span></span><span class="ct">View case study &#8594;</span></div>
               <p>{p.summary}</p>
             </a>
@@ -66,6 +66,10 @@ const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter(
   .wc .im img { position: absolute; left: 50%; top: 40px; width: min(400px, 86%); transform: translateX(-50%); border-radius: 3px; box-shadow: 0 0 0 1px #111; transition: transform .5s var(--m-ease); }
   .wc .im.ph img { width: 150px; top: 28px; border-radius: 12px; }
   .wc:hover .im img { transform: translateX(-50%) translateY(-6px); }
+  .wc .im.pv { background: #fff; }
+  .wc .im.pv::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px #e2e2de; pointer-events: none; }
+  .wc .im.pv img, .wc:hover .im.pv img { left: 0; top: 0; width: 100%; max-width: none; height: 100%; object-fit: cover; object-position: center bottom; transform: none; border-radius: 0; box-shadow: none; }
+  .wc:hover .im.pv img { transform: scale(1.03); }
   .wc .cap { margin-top: 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14px; }
   .wc .cap b { font-weight: 500; }
   .mu2 { color: var(--m-mu-2); }
@@ -79,6 +83,7 @@ const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter(
     .wg { grid-template-columns: 1fr; gap: 28px; }
     .wc .im { height: 220px; }
     .wc .im img { width: 290px; max-width: 86%; top: 28px; }
+    .wc .im.pv img { width: 100%; max-width: none; top: 0; }
     .wc .im.ph img { width: 110px; }
     .wc .ct { display: none; }
   }

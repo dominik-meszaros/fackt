@@ -9,7 +9,7 @@ const { projects, total } = Astro.props;
   <div class="grid">
     {projects.map((p) => (
       <a class="card" href={`/work/${p.slug}`}>
-        <div class:list={['im', { ph: p.imageKind === 'phone' }]}><img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" /></div>
+        <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" /></div>
         <div class="cap"><b>{p.name}</b> <span>&#183; {p.service}</span></div>
         <p>{p.summary}</p>
         <span class="more">View case study &#8594;</span>
@@ -25,6 +25,10 @@ const { projects, total } = Astro.props;
   .im img { position: absolute; left: 50%; top: 36px; width: min(380px, 84%); transform: translateX(-50%); border-radius: 3px; box-shadow: 0 0 0 1px #111; transition: transform .6s var(--m-ease); }
   .im.ph img { width: 150px; top: 26px; border-radius: 12px; }
   .card:hover .im img { transform: translateX(-50%) translateY(-6px); }
+  .im.pv { background: #fff; }
+  .im.pv::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px #e2e2de; pointer-events: none; }
+  .im.pv img, .card:hover .im.pv img { position: absolute; inset: 0; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; transform: none; border-radius: 0; box-shadow: none; }
+  .card:hover .im.pv img { transform: scale(1.03); }
   .cap { margin-top: 14px; font-size: 14px; }
   .cap b { font-weight: 500; } .cap span { color: #8a8a86; }
   p { margin: 4px 0 0; font-size: 14px; color: #6f6f6f; max-width: 400px; }
@@ -35,6 +39,7 @@ const { projects, total } = Astro.props;
     .card { flex: 0 0 300px; scroll-snap-align: start; }
     .im { height: 210px; }
     .im img { width: 260px; top: 30px; }
+    .im.pv img { width: 100%; top: 0; }
     .im.ph img { width: 110px; top: 20px; border-radius: 14px; }
     p { font-size: 13.5px; }
     .all { margin-top: 24px; }

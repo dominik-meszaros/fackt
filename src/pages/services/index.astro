@@ -48,7 +48,7 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
               <span class="exl">Recent project</span>
               {s.recent ? (
                 <>
-                  <span class:list={['exi', { ph: s.recent.imageKind === 'phone' }]}><img src={s.recent.image} alt={`${s.recent.name}, ${s.recent.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></span>
+                  <span class:list={['exi', { ph: s.recent.imageKind === 'phone' && !s.recent.preview, pv: !!s.recent.preview }]}><img src={s.recent.preview ?? s.recent.image} alt={`${s.recent.name}, ${s.recent.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></span>
                   <b>{s.recent.name}</b><small>{s.recent.service}</small>
                 </>
               ) : (
@@ -116,6 +116,9 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
   .exi img { position: absolute; left: 16px; top: 16px; width: 200px; border-radius: 2px; box-shadow: 0 0 0 1px #111; transition: transform .4s var(--m-ease); }
   .row:hover .exi img { transform: translateY(-3px); }
   .exi.ph img { left: 50%; width: 62px; translate: -50% 0; border-radius: 8px; }
+  .exi.pv { background: #fff; }
+  .exi.pv::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px #e2e2de; pointer-events: none; }
+  .exi.pv img, .row:hover .exi.pv img { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; transform: none; border-radius: 0; box-shadow: none; }
   .exi.none { display: grid; place-items: center; font-size: 12.5px; color: #6a6a66; }
   .ex b { display: block; margin-top: 10px; font-weight: 500; font-size: 13.5px; }
   .ex small { display: block; margin-top: 2px; font-size: 12.5px; color: #8a8a86; }

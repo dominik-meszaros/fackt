@@ -13,6 +13,8 @@ const work = defineCollection({
     // Words people might type in the search bar to find this project.
     keywords: z.array(z.string()).default([]),
     image: z.string(),
+    // Optional preview image for cards and the case study hero (full bleed). Falls back to the framed screen in `image`.
+    preview: z.string().optional(),
     imageKind: z.enum(['desktop', 'phone']).default('desktop'),
     tint: z.enum(['blue', 'peach', 'mint', 'lilac']).default('blue'),
     year: z.string().optional(),

@@ -174,8 +174,9 @@ collections:
       - { name: service, label: "Service", widget: string }
       - { name: category, label: "Category", widget: select, options: [product, web, mobile, branding, motion] }
       - { name: summary, label: "Summary", widget: text }
-      - { name: image, label: "Image", widget: image, choose_url: false }
-      - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone, board], default: desktop, hint: "board = full-width presentation image under the write-up" }
+      - { name: image, label: "Image", widget: image, choose_url: false, hint: "Product screen, shown framed in the homepage stage and the search" }
+      - { name: preview, label: "Preview image (optional)", widget: image, choose_url: false, required: false, hint: "Full-bleed image for the work cards and the case study hero, like a brand board" }
+      - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone], default: desktop }
       - { name: tint, label: "Case study tint", widget: select, options: [blue, peach, mint, lilac], default: blue }
       - { name: keywords, label: "Search keywords", widget: list, required: false, hint: 'Words people might type in the ask bar to find this project.' }
       - { name: year, label: "Year", widget: string, required: false }

@@ -4,7 +4,8 @@ service: Product design
 category: product
 summary: All-in-one community platform for creators, designed end to end from the desktop command center to a native mobile app.
 keywords: [saas, dashboard, analytics, community, platform, admin, b2b, web app]
-image: /uploads/communi.webp
+image: /uploads/communi-screen.webp
+preview: /uploads/communi-preview.webp
 tint: blue
 featured: true
 order: 1
@@ -29,7 +30,6 @@ approach: |-
 
   The work ran in four stages over seven weeks: discovery and stakeholder audits, information architecture and UX copy, visual exploration with a cohesive design system, then refinement and a pixel-perfect handoff to the development team. The desktop command center was then carried over to a native mobile app, so the community stays active around the clock.
 gallery:
-  - { image: /uploads/communi-brand.webp, caption: "Communi brand", kind: board }
   - { image: /uploads/communi-desktop.webp, caption: "The creator command center", kind: board }
   - { image: /uploads/communi-timeline.webp, caption: "Seven weeks, from strategic foundations to delivery", kind: board }
   - { image: /uploads/communi-type-color.webp, caption: "Colors and typography", kind: board }
