@@ -102,34 +102,43 @@ export function initHero() {
   const input = document.querySelector<HTMLInputElement>('[data-ask-input]');
   const panel = document.querySelector<HTMLElement>('[data-ask-panel]');
   const list = document.querySelector<HTMLUListElement>('[data-ask-list]');
-  const head = document.querySelector<HTMLElement>('[data-ask-head]');
   const ans = document.querySelector<HTMLElement>('[data-ask-answer]');
   const ansText = document.querySelector<HTMLElement>('[data-ask-answer-text]');
   const ansLink = document.querySelector<HTMLAnchorElement>('[data-ask-answer-link]');
-  if (!wrap || !form || !input || !panel || !list || !head || !ans || !ansText || !ansLink) return;
+  const book = document.querySelector<HTMLAnchorElement>('[data-ask-book]');
+  const typ = document.querySelector<HTMLElement>('[data-ask-typ]');
+  if (!wrap || !form || !input || !panel || !list || !ans || !ansText || !ansLink) return;
 
   type Row = { html: string; run: () => void; sel?: boolean };
   let rows: Row[] = [];
   let hl = -1;
   let chosen = -1;
   const isPlay = (q: string) => /^\/?(play|game|games)$/.test(q.trim().toLowerCase());
+  const byslug = (slug?: string) => data.projects.find((p) => p.slug === slug);
 
   function bookingHref(q: string) {
     const url = new URL(data.booking, location.origin);
     if (q.trim()) url.searchParams.set('notes', q.trim());
     return url.toString();
   }
+  const KBD = '<kbd>&#8629;</kbd>';
+  const thumb = (p?: Project) => p ? `<span class="th"><img src="${esc(p.image)}" alt="" loading="lazy"></span>` : `<span class="th">${IC_WORK}</span>`;
+  const workRow = (p: Project, label: string) => `${thumb(p)}<span class="tt">${esc(label)}</span><small>${esc(p.name)} &#183; ${esc(p.service)}</small>${KBD}`;
+  const ansRow = (label: string, meta = 'Answer', ic = IC_ANS) => `<span class="th">${ic}</span><span class="tt">${esc(label)}</span><small>${meta}</small>${KBD}`;
+
+  // Showing a project: switch the stage and bring it into view when the bar is floating.
+  function goWork(slug: string) {
+    if (!show(slug)) { location.href = `/work/${slug}`; return; }
+    close();
+    if (wrap!.classList.contains('float')) stage?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   function answer(i: number) {
     const a = data.ask[i];
     chosen = i;
     input!.value = a.question;
-    if (a.type === 'work' && a.project) {
-      if (!show(a.project)) location.href = `/work/${a.project}`;
-      ans!.hidden = true;
-      close();
-      return;
-    }
+    sync();
+    if (a.type === 'work' && a.project) { ans!.hidden = true; goWork(a.project); return; }
     ansText!.textContent = a.answer ?? '';
     ansLink!.textContent = `${a.linkLabel ?? 'Learn more'} →`;
     ansLink!.href = a.linkHref ?? '#';
@@ -140,51 +149,67 @@ export function initHero() {
   function render(q: string, keepAnswer = false) {
     if (!keepAnswer) ans!.hidden = true;
     rows = [];
+    const groups: { title: string; rows: Row[] }[] = [];
     if (isPlay(q)) {
-      rows.push({ html: `${IC_PLAY}<span>Fancy a break? Play Pixel Perfect</span><small>Enter</small>`, run: () => { close(); document.dispatchEvent(new Event('fackt:play')); } });
-      head!.textContent = 'Secret found';
+      groups.push({ title: 'Secret found', rows: [{ html: ansRow('Fancy a break? Play Pixel Perfect', 'Game', IC_PLAY), run: () => { close(); document.dispatchEvent(new Event('fackt:play')); } }] });
     } else {
-      const typed = q.trim() && !keepAnswer;
+      const typed = !!q.trim() && !keepAnswer;
       const asks = typed ? askMatches(q) : data.ask.map((_, i) => i);
-      const work = typed ? workMatches(q).slice(0, 3) : [];
-      for (const p of work) {
-        rows.push({ html: `${IC_WORK}<span>${esc(p.name)}, ${esc(p.service)}</span><small>Shows the work</small>`, run: () => { if (!show(p.slug)) location.href = `/work/${p.slug}`; close(); } });
-      }
-      for (const i of asks.slice(0, typed ? 4 : 8)) {
+      const askRow = (i: number): Row => {
         const a = data.ask[i];
-        rows.push({ html: `${a.type === 'work' ? IC_WORK : IC_ANS}<span>${esc(a.question)}</span><small>${a.type === 'work' ? 'Shows the work' : 'Answer'}</small>`, run: () => answer(i), sel: i === chosen && keepAnswer });
-      }
+        const p = a.type === 'work' ? byslug(a.project) : undefined;
+        return { html: p ? workRow(p, a.question) : ansRow(a.question), run: () => answer(i), sel: i === chosen && keepAnswer };
+      };
       if (typed) {
-        rows.push({ html: `${IC_CAL}<span>Ask Dom on a free call: “${esc(q.trim())}”</span><small>Book</small>`, run: () => { location.href = bookingHref(q); } });
+        const seen = new Set(asks.map((i) => data.ask[i].project).filter(Boolean));
+        const work = workMatches(q).filter((p) => !seen.has(p.slug)).slice(0, 3);
+        const w: Row[] = [...asks.filter((i) => data.ask[i].type === 'work').map(askRow), ...work.map((p) => ({ html: workRow(p, `${p.name}, ${p.service}`), run: () => goWork(p.slug) }))];
+        const t = asks.filter((i) => data.ask[i].type !== 'work').slice(0, 4).map(askRow);
+        if (w.length) groups.push({ title: 'Matching work', rows: w.slice(0, 4) });
+        if (t.length) groups.push({ title: 'Answers', rows: t });
+        groups.push({ title: 'Not covered here', rows: [{ html: ansRow(`Ask Dom on a free call: “${q.trim()}”`, 'Book', IC_CAL), run: () => { location.href = bookingHref(q); } }] });
+      } else {
+        const w = asks.filter((i) => data.ask[i].type === 'work').map(askRow);
+        const t = asks.filter((i) => data.ask[i].type !== 'work').map(askRow);
+        if (w.length && !keepAnswer) groups.push({ title: 'Show me work', rows: w });
+        if (t.length) groups.push({ title: 'Pricing and process', rows: t });
       }
-      head!.textContent = typed ? (work.length ? 'Matching work and answers' : 'Suggestions') : 'Ask about work, pricing or process';
     }
+    let html = '';
+    groups.forEach((g, gi) => {
+      html += `<li role="presentation" class="smh${gi ? ' sep' : ''}">${esc(g.title)}</li>`;
+      g.rows.forEach((r) => { const i = rows.push(r) - 1; html += `<li role="option" id="ask-o${i}" class="ar${r.sel ? ' on' : ''}" aria-selected="${r.sel ? 'true' : 'false'}" data-i="${i}">${r.html}</li>`; });
+    });
     hl = -1;
-    list!.innerHTML = rows.map((r, i) => `<li role="option" id="ask-o${i}" class="ar${r.sel ? ' on' : ''}" aria-selected="${r.sel ? 'true' : 'false'}" data-i="${i}">${r.html}</li>`).join('');
+    list!.innerHTML = html;
+    if (book) book.href = bookingHref(q);
     open();
   }
 
   function open() { panel!.hidden = false; input!.setAttribute('aria-expanded', 'true'); }
   function close() { panel!.hidden = true; input!.setAttribute('aria-expanded', 'false'); input!.removeAttribute('aria-activedescendant'); }
   function highlight(n: number) {
+    if (!rows.length) return;
     hl = (n + rows.length) % rows.length;
-    list!.querySelectorAll('.ar').forEach((el, i) => el.classList.toggle('hl', i === hl));
+    list!.querySelectorAll('.ar').forEach((el) => el.classList.toggle('hl', Number((el as HTMLElement).dataset.i) === hl));
     input!.setAttribute('aria-activedescendant', `ask-o${hl}`);
     list!.querySelector(`#ask-o${hl}`)?.scrollIntoView({ block: 'nearest' });
   }
+  function sync() { wrap!.classList.toggle('typing', !!input!.value); }
 
   list.addEventListener('mousedown', (e) => e.preventDefault());
   list.addEventListener('click', (e) => {
     const li = (e.target as HTMLElement).closest<HTMLElement>('.ar');
     if (li) rows[Number(li.dataset.i)]?.run();
   });
-  input.addEventListener('focus', () => render(input.value));
+  input.addEventListener('focus', () => { wrap.classList.add('focus'); input.placeholder = 'Ask about work, pricing or process'; render(input.value); });
+  input.addEventListener('blur', () => { wrap.classList.remove('focus'); input.placeholder = ''; });
   input.addEventListener('click', () => { if (panel.hidden) render(input.value); });
-  input.addEventListener('input', () => { chosen = -1; render(input.value); });
+  input.addEventListener('input', () => { chosen = -1; sync(); render(input.value); });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); if (panel.hidden) render(input.value); highlight(hl + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); highlight(hl - 1); }
-    else if (e.key === 'Escape') { close(); }
+    else if (e.key === 'Escape') { close(); input.blur(); }
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -195,7 +220,7 @@ export function initHero() {
     const exact = data.ask.findIndex((a) => norm(a.question) === norm(q));
     if (exact >= 0) { answer(exact); return; }
     const w = workMatches(q)[0];
-    if (w) { if (!show(w.slug)) location.href = `/work/${w.slug}`; close(); return; }
+    if (w) { goWork(w.slug); return; }
     location.href = bookingHref(q);
   });
   document.addEventListener('click', (e) => { if (!e.composedPath().includes(wrap)) close(); });
@@ -203,14 +228,36 @@ export function initHero() {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); input.focus(); input.select(); }
   });
 
-  // Rotating example question while the bar is empty and idle.
-  if (data.hints.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    let h = 0;
-    setInterval(() => {
-      if (document.activeElement === input || input.value) return;
-      h = (h + 1) % data.hints.length;
-      input.placeholder = `Ask anything, e.g. “${data.hints[h]}”`;
-    }, 2600);
+  // Typed example question while the bar is empty and idle: type, hold, erase, next.
+  if (typ && data.hints.length) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) typ.textContent = data.hints[0];
+    else {
+      let h = 0, n = data.hints[0].length, mode: 'type' | 'hold' | 'erase' = 'hold', hold = 40;
+      setInterval(() => {
+        if (document.activeElement === input || input.value) return;
+        const q = data.hints[h % data.hints.length];
+        if (mode === 'type') { n++; if (n >= q.length) { n = q.length; mode = 'hold'; hold = 40; } }
+        else if (mode === 'hold') { if (--hold <= 0) mode = 'erase'; }
+        else { n -= 2; if (n <= 0) { n = 0; h++; mode = 'type'; } }
+        typ.textContent = data.hints[h % data.hints.length].slice(0, n);
+      }, 45);
+    }
+  }
+
+  // Follow the visitor: once the stage scrolls out of view, the bar floats at the bottom.
+  // It steps aside over the contact postcard and the footer so it never covers a form.
+  if (stage && 'IntersectionObserver' in window) {
+    let past = false, blocked = false;
+    const apply = () => {
+      const f = past;
+      if (f !== wrap.classList.contains('float')) { close(); wrap.classList.toggle('float', f); }
+      wrap.classList.toggle('away', f && blocked && document.activeElement !== input);
+    };
+    new IntersectionObserver(([e]) => { past = !e.isIntersecting && e.boundingClientRect.top < 0; apply(); }, { threshold: 0 }).observe(stage);
+    const quiet = Array.from(document.querySelectorAll<HTMLElement>('[data-ask-quiet], footer'));
+    const vis = new Set<Element>();
+    const io = new IntersectionObserver((es) => { es.forEach((e) => e.isIntersecting ? vis.add(e.target) : vis.delete(e.target)); blocked = vis.size > 0; apply(); }, { rootMargin: '0px 0px -10% 0px' });
+    quiet.forEach((el) => io.observe(el));
   }
   void stage; void current;
 }

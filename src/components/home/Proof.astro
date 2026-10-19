@@ -13,17 +13,17 @@ const count = words[videos.length] ?? String(videos.length);
 <section class="m-sec" id="reviews">
   <SectionHead icon="quote" title="What founders say" lede={`Rated ${r.value} out of 5 on ${r.source}. ${count} of them said it on camera.`} />
   <div class="vids">
-    {videos.map((v) => (
+    {videos.map((v, i) => (
       v.video ? (
-        <button type="button" class="vid" data-video={v.video} aria-label={`Play video testimonial from ${v.name}, ${v.role} at ${v.company}`}>
+        <button type="button" class="vid" data-vi={i} aria-label={`Play video testimonial from ${v.name}, ${v.role} at ${v.company}`}>
           <img src={v.thumbnail} alt="" loading="lazy" decoding="async" />
-          <span class="pl" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 2L10 6L3 10Z" fill="currentColor"></path></svg></span>
-          <span class="who"><b>{v.name}</b>{v.company}{v.duration && `, ${v.duration}`}</span>
+          <span class="pl" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M3 2L10 6L3 10Z" fill="currentColor"></path></svg><span class="pt">{v.duration || 'Play'}</span></span>
+          <span class="who"><b>{v.name}</b>{v.company}</span>
         </button>
       ) : (
         <div class="vid">
           <img src={v.thumbnail} alt={`${v.name}, ${v.role} at ${v.company}`} loading="lazy" decoding="async" />
-          <span class="who"><b>{v.name}</b>{v.company}{v.duration && `, ${v.duration}`}</span>
+          <span class="who"><b>{v.name}</b>{v.company}</span>
         </div>
       )
     ))}
@@ -38,30 +38,77 @@ const count = words[videos.length] ?? String(videos.length);
     ))}
   </div>
   <dialog class="vd" data-vd aria-label="Video testimonial">
-    <button type="button" class="vx" data-vd-close aria-label="Close video">&#215;</button>
-    <video controls playsinline data-vd-video></video>
+    <div class="vbox">
+      <div class="vplay"><video controls playsinline preload="metadata" data-vd-video></video></div>
+      <aside class="vside">
+        <div class="vtop"><span class="vn" data-vd-idx>01 / 01</span><button type="button" class="vx" data-vd-close aria-label="Close video"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4L14 14M14 4L4 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"></path></svg></button></div>
+        <p class="vq">Video testimonial</p>
+        <h3 data-vd-name></h3>
+        <p class="vr" data-vd-role></p>
+        <div class="vnav">
+          <button type="button" data-vd-prev aria-label="Previous video"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M11 7H3M6.5 3.5L3 7L6.5 10.5" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+          <button type="button" data-vd-next aria-label="Next video">Next<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 7H11M7.5 3.5L11 7L7.5 10.5" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+        </div>
+        <span class="vup">More from founders</span>
+        <div class="vlist" data-vd-list>
+          {videos.map((v, i) => v.video && (
+            <button type="button" data-vj={i}><img src={v.thumbnail} alt="" loading="lazy" /><span><b>{v.name}</b>{v.company}</span><small>{v.duration}</small></button>
+          ))}
+        </div>
+        <a class="m-btn dk vcta" href="/book">Book a free call</a>
+      </aside>
+    </div>
   </dialog>
+  <script type="application/json" data-vd-data set:html={JSON.stringify(videos.map((v) => ({ name: v.name, role: v.role, company: v.company, video: v.video, poster: v.thumbnail })))} />
 </section>
 <style>
   .vids { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 40px; width: min(960px, 100%); }
   .vid { all: unset; box-sizing: border-box; position: relative; aspect-ratio: 4 / 5; border-radius: 3px; overflow: hidden; text-align: left; background: #ddd; }
   button.vid { cursor: pointer; }
-  .vid img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.05); transition: transform .6s; }
-  .vid:hover img { transform: scale(1.04); }
+  .vid img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.05); transition: transform .6s var(--m-ease), filter .45s; }
+  .vid:hover img, .vid:focus-visible img { transform: scale(1.04); filter: grayscale(0) contrast(1); }
+  button.vid:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
   .vid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55)); }
   .who { position: absolute; left: 12px; bottom: 10px; right: 12px; z-index: 2; color: #fff; font-size: 12.5px; line-height: 1.3; }
   .who b { display: block; font-weight: 500; }
-  .pl { position: absolute; right: 10px; top: 10px; z-index: 2; width: 28px; height: 28px; border-radius: 2px; display: grid; place-items: center; color: #111; background: rgba(255,255,255,.92); }
+  .pl { position: absolute; right: 10px; top: 10px; z-index: 2; height: 26px; padding: 0 8px; border-radius: 2px; display: inline-flex; align-items: center; gap: 6px; color: #111; background: rgba(255,255,255,.94); font-size: 11.5px; font-weight: 500; font-variant-numeric: tabular-nums; transition: background .2s, color .2s; }
+  .vid:hover .pl { background: #111; color: #fff; }
   .revs { columns: 2; column-gap: 16px; margin-top: 16px; width: min(960px, 100%); text-align: left; }
   .rev { break-inside: avoid; margin: 0 0 16px; background: #f4f4f2; border-radius: 3px; padding: 24px 26px; }
   .k { font-family: var(--m-serif); font-size: 19px; line-height: 1.3; margin: 0; }
   blockquote { margin: 10px 0 0; font-size: 13.5px; color: #6f6f6f; line-height: 1.55; }
   figcaption { margin-top: 14px; font-size: 12.5px; color: #8a8a8a; }
   figcaption b { color: #141414; font-weight: 500; }
-  .vd { padding: 0; border: 0; border-radius: 4px; background: #000; width: min(420px, 92vw); }
-  .vd::backdrop { background: rgba(0,0,0,.6); }
-  .vd video { display: block; width: 100%; max-height: 80vh; }
-  .vx { position: absolute; right: 8px; top: 8px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 2px; background: #fff; font-size: 20px; cursor: pointer; }
+  .vd { padding: 0; border: 0; background: transparent; max-width: none; max-height: none; width: min(1040px, 100vw - 48px); overflow: visible; }
+  .vd[open] { animation: vin .35s var(--m-ease); }
+  .vd::backdrop { background: rgba(17,17,17,.72); }
+  @keyframes vin { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+  .vbox { display: grid; grid-template-columns: 1fr 300px; background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px #111, 6px 6px 0 #111; height: min(640px, 100vh - 64px); }
+  .vplay { background: #111; display: grid; place-items: center; min-width: 0; min-height: 0; }
+  .vplay video { display: block; width: 100%; height: 100%; object-fit: contain; background: #111; }
+  .vside { display: flex; flex-direction: column; padding: 18px 18px 18px; min-height: 0; text-align: left; }
+  .vtop { display: flex; justify-content: space-between; align-items: center; }
+  .vn { font-size: 12px; color: #8a8a86; font-variant-numeric: tabular-nums; }
+  .vx { all: unset; cursor: pointer; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; color: #111; }
+  .vx:hover { box-shadow: inset 0 0 0 1px #111; }
+  .vq { margin: 18px 0 0; font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; }
+  .vside h3 { margin: 6px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 28px; line-height: 1.1; }
+  .vr { margin: 4px 0 0; font-size: 13.5px; color: #6a6a66; }
+  .vnav { display: flex; gap: 6px; margin-top: 16px; }
+  .vnav button { all: unset; cursor: pointer; height: 34px; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 13px; font-weight: 500; color: #111; }
+  .vnav button:hover { box-shadow: inset 0 0 0 1px #111; }
+  .vup { margin-top: 22px; padding-top: 14px; border-top: 1px solid #ececea; font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; }
+  .vlist { flex: 1; min-height: 0; overflow: auto; margin: 8px -6px 0; scrollbar-width: thin; }
+  .vlist button { all: unset; cursor: pointer; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 2px; font-size: 13px; }
+  .vlist img { width: 34px; height: 34px; border-radius: 2px; object-fit: cover; filter: grayscale(1); transition: filter .3s; }
+  .vlist span { flex: 1; display: flex; flex-direction: column; line-height: 1.25; color: #6a6a66; font-size: 12px; }
+  .vlist b { font-weight: 500; color: #111; font-size: 13px; }
+  .vlist small { font-size: 11.5px; color: #8a8a86; font-variant-numeric: tabular-nums; }
+  .vlist button:hover { background: #f2f2f0; }
+  .vlist button:hover img, .vlist button.on img { filter: none; }
+  .vlist button.on { background: #111; }
+  .vlist button.on b { color: #fff; } .vlist button.on span, .vlist button.on small { color: #b2b2ae; }
+  .vcta { margin-top: 12px; justify-content: center; }
   @media (max-width: 900px) and (min-width: 721px) { .vids { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 720px) {
     .vids { display: flex; gap: 8px; width: calc(100% + 32px); margin: 28px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
@@ -69,19 +116,52 @@ const count = words[videos.length] ?? String(videos.length);
     .revs { display: flex; columns: auto; gap: 12px; width: calc(100% + 32px); margin: 12px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
     .rev { flex: 0 0 290px; margin: 0; padding: 20px; }
     .k { font-size: 17px; }
+    .vd { width: 100vw; height: 100dvh; margin: 0; }
+    .vbox { position: relative; grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; height: 100dvh; border-radius: 0; box-shadow: none; }
+    .vside { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; align-items: center; padding: 14px 16px 18px; }
+    .vtop { position: absolute; top: 12px; left: 16px; right: 16px; z-index: 2; }
+    .vn { color: #fff; background: rgba(17,17,17,.6); padding: 3px 7px; border-radius: 2px; }
+    .vx { background: #fff; }
+    .vq, .vup, .vlist { display: none; }
+    .vside h3 { grid-column: 1; margin: 0; font-size: 22px; }
+    .vr { grid-column: 1; }
+    .vnav { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+    .vcta { grid-column: 1 / -1; margin-top: 14px; }
   }
 </style>
 <script>
+  type V = { name: string; role: string; company: string; video: string; poster: string };
   const dlg = document.querySelector<HTMLDialogElement>('[data-vd]');
   const vid = document.querySelector<HTMLVideoElement>('[data-vd-video]');
-  document.querySelectorAll<HTMLElement>('[data-video]').forEach((b) => b.addEventListener('click', () => {
-    if (!dlg || !vid) return;
-    vid.src = b.dataset.video!;
+  const all: V[] = JSON.parse(document.querySelector('[data-vd-data]')?.textContent || '[]');
+  const list = all.map((v, i) => ({ ...v, i })).filter((v) => v.video);
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  let cur = 0;
+  function load(k: number, autoplay = true) {
+    if (!vid || !list.length) return;
+    cur = (k + list.length) % list.length;
+    const v = list[cur];
+    vid.poster = v.poster; vid.src = v.video;
+    $('[data-vd-name]')!.textContent = v.name;
+    $('[data-vd-role]')!.textContent = `${v.role}, ${v.company}`;
+    $('[data-vd-idx]')!.textContent = `${pad(cur + 1)} / ${pad(list.length)}`;
+    document.querySelectorAll<HTMLElement>('[data-vj]').forEach((b) => b.classList.toggle('on', Number(b.dataset.vj) === v.i));
+    document.querySelector('[data-vj].on')?.scrollIntoView({ block: 'nearest' });
+    if (autoplay) vid.play().catch(() => {});
+  }
+  document.querySelectorAll<HTMLElement>('[data-vi]').forEach((b) => b.addEventListener('click', () => {
+    if (!dlg) return;
     dlg.showModal();
-    vid.play().catch(() => {});
+    load(list.findIndex((v) => v.i === Number(b.dataset.vi)));
   }));
+  document.querySelectorAll<HTMLElement>('[data-vj]').forEach((b) => b.addEventListener('click', () => load(list.findIndex((v) => v.i === Number(b.dataset.vj)))));
+  $('[data-vd-prev]')?.addEventListener('click', () => load(cur - 1));
+  $('[data-vd-next]')?.addEventListener('click', () => load(cur + 1));
+  vid?.addEventListener('ended', () => load(cur + 1, false));
   const stop = () => { if (vid) { vid.pause(); vid.removeAttribute('src'); vid.load(); } };
-  document.querySelector('[data-vd-close]')?.addEventListener('click', () => { dlg?.close(); });
+  $('[data-vd-close]')?.addEventListener('click', () => dlg?.close());
   dlg?.addEventListener('close', stop);
   dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg?.addEventListener('keydown', (e) => { if (e.target === vid) return; if (e.key === 'ArrowRight') load(cur + 1); if (e.key === 'ArrowLeft') load(cur - 1); });
 </script>

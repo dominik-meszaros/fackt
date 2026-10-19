@@ -26,6 +26,7 @@ const index = {
     <a class="m-btn dk" href={site.bookPage}>Book a strategy call</a>
     <a class="m-btn lt" href="#work">View work</a>
   </div>
+  <p class="nr">Not ready for a call? <a href="/audit">Get a free audit &#8594;</a></p>
 
   {quotes.length > 0 && (
     <figure class="tq" data-quotes>
@@ -56,20 +57,24 @@ const index = {
     ))}
 
     <div class="ask" data-ask>
+      <div class="panel" id="ask-panel" hidden data-ask-panel>
+        <div class="ans" hidden data-ask-answer><span class="anh">Answer</span><p data-ask-answer-text></p><a href="#" data-ask-answer-link></a></div>
+        <ul role="listbox" aria-label="Suggestions" data-ask-list></ul>
+        <div class="pfoot"><span><kbd>&#8593;</kbd><kbd>&#8595;</kbd> move</span><span><kbd>&#8629;</kbd> select</span><span><kbd>esc</kbd> close</span>
+          <span class="r">Not here? <a href={site.bookPage} data-ask-book>Ask Dom on a free call</a></span></div>
+      </div>
       <form class="askbar" role="search" action={site.bookPage} method="get" data-ask-form>
         <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path d="M13 13L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
         <label class="sr-only" for="ask">Ask about our work, pricing or process</label>
-        <input id="ask" name="notes" type="text" autocomplete="off" spellcheck="false"
-          role="combobox" aria-expanded="false" aria-controls="ask-panel" aria-autocomplete="list"
-          placeholder={`Ask anything, e.g. “${h.askHints[0]}”`} data-ask-input />
+        <span class="fld">
+          <input id="ask" name="notes" type="text" autocomplete="off" spellcheck="false"
+            role="combobox" aria-expanded="false" aria-controls="ask-panel" aria-autocomplete="list"
+            placeholder="" data-ask-input />
+          <span class="hint" aria-hidden="true" data-ask-hint><span class="pre">Ask anything: </span><span class="typ" data-ask-typ>{h.askHints[0]}</span><i class="caret"></i></span>
+        </span>
         <span class="kb" aria-hidden="true">&#8984;K</span>
         <button class="go" type="submit">Ask</button>
       </form>
-      <div class="panel" id="ask-panel" hidden data-ask-panel>
-        <div class="ans" hidden data-ask-answer><span class="anh">Answer</span><p data-ask-answer-text></p><a href="#" data-ask-answer-link></a></div>
-        <span class="ph" data-ask-head>Ask about work, pricing or process</span>
-        <ul role="listbox" aria-label="Suggestions" data-ask-list></ul>
-      </div>
     </div>
   </div>
 
@@ -87,6 +92,8 @@ const index = {
   h1 span { color: #9a9a96; }
   .sub { margin: 14px auto 0; max-width: 430px; color: #6f6f6f; }
   .ctas { display: flex; gap: 8px; margin-top: 22px; }
+  .nr { margin: 14px 0 0; font-size: 13px; color: #6a6a66; }
+  .nr a { color: #111; font-weight: 500; border-bottom: 1px solid #111; }
 
   .tq { margin: 24px auto 0; width: min(600px, 100%); text-align: left; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; border-radius: 3px; padding: 18px 20px 14px; }
   .tq blockquote { margin: 0; min-height: 44px; font-family: var(--m-serif); font-style: italic; font-size: 16.5px; line-height: 1.38; color: #111; }
@@ -115,27 +122,50 @@ const index = {
   .tagr { right: 24px; color: #6a6a66; }
 
   .ask { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3; width: min(640px, 100% - 24px); text-align: left; }
-  .askbar { height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px #c8c8c4, 0 1px 2px rgba(0, 0, 0, .06), 0 12px 28px -14px rgba(0, 0, 0, .22); color: #111; }
-  .askbar input { all: unset; flex: 1; min-width: 0; font-size: 14.5px; color: #111; }
+  .askbar { position: relative; height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px #c8c8c4, 0 1px 2px rgba(0, 0, 0, .06), 0 12px 28px -14px rgba(0, 0, 0, .22); color: #111; }
+  .fld { position: relative; flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; }
+  .askbar input { all: unset; width: 100%; font-size: 14.5px; color: #111; }
   .askbar input::placeholder { color: #8a8a86; }
+  .hint { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; font-size: 14.5px; white-space: pre; overflow: hidden; }
+  .hint .pre { color: #8a8a86; }
+  .hint .typ { color: #3f3f3f; overflow: hidden; text-overflow: ellipsis; }
+  .caret { display: inline-block; flex-shrink: 0; width: 1.5px; height: 17px; margin-left: 1px; background: #111; animation: caret 1s steps(1) infinite; }
+  @keyframes caret { 0%, 50% { opacity: 1 } 50.01%, 100% { opacity: 0 } }
+  .ask.typing .hint, .ask.focus .hint { display: none; }
   .kb { font: 500 11px Geist, system-ui, sans-serif; color: #6a6a66; padding: 3px 6px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8, inset 0 -1px 0 #dcdcd8; }
   .go { all: unset; cursor: pointer; height: 36px; padding: 0 16px; display: grid; place-items: center; border-radius: 2px; background: #111; color: #fff; font-size: 13.5px; font-weight: 500; }
-  .panel { position: absolute; left: 0; right: 0; bottom: 56px; max-height: 420px; overflow: auto; padding: 8px; background: #fff; border-radius: 3px; box-shadow: 0 0 0 1px #c8c8c4, 0 18px 36px -14px rgba(0, 0, 0, .28); }
+  .panel { position: absolute; left: 0; right: 0; bottom: 58px; max-height: min(460px, 70vh); overflow: auto; padding: 6px 6px 0; background: #fff; border-radius: 3px; box-shadow: 0 0 0 1px #c8c8c4, 0 24px 48px -18px rgba(0, 0, 0, .3); display: flex; flex-direction: column; }
   .panel[hidden] { display: none; }
-  .ph { display: block; font-size: 11.5px; color: #8a8a86; padding: 4px 8px 6px; }
-  .panel :global(ul) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
-  .panel :global(.ar) { cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 2px; color: #111; font-size: 13.5px; }
-  .panel :global(.ar span) { flex: 1; }
-  .panel :global(.ar small) { font-size: 11.5px; color: #8a8a86; }
-  .panel :global(.ar svg) { flex-shrink: 0; color: #6a6a66; }
+  .panel ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .panel :global(.smh) { display: block; font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; padding: 8px 10px 4px; }
+  .panel :global(.smh.sep) { margin-top: 4px; padding-top: 12px; border-top: 1px solid #ececea; }
+  .panel :global(.ar) { cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 2px; color: #111; font-size: 13.5px; }
+  .panel :global(.ar .tt) { flex: 1; min-width: 0; }
+  .panel :global(.ar .th) { width: 40px; height: 26px; border-radius: 2px; overflow: hidden; flex-shrink: 0; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; display: grid; place-items: center; color: #6a6a66; }
+  .panel :global(.ar .th img) { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+  .panel :global(.ar small) { font-size: 11.5px; color: #8a8a86; white-space: nowrap; }
+  .panel :global(.ar kbd) { font: 500 10.5px Geist, system-ui, sans-serif; color: #8a8a86; padding: 1px 5px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; visibility: hidden; }
+  .panel :global(.ar:hover kbd), .panel :global(.ar.hl kbd), .panel :global(.ar.on kbd) { visibility: visible; }
   .panel :global(.ar:hover), .panel :global(.ar.hl) { background: #f2f2f0; }
   .panel :global(.ar.on) { background: #111; color: #fff; }
-  .panel :global(.ar.on svg), .panel :global(.ar.on small) { color: #b2b2ae; }
+  .panel :global(.ar.on small), .panel :global(.ar.on .th) { color: #b2b2ae; }
+  .panel :global(.ar.on kbd) { color: #fff; box-shadow: inset 0 0 0 1px #6a6a66; }
+  .pfoot { position: sticky; bottom: 0; display: flex; gap: 14px; align-items: center; margin: 6px -6px 0; padding: 9px 14px; border-top: 1px solid #ececea; background: #fafaf8; font-size: 11.5px; color: #8a8a86; }
+  .pfoot kbd { font: 500 10.5px Geist, system-ui, sans-serif; color: #3f3f3f; padding: 1px 5px; margin-right: 3px; border-radius: 2px; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; }
+  .pfoot .r { margin-left: auto; }
+  .pfoot a { color: #111; font-weight: 500; border-bottom: 1px solid #111; }
   .ans { margin: 2px 2px 8px; padding: 12px 14px; border-radius: 2px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; }
   .ans[hidden] { display: none; }
   .anh { font-size: 11px; color: #8a8a86; }
   .ans p { margin: 4px 0 6px; font-size: 14px; line-height: 1.45; color: #111; }
   .ans a { font-size: 13px; font-weight: 500; color: #111; }
+
+  /* Follows the visitor once the hero stage is out of view */
+  .ask.float { position: fixed; bottom: 20px; width: min(560px, 100% - 32px); z-index: 40; animation: rise .35s var(--m-ease) both; }
+  .ask.float .askbar { box-shadow: 0 0 0 1px #111, 3px 3px 0 #111; }
+  .ask.float.away { animation: none; opacity: 0; pointer-events: none; transform: translate(-50%, 16px); transition: opacity .25s, transform .25s; }
+  @keyframes rise { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  .ask-slot { display: none; }
 
   .chips { display: inline-flex; margin-top: 16px; box-shadow: inset 0 0 0 1px #c8c8c4; border-radius: 3px; overflow: hidden; max-width: 100%; }
   .chip { all: unset; cursor: pointer; height: 34px; padding: 0 12px; font-size: 12.5px; color: #6f6f6f; display: inline-flex; align-items: center; border-right: 1px solid #dcdcd8; white-space: nowrap; flex-shrink: 0; transition: background .2s, color .2s; }
@@ -164,8 +194,11 @@ const index = {
     .askbar input { font-size: 16px; }
     .kb { display: none; }
     .go { height: 36px; padding: 0 12px; font-size: 13px; }
-    .panel { bottom: 52px; max-height: 300px; }
-    .panel :global(.ar small) { display: none; }
+    .panel { bottom: 52px; max-height: min(380px, 62vh); }
+    .panel :global(.ar small), .panel :global(.ar kbd), .pfoot span:not(.r) { display: none; }
+    .pfoot .r { margin: 0; }
+    .hint { font-size: 14px; }
+    .ask.float { bottom: 12px; width: calc(100% - 24px); }
     .ans p { font-size: 13px; }
     .chips { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
   }

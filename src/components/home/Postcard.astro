@@ -2,7 +2,7 @@
 // The closing postcard is a real form. It posts to /api/form (functions/api/form.js), which emails it to you.
 import Mark from './Mark.astro';
 ---
-<section class="m-sec pc-sec" aria-label="Send us a note">
+<section class="m-sec pc-sec" aria-label="Send us a note" data-ask-quiet>
   <form class="pc" name="postcard" method="POST" action="/?sent=1" data-pc>
     <input type="hidden" name="form-name" value="postcard" />
     <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off" /></label></p>
