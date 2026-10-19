@@ -39,8 +39,14 @@ export function initHero() {
   const label = document.querySelector<HTMLElement>('[data-stage-label]');
   const idx = document.querySelector<HTMLElement>('[data-stage-idx]');
   let cur = 0;
+  // Stage images after the first load only when their slide (or the one before it) is shown.
+  const load = (n: number) => {
+    const img = shots[(n + shots.length) % shots.length]?.querySelector<HTMLImageElement>('img[data-src]');
+    if (img) { img.src = img.dataset.src!; img.removeAttribute('data-src'); }
+  };
   function showSlide(i: number) {
     cur = (i + data.stage.length) % data.stage.length;
+    load(cur); load(cur + 1);
     const sl = data.stage[cur];
     const p = data.projects.find((x) => x.slug === sl.slug)!;
     shots.forEach((a) => {
@@ -74,6 +80,8 @@ export function initHero() {
   chipRow?.style.setProperty('--stage-ms', MS + 'ms');
   chips.forEach((c) => c.addEventListener('click', () => { showSlide(data.stage.findIndex((s) => s.cat === Number(c.dataset.chip))); restart(); }));
   restart();
+  // Warm the next slide once the page has finished loading, so the first switch is instant.
+  if (document.readyState === 'complete') load(1); else window.addEventListener('load', () => load(1), { once: true });
 
   // ---------- search index ----------
   const synonyms = searchSynonyms;

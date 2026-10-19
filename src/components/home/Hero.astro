@@ -36,7 +36,7 @@ const index = {
           {quotes.map((q, i) => (
             <button type="button" role="tab" class:list={['av', { on: i === 0 }]} aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${q.name}, ${q.role}`}
               data-q={i} data-text={q.quote} data-name={q.name} data-role={q.role}>
-              {q.photo ? <img src={q.photo} alt="" width="30" height="30" loading="lazy" /> : initials(q.name)}
+              {q.photo ? <img src={q.photo} alt="" width="30" height="30" loading="lazy" /> : <span aria-hidden="true">{initials(q.name)}</span>}
             </button>
           ))}
         </div>
@@ -52,7 +52,9 @@ const index = {
     {stage.map((p, i) => (
       <a href={`/work/${p.slug}`} class:list={['shot', { ph: p.imageKind === 'phone' && !p.stageImage, bleed: !!p.stageImage, on: i === 0 }]} data-slug={p.slug} data-i={i}
         tabindex={i === 0 ? 0 : -1} aria-hidden={i === 0 ? undefined : 'true'}>
-        <img src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+        {i === 0
+          ? <img src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} width="2240" height="1120" loading="eager" fetchpriority="high" decoding="async" />
+          : <img data-src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} width="2240" height="1120" decoding="async" />}
       </a>
     ))}
 
