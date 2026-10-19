@@ -6,7 +6,7 @@ summary: Website design for Raena.
 keywords: [website, landing, web, marketing]
 image: /uploads/raena.webp
 tint: peach
-order: 6
+order: 7
 ---
 
 Case study coming soon.

@@ -8,7 +8,7 @@ image: /uploads/earntask.webp
 imageKind: phone
 tint: mint
 featured: true
-order: 3
+order: 4
 stage: true
 stageLabel: Mobile app
 stageQuery: a mobile app
