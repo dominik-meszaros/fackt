@@ -31,7 +31,7 @@ export const servicePages: ServicePage[] = [
     headline: 'SaaS product design that users understand and pay for.',
     lede: 'We design SaaS platforms, dashboards and mobile apps, from the first user flow to dev-ready UI, so your product is easier to adopt and easier to sell.',
     tint: 'blue',
-    work: ['communi', 'engain', 'viewmax', 'earntask'],
+    work: ['communi', 'floxy', 'engain', 'viewmax', 'earntask'],
     deliverables: [
       { title: 'UX audit', text: 'A clear review of where users get stuck, with prioritised fixes.' },
       { title: 'User flows and structure', text: 'Onboarding, core workflows and navigation mapped before any pixels.' },
@@ -127,7 +127,7 @@ export const servicePages: ServicePage[] = [
     headline: 'Brand identities for tech products and startups.',
     lede: 'We build the visual language, voice and feeling that makes you immediately recognisable, and make sure it works inside your product, not just on a logo sheet.',
     tint: 'mint',
-    work: ['livis'],
+    work: ['promote', 'livis'],
     deliverables: [
       { title: 'Logo and wordmark', text: 'A mark that works from app icon to billboard.' },
       { title: 'Visual identity', text: 'Color, typography, imagery and graphic elements.' },
