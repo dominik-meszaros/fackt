@@ -1,19 +1,88 @@
 ---
+// 404: looping sketch map. The dot takes a wrong turn to a dead end marked 404, turns around and finds its way home.
+// "Play Pixel Perfect" opens the easter egg game (src/components/EasterGame.astro).
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
-import Emblem from '../components/Emblem.astro';
+import Footer from '../components/Footer.astro';
+import EasterGame from '../components/EasterGame.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import NfMap from '../components/pages/misc/NfMap.astro';
+import { site } from '../data/site';
 ---
-<Base title="Page not found | Fackt">
-  <Nav />
-  <main class="container nf">
-    <Emblem size={72} id="nf" />
-    <h1>This page doesn't exist.</h1>
-    <p>Try the search on the homepage, or press ⌘K.</p>
-    <a class="btn btn-dark" href="/">Back to Fackt</a>
-  </main>
+<Base title="Page not found | Fackt" description="This page took a wrong turn. Here is the way home.">
+  <div class="m-page">
+    <SketchDefs />
+    <Nav />
+    <main class="nf">
+      <NfMap />
+      <span class="tag">Error 404</span>
+      <h1>This page took a wrong turn.</h1>
+      <p class="lede">The link may be old, or the page moved. Here is the way home.</p>
+      <div class="bs">
+        <a class="m-btn dk lg" href="/">Back to the homepage</a>
+        <a class="m-btn lt lg" href="/work">See the work</a>
+      </div>
+      <p class="egg">Lost anyway? <button type="button" data-play>Play Pixel Perfect</button> while you are here.</p>
+      <ul>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/audit">Free audit</a></li>
+        <li><a href={site.bookPage}>Book a call</a></li>
+      </ul>
+    </main>
+    <Footer />
+    <EasterGame />
+  </div>
 </Base>
+
 <style>
-  .nf { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
-  h1 { margin: 0; font-size: 44px; letter-spacing: -0.04em; font-weight: 500; }
-  p { margin: 0; color: var(--muted); }
+  .nf { width: min(960px, 100% - 32px); margin: 0 auto; padding: 40px 0 96px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .tag { display: inline-flex; align-items: center; margin-top: 32px; font-size: 12.5px; font-weight: 500; padding: 4px 9px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; background: #fff; }
+  h1 { margin: 12px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1.15; letter-spacing: -.01em; }
+  .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 560px; }
+  .bs { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
+  .lg { height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .egg { margin: 14px 0 0; font-size: 13px; color: #8a8a86; }
+  .egg button { all: unset; cursor: pointer; color: #111; font-weight: 500; border-bottom: 1px solid #111; }
+  .egg button:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+  ul { list-style: none; margin: 32px 0 0; padding: 16px 0 0; border-top: 1px solid #ececea; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 22px; font-size: 13.5px; }
+  ul a { color: #111; text-decoration: none; }
+  ul a:hover { text-decoration: underline; }
+
+  /* map: drawn at 760 x 300 and scaled to fit (see script) */
+  .nf :global(.mapw) { width: min(760px, 100%); aspect-ratio: 760 / 300; position: relative; }
+  .nf :global(.map) { position: absolute; left: 0; top: 0; width: 760px; height: 300px; transform-origin: 0 0; transform: scale(var(--k, 1)); border-radius: 4px; background: #fafaf8; box-shadow: inset 0 0 0 1px #e2e2de; overflow: hidden; }
+  .nf :global(.map svg) { position: absolute; left: 0; top: 0; }
+  .nf :global(.map .lb) { font: 500 12px Geist, system-ui, sans-serif; fill: #3f3f3f; }
+  .nf :global(.map .sg) { font-family: Newsreader, Georgia, serif; font-size: 22px; fill: #111; }
+  .nf :global(.walk) { position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 50%; background: #111; box-shadow: 0 0 0 4px #fff, 0 0 0 5px #c8c8c4;
+    offset-path: path('M60 230 C140 215 220 240 330 205 C410 185 480 235 560 250 C480 235 410 185 330 205 C420 160 560 90 680 95'); offset-rotate: 0deg; animation: walk 10s ease-in-out infinite; }
+  .nf :global(.q) { animation: q 10s infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  .nf :global(.sp) { animation: sp 10s infinite; transform-box: fill-box; transform-origin: center; }
+  .nf :global(.sign) { animation: sign 10s infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+  @keyframes walk { 0% { offset-distance: 0%; opacity: 0 } 2%, 4% { offset-distance: 0%; opacity: 1 } 18%, 21% { offset-distance: 24.36% } 33%, 47% { offset-distance: 45.6% } 58% { offset-distance: 66.85% } 78%, 94% { offset-distance: 100%; opacity: 1 } 98%, 100% { offset-distance: 100%; opacity: 0 } }
+  @keyframes q { 0%, 33% { opacity: 0; transform: scale(.6) } 36%, 45% { opacity: 1; transform: scale(1) } 48%, 100% { opacity: 0; transform: scale(.6) } }
+  @keyframes sp { 0%, 77% { opacity: 0; transform: scale(.4) rotate(-20deg) } 80%, 93% { opacity: 1; transform: scale(1) rotate(0) } 97%, 100% { opacity: 0; transform: scale(.4) } }
+  @keyframes sign { 0%, 32%, 46%, 100% { transform: rotate(0) } 35% { transform: rotate(-4deg) } 38% { transform: rotate(3deg) } 41% { transform: rotate(-2deg) } }
+  @media (prefers-reduced-motion: reduce) {
+    .nf :global(.walk) { animation: none; offset-distance: 45.6%; }
+    .nf :global(.q) { animation: none; opacity: 1; }
+    .nf :global(.sp), .nf :global(.sign) { animation: none; }
+  }
+  @media (max-width: 720px) {
+    .nf { padding: 24px 0 64px; }
+    h1 { font-size: 28px; }
+    .lede { font-size: 14.5px; }
+    .bs { flex-direction: column; width: 100%; }
+    .bs .m-btn { width: 100%; }
+  }
 </style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-nf-wrap]');
+  const map = document.querySelector<HTMLElement>('[data-nf-map]');
+  const fit = () => { if (wrap && map) map.style.setProperty('--k', String(wrap.clientWidth / 760)); };
+  fit();
+  window.addEventListener('resize', fit);
+  document.querySelector('[data-play]')?.addEventListener('click', () => document.dispatchEvent(new Event('fackt:play')));
+</script>

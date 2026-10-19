@@ -4,16 +4,73 @@
   "text": "Send us your product or website. Within 2 days you get a video walkthrough and a written audit of what stops people from signing up, sticking around or paying, in the order we would fix it.",
   "turnaround": "Within 2 days",
   "deliverables": [
-    { "icon": "video", "title": "A video walkthrough", "text": "We go through your product on screen and talk you through every issue we find." },
-    { "icon": "doc", "title": "A written audit", "text": "A prioritised list of findings with screenshots, so your team can act on it." }
+    {
+      "icon": "video",
+      "title": "A video walkthrough",
+      "text": "We go through your product on screen and talk you through every issue we find."
+    },
+    {
+      "icon": "doc",
+      "title": "A written audit",
+      "text": "A prioritised list of findings with screenshots, so your team can act on it."
+    }
   ],
   "steps": [
     "Send your product with the form.",
     "We review it, usually within 2 days.",
     "You get the video and the written audit by email."
   ],
-  "focusOptions": ["Onboarding and activation", "Website conversion", "Product UX and flows", "Visual design refresh", "Not sure yet"],
-  "stageOptions": ["Pre-launch", "Live, early users", "Growing, paying customers", "Established product"],
+  "focusOptions": [
+    "Onboarding and activation",
+    "Website conversion",
+    "Product UX and flows",
+    "Visual design refresh",
+    "Not sure yet"
+  ],
+  "stageOptions": [
+    "Pre-launch",
+    "Live, early users",
+    "Growing, paying customers",
+    "Established product"
+  ],
   "button": "Request a free audit",
-  "success": "Request received. Your audit arrives within 2 days by email."
+  "success": "Request received. Your audit arrives within 2 days by email.",
+  "ticks": [
+    "A video walkthrough of your product",
+    "A written audit, ordered by impact",
+    "Within 2 days, no call needed"
+  ],
+  "videoLength": "About 10 to 15 minutes",
+  "how": [
+    {
+      "title": "Send your product",
+      "text": "A link to your site or app. For products behind a login, a test account helps."
+    },
+    {
+      "title": "We review it",
+      "text": "We go through it like a new user would and note what gets in the way."
+    },
+    {
+      "title": "You get the audit",
+      "text": "A video walkthrough and a written audit by email, within 2 days."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Is it really free?",
+      "a": "Yes. No call, no commitment. You keep the video and the written audit."
+    },
+    {
+      "q": "Who is it for?",
+      "a": "SaaS and tech teams with a live product or website, or one close to launch."
+    },
+    {
+      "q": "What happens after?",
+      "a": "Nothing, unless you want help. If you do, you can book a call and we plan the fixes together."
+    },
+    {
+      "q": "Can you audit a mobile app?",
+      "a": "Yes. Send the App Store or Google Play link, or a TestFlight invite."
+    }
+  ]
 }
