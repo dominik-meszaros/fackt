@@ -8,11 +8,7 @@ image: /uploads/earntask.webp
 imageKind: phone
 tint: mint
 featured: true
-order: 7
-stage: true
-stageLabel: Mobile app
-stageQuery: a mobile app
-stageOrder: 3
+order: 9
 ---
 
 Case study coming soon.

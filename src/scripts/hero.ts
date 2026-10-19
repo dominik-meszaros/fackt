@@ -50,11 +50,25 @@ export function initHero() {
       if (on) a.removeAttribute('aria-hidden'); else a.setAttribute('aria-hidden', 'true');
     });
     chips.forEach((c) => { const on = c.dataset.chip === slug; c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on)); });
-    if (label) label.textContent = `${p.name}, ${p.service}`;
+    if (label) label.textContent = `${p.name}, ${(p as Project & { stageLabel?: string }).stageLabel ?? p.service}`;
     if (idx) idx.textContent = `${pad(i + 1)} / ${pad(data.stage.length)}`;
     return true;
   }
-  chips.forEach((c) => c.addEventListener('click', () => show(c.dataset.chip!)));
+  // Loop through the categories on its own; pauses while someone hovers the stage or uses the ask bar.
+  const chipRow = document.querySelector<HTMLElement>('[data-chips]');
+  const MS = 4500;
+  let timer = 0;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const next = () => { const i = data.stage.indexOf(current); show(data.stage[(i + 1) % data.stage.length]); };
+  const restart = () => {
+    clearInterval(timer);
+    if (reduce || data.stage.length < 2) return;
+    chipRow?.classList.remove('auto'); void chipRow?.offsetWidth; chipRow?.classList.add('auto');
+    timer = window.setInterval(() => { if (!stage?.matches(':hover') && document.activeElement?.id !== 'ask') { next(); chipRow?.classList.remove('auto'); void chipRow?.offsetWidth; chipRow?.classList.add('auto'); } }, MS);
+  };
+  chipRow?.style.setProperty('--stage-ms', MS + 'ms');
+  chips.forEach((c) => c.addEventListener('click', () => { show(c.dataset.chip!); restart(); }));
+  restart();
 
   // ---------- search index ----------
   const synonyms = searchSynonyms;

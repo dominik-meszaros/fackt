@@ -186,6 +186,7 @@ collections:
       - { name: stageLabel, label: "Hero chip label (e.g. \"SaaS dashboard\")", widget: string, required: false }
       - { name: stageQuery, label: "Hero phrase (e.g. \"a SaaS dashboard\")", widget: string, required: false }
       - { name: stageOrder, label: "Hero order", widget: number, value_type: int, default: 99 }
+      - { name: stageImage, label: "Hero stage image (optional)", widget: image, choose_url: false, required: false, hint: "Wide 2:1 image shown full bleed in the hero stage" }
       - { name: platform, label: "Case study: platform (e.g. \"Web app\")", widget: string, required: false }
       - { name: scope, label: "Case study: scope", widget: string, required: false }
       - { name: challengeTitle, label: "Challenge: one line", widget: string, required: false }

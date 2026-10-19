@@ -43,4 +43,9 @@ gallery:
   - { image: /uploads/promote-embossed.webp, caption: "Embossed mark", kind: board }
   - { image: /uploads/promote-product.webp, caption: "The brand in the product", kind: board }
   - { image: /uploads/promote-logo-motion.webp, caption: "Logo in motion", kind: board }
+stage: true
+stageLabel: Branding
+stageQuery: a brand identity
+stageOrder: 4
+stageImage: /uploads/stage-brand.webp
 ---

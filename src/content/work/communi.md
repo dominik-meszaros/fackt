@@ -9,10 +9,6 @@ preview: /uploads/communi-preview.webp
 tint: blue
 featured: true
 order: 1
-stage: true
-stageLabel: SaaS dashboard
-stageQuery: a SaaS dashboard
-stageOrder: 1
 platform: Web app and native mobile app
 scope: Strategy, product design, UI/UX, UX copy, design system, web platform and mobile app
 challengeTitle: Confronting the fragmentation crisis in community management
@@ -43,4 +39,9 @@ gallery:
   - { image: /uploads/communi-mobile.webp, caption: "From desktop command center to native mobile", kind: board }
   - { image: /uploads/communi-mobile-courses.webp, caption: "Courses on mobile", kind: board }
   - { image: /uploads/communi-mobile-auth.webp, caption: "Account recovery flow", kind: board }
+stage: true
+stageLabel: SaaS dashboard
+stageQuery: a SaaS dashboard
+stageOrder: 1
+stageImage: /uploads/stage-saas.webp
 ---

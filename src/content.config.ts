@@ -25,6 +25,8 @@ const work = defineCollection({
     stageLabel: z.string().optional(),
     stageQuery: z.string().optional(),
     stageOrder: z.number().default(99),
+    // Full-bleed image for the hero stage (2:1). Falls back to the framed screen.
+    stageImage: z.string().optional(),
     // Case study page (all optional: sections only show when filled in).
     platform: z.string().optional(),
     scope: z.string().optional(),
