@@ -165,7 +165,33 @@ collections:
       - { name: stageLabel, label: "Hero chip label (e.g. \"SaaS dashboard\")", widget: string, required: false }
       - { name: stageQuery, label: "Hero phrase (e.g. \"a SaaS dashboard\")", widget: string, required: false }
       - { name: stageOrder, label: "Hero order", widget: number, value_type: int, default: 99 }
-      - { name: body, label: "Case study", widget: markdown }
+      - { name: platform, label: "Case study: platform (e.g. \"Web app\")", widget: string, required: false }
+      - { name: scope, label: "Case study: scope", widget: string, required: false }
+      - { name: challengeTitle, label: "Challenge: one line", widget: string, required: false }
+      - { name: challenge, label: "Challenge: text", widget: text, required: false }
+      - { name: approachTitle, label: "What we did: one line", widget: string, required: false }
+      - { name: approach, label: "What we did: text", widget: text, required: false }
+      - { name: resultsTitle, label: "Results: one line", widget: string, required: false }
+      - name: results
+        label: "Results (real numbers only)"
+        widget: list
+        required: false
+        fields:
+          - { name: value, label: "Number", widget: string }
+          - { name: label, label: "What it measures", widget: string }
+      - name: gallery
+        label: "Screens"
+        widget: list
+        required: false
+        fields:
+          - { name: image, label: "Image", widget: image, choose_url: false }
+          - { name: caption, label: "Caption", widget: string, required: false }
+          - { name: kind, label: "Shape", widget: select, options: [desktop, phone], default: desktop }
+      - { name: quote, label: "Client quote (word for word)", widget: text, required: false }
+      - { name: quoteName, label: "Quote: name", widget: string, required: false }
+      - { name: quoteRole, label: "Quote: role and company", widget: string, required: false }
+      - { name: quotePhoto, label: "Quote: photo", widget: image, required: false, choose_url: false }
+      - { name: body, label: "Case study (extra notes, shown when the sections above are empty)", widget: markdown }
 
   - name: videos
     editor: { preview: false }

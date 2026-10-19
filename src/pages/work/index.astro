@@ -2,13 +2,96 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
-import Work from '../../components/Work.astro';
 import Footer from '../../components/Footer.astro';
+import WorkCta from '../../components/pages/work/WorkCta.astro';
+
 const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order).map((e) => ({ slug: e.id, ...e.data }));
+const LABEL: Record<string, string> = { product: 'Product', web: 'Web', mobile: 'Mobile', branding: 'Branding', motion: 'Motion' };
+const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter((p) => p.category === k).length })).filter((c) => c.n > 0);
 ---
 <Base title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt.">
-  <Nav />
-  <main class="pad"><Work projects={all} total={all.length} /></main>
-  <Footer />
+  <div class="m-page">
+    <Nav />
+    <main>
+      <section class="wi">
+        <div class="wi-h">
+          <div>
+            <span class="crumb"><a href="/">Fackt</a> <span>/</span> <b>Work</b></span>
+            <h1>Work</h1>
+          </div>
+          <p>SaaS platforms, dashboards, mobile apps, websites and brands we designed for founders and teams.</p>
+        </div>
+
+        <div class="flt" role="group" aria-label="Filter work" data-flt>
+          <button type="button" class="on" aria-pressed="true" data-cat="all">All<small>{all.length}</small></button>
+          {cats.map((c) => <button type="button" aria-pressed="false" data-cat={c.k}>{c.label}<small>{c.n}</small></button>)}
+        </div>
+
+        <div class="wg">
+          {all.map((p) => (
+            <a class="wc" href={`/work/${p.slug}`} data-c={p.category}>
+              <div class:list={['im', { ph: p.imageKind === 'phone' }]}><img src={p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
+              <div class="cap"><span><b>{p.name}</b> <span class="mu2">&#183; {p.service}</span></span><span class="ct">View case study &#8594;</span></div>
+              <p>{p.summary}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+      <WorkCta />
+    </main>
+    <Footer />
+  </div>
 </Base>
-<style>.pad { padding-top: 40px; }</style>
+
+<style>
+  .wi { width: min(960px, 100% - 32px); margin: 0 auto; }
+  .wi-h { padding: 56px 0 8px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+  .wi-h p { margin: 0; max-width: 340px; color: var(--m-mu); font-size: 14.5px; }
+  .crumb { font-size: 12.5px; color: var(--m-mu-2); display: flex; gap: 8px; align-items: center; }
+  .crumb a { color: inherit; text-decoration: none; }
+  .crumb b { color: var(--m-ink); font-weight: 500; }
+  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.06; letter-spacing: -.02em; }
+  .flt { display: inline-flex; margin-top: 28px; box-shadow: inset 0 0 0 1px var(--m-hard); border-radius: 3px; overflow: hidden; max-width: 100%; }
+  .flt button { all: unset; cursor: pointer; height: 34px; padding: 0 14px; display: inline-flex; align-items: center; font-size: 13px; color: #6f6f6f; border-right: 1px solid var(--m-line); white-space: nowrap; }
+  .flt button:last-child { border-right: 0; }
+  .flt button:hover { color: var(--m-ink); background: #fafaf8; }
+  .flt button.on { background: var(--m-ink); color: #fff; }
+  .flt button:focus-visible { outline: 2px solid var(--m-ink); outline-offset: -2px; }
+  .flt small { margin-left: 6px; color: #a3a3a0; font-size: 11.5px; }
+  .flt button.on small { color: var(--m-mu-2); }
+  .wg { display: grid; grid-template-columns: 1fr 1fr; gap: 44px 28px; margin-top: 28px; }
+  .wc { display: block; color: inherit; text-decoration: none; }
+  .wc[hidden] { display: none; }
+  .wc .im { position: relative; height: 300px; border-radius: 4px; overflow: hidden; background: var(--m-soft); box-shadow: inset 0 0 0 1px #e2e2de; }
+  .wc .im img { position: absolute; left: 50%; top: 40px; width: min(400px, 86%); transform: translateX(-50%); border-radius: 3px; box-shadow: 0 0 0 1px #111; transition: transform .5s var(--m-ease); }
+  .wc .im.ph img { width: 150px; top: 28px; border-radius: 12px; }
+  .wc:hover .im img { transform: translateX(-50%) translateY(-6px); }
+  .wc .cap { margin-top: 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14px; }
+  .wc .cap b { font-weight: 500; }
+  .mu2 { color: var(--m-mu-2); }
+  .wc p { margin: 4px 0 0; font-size: 14px; color: #6f6f6f; max-width: 400px; }
+  .wc .ct { font-size: 12px; color: var(--m-mu-2); white-space: nowrap; }
+  .wc:hover .ct { color: var(--m-ink); }
+  @media (max-width: 720px) {
+    .wi-h { flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 28px; }
+    h1 { font-size: 36px; }
+    .flt { display: flex; overflow-x: auto; scrollbar-width: none; }
+    .wg { grid-template-columns: 1fr; gap: 28px; }
+    .wc .im { height: 220px; }
+    .wc .im img { width: 290px; max-width: 86%; top: 28px; }
+    .wc .im.ph img { width: 110px; }
+    .wc .ct { display: none; }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-flt]');
+  const cards = document.querySelectorAll<HTMLElement>('.wc[data-c]');
+  bar?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-cat]');
+    if (!b) return;
+    const cat = b.dataset.cat;
+    bar.querySelectorAll('button').forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    cards.forEach((c) => { c.hidden = cat !== 'all' && c.dataset.c !== cat; });
+  });
+</script>
