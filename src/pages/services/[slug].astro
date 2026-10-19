@@ -45,7 +45,7 @@ const ld = [
   },
 ];
 ---
-<Base title={page.seoTitle} description={page.seoDescription} image={work[0]?.image}>
+<Base title={page.seoTitle} description={page.seoDescription} image={`/og/service-${page.slug}.jpg`}>
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
   <div class="m-page">
     <SketchDefs />

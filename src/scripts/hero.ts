@@ -6,7 +6,8 @@ import { searchSynonyms } from '../data/site';
 
 interface Project { slug: string; name: string; service: string; category: string; summary: string; keywords: string[]; image: string; imageKind: string; tint: string }
 interface Ask { question: string; type: 'work' | 'answer'; project?: string; answer?: string; linkLabel?: string; linkHref?: string }
-interface Index { projects: Project[]; stage: string[]; ask: Ask[]; hints: string[]; booking: string }
+interface Slide { slug: string; cat: number; label: string }
+interface Index { projects: Project[]; stage: Slide[]; ask: Ask[]; hints: string[]; booking: string }
 
 const CATEGORY_WORDS: Record<string, string[]> = {
   product: ['product', 'saas', 'dashboard', 'platform', 'web app', 'ux', 'ui'],
@@ -37,37 +38,41 @@ export function initHero() {
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-chip]'));
   const label = document.querySelector<HTMLElement>('[data-stage-label]');
   const idx = document.querySelector<HTMLElement>('[data-stage-idx]');
-  let current = data.stage[0];
-  function show(slug: string) {
-    const i = data.stage.indexOf(slug);
-    if (i < 0) return false;
-    const p = data.projects.find((x) => x.slug === slug)!;
-    current = slug;
+  let cur = 0;
+  function showSlide(i: number) {
+    cur = (i + data.stage.length) % data.stage.length;
+    const sl = data.stage[cur];
+    const p = data.projects.find((x) => x.slug === sl.slug)!;
     shots.forEach((a) => {
-      const on = a.dataset.slug === slug;
+      const on = Number(a.dataset.i) === cur;
       a.classList.toggle('on', on);
       a.tabIndex = on ? 0 : -1;
       if (on) a.removeAttribute('aria-hidden'); else a.setAttribute('aria-hidden', 'true');
     });
-    chips.forEach((c) => { const on = c.dataset.chip === slug; c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on)); });
-    if (label) label.textContent = `${p.name}, ${(p as Project & { stageLabel?: string }).stageLabel ?? p.service}`;
-    if (idx) idx.textContent = `${pad(i + 1)} / ${pad(data.stage.length)}`;
+    chips.forEach((c) => { const on = Number(c.dataset.chip) === sl.cat; c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on)); });
+    if (label) label.textContent = `${p.name}, ${p.service}`;
+    if (idx) { const inCat = data.stage.filter((s) => s.cat === sl.cat); idx.textContent = `${pad(inCat.indexOf(sl) + 1)} / ${pad(inCat.length)}`; }
+  }
+  function show(slug: string) {
+    const i = data.stage.findIndex((s) => s.slug === slug);
+    if (i < 0) return false;
+    showSlide(i); restart();
     return true;
   }
-  // Loop through the categories on its own; pauses while someone hovers the stage or uses the ask bar.
+  // Loop through every slide on its own; pauses while someone hovers the stage or uses the ask bar.
   const chipRow = document.querySelector<HTMLElement>('[data-chips]');
-  const MS = 4500;
+  const MS = 3800;
   let timer = 0;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const next = () => { const i = data.stage.indexOf(current); show(data.stage[(i + 1) % data.stage.length]); };
-  const restart = () => {
+  const kick = () => { chipRow?.classList.remove('auto'); void chipRow?.offsetWidth; chipRow?.classList.add('auto'); };
+  function restart() {
     clearInterval(timer);
     if (reduce || data.stage.length < 2) return;
-    chipRow?.classList.remove('auto'); void chipRow?.offsetWidth; chipRow?.classList.add('auto');
-    timer = window.setInterval(() => { if (!stage?.matches(':hover') && document.activeElement?.id !== 'ask') { next(); chipRow?.classList.remove('auto'); void chipRow?.offsetWidth; chipRow?.classList.add('auto'); } }, MS);
-  };
+    kick();
+    timer = window.setInterval(() => { if (!stage?.matches(':hover') && document.activeElement?.id !== 'ask') { showSlide(cur + 1); kick(); } }, MS);
+  }
   chipRow?.style.setProperty('--stage-ms', MS + 'ms');
-  chips.forEach((c) => c.addEventListener('click', () => { show(c.dataset.chip!); restart(); }));
+  chips.forEach((c) => c.addEventListener('click', () => { showSlide(data.stage.findIndex((s) => s.cat === Number(c.dataset.chip))); restart(); }));
   restart();
 
   // ---------- search index ----------
@@ -273,7 +278,7 @@ export function initHero() {
     const io = new IntersectionObserver((es) => { es.forEach((e) => e.isIntersecting ? vis.add(e.target) : vis.delete(e.target)); blocked = vis.size > 0; apply(); }, { rootMargin: '0px 0px -10% 0px' });
     quiet.forEach((el) => io.observe(el));
   }
-  void stage; void current;
+  void stage;
 }
 
 function initQuotes() {

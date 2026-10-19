@@ -9,7 +9,7 @@ const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.o
 const LABEL: Record<string, string> = { product: 'Product', web: 'Web', mobile: 'Mobile', branding: 'Branding', motion: 'Motion' };
 const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter((p) => p.category === k).length })).filter((c) => c.n > 0);
 ---
-<Base title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt.">
+<Base image="/og/work.jpg" title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt.">
   <div class="m-page">
     <Nav />
     <main>

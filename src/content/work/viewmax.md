@@ -31,9 +31,4 @@ gallery:
   - { image: /uploads/viewmax-voiceover-2.webp, caption: "Voice style and segments", kind: board }
   - { image: /uploads/viewmax-website.webp, caption: "The website: Effortless Short-Form Editing", kind: board }
   - { image: /uploads/viewmax-flows.webp, caption: "Flows", kind: board }
-stage: true
-stageLabel: Websites
-stageQuery: a website
-stageOrder: 3
-stageImage: /uploads/stage-web.webp
 ---

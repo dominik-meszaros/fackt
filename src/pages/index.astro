@@ -18,7 +18,9 @@ import Postcard from '../components/home/Postcard.astro';
 
 const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
 const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id, ...e.data }));
-const stage = all.filter((p) => p.stage).sort((a, b) => a.stageOrder - b.stageOrder);
+import { stageCategories } from '../data/stage';
+const bySlug = new Map(all.map((p) => [p.slug, p]));
+const stage = stageCategories.flatMap((c, ci) => c.slides.filter((s) => bySlug.has(s.slug)).map((s) => ({ ...bySlug.get(s.slug)!, stageImage: s.image, cat: ci, stageLabel: c.label })));
 const featured = all.filter((p) => p.featured).slice(0, 6);
 const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
 const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
@@ -29,7 +31,7 @@ const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data
     <SketchDefs />
     <Nav />
     <main>
-      <Hero stage={stage} all={all} quotes={quotes} />
+      <Hero stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes} />
       <Logos />
       <Step />
       <Work projects={featured} total={all.length} />

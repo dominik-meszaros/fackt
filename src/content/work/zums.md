@@ -31,9 +31,4 @@ gallery:
   - { image: /uploads/zums-flows.webp, caption: "Tickets, validation and rewards", kind: board }
   - { image: /uploads/zums-hand.webp, caption: "Bonuses and offer walls", kind: board }
   - { image: /uploads/zums-all-screens.webp, caption: "All screens", kind: board }
-stage: true
-stageLabel: Mobile app
-stageQuery: a mobile app
-stageOrder: 2
-stageImage: /uploads/stage-mobile.webp
 ---

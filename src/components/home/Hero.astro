@@ -4,16 +4,16 @@
 import { site } from '../../data/site';
 import { homeSettings } from '../../data/settings';
 
-interface Project { slug: string; name: string; service: string; category: string; summary: string; keywords: string[]; image: string; imageKind: string; tint: string; stageLabel?: string; stageQuery?: string }
+interface Project { slug: string; name: string; service: string; category: string; summary: string; keywords: string[]; image: string; imageKind: string; tint: string; stageLabel?: string; stageQuery?: string; stageImage?: string; cat?: number }
 interface Quote { name: string; role: string; quote: string; photo?: string }
-interface Props { stage: Project[]; all: Project[]; quotes: Quote[] }
-const { stage, all, quotes } = Astro.props;
+interface Props { stage: Project[]; cats: string[]; all: Project[]; quotes: Quote[] }
+const { stage, cats, all, quotes } = Astro.props;
 const h = homeSettings;
 const initials = (n: string) => n.split(/\s+/).slice(0, 2).map((w) => w[0]).join('');
 const pad = (n: number) => String(n).padStart(2, '0');
 const index = {
   projects: all,
-  stage: stage.map((p) => p.slug),
+  stage: stage.map((p) => ({ slug: p.slug, cat: p.cat ?? 0, label: p.stageLabel ?? p.service })),
   ask: h.ask,
   hints: h.askHints,
   booking: site.bookPage,
@@ -47,10 +47,10 @@ const index = {
   )}
 
   <div class="stage" id="stage">
-    <span class="tagl" data-stage-label>{stage[0]?.name}, {stage[0]?.stageLabel ?? stage[0]?.service}</span>
-    <span class="tagr" data-stage-idx>01 / {pad(stage.length)}</span>
+    <span class="tagl" data-stage-label>{stage[0]?.name}, {stage[0]?.service}</span>
+    <span class="tagr" data-stage-idx>01 / {pad(stage.filter((s) => s.cat === 0).length)}</span>
     {stage.map((p, i) => (
-      <a href={`/work/${p.slug}`} class:list={['shot', { ph: p.imageKind === 'phone' && !p.stageImage, bleed: !!p.stageImage, on: i === 0 }]} data-slug={p.slug}
+      <a href={`/work/${p.slug}`} class:list={['shot', { ph: p.imageKind === 'phone' && !p.stageImage, bleed: !!p.stageImage, on: i === 0 }]} data-slug={p.slug} data-i={i}
         tabindex={i === 0 ? 0 : -1} aria-hidden={i === 0 ? undefined : 'true'}>
         <img src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
       </a>
@@ -79,8 +79,8 @@ const index = {
   </div>
 
   <div class="chips" role="group" aria-label="Show work" data-chips>
-    {stage.map((p, i) => (
-      <button type="button" class:list={['chip', { on: i === 0 }]} data-chip={p.slug} aria-pressed={i === 0 ? 'true' : 'false'}>{p.stageLabel ?? p.service}</button>
+    {cats.map((c, i) => (
+      <button type="button" class:list={['chip', { on: i === 0 }]} data-chip={i} aria-pressed={i === 0 ? 'true' : 'false'}>{c}</button>
     ))}
   </div>
   <script type="application/json" id="ask-index" set:html={JSON.stringify(index)} />

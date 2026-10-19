@@ -8,7 +8,7 @@ image: /uploads/promote-app-screen.webp
 preview: /uploads/promote-product-preview.webp
 tint: mint
 featured: false
-order: 9
+order: 13
 platform: Web dashboard and mobile
 scope: Product design, UX, UI, typography and color for the creator dashboard
 challengeTitle: Creators left guessing

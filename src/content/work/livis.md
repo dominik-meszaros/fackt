@@ -7,7 +7,7 @@ keywords: [branding, brand, identity, logo, visual identity]
 image: /uploads/livis.webp
 tint: lilac
 featured: true
-order: 16
+order: 19
 ---
 
 Case study coming soon.

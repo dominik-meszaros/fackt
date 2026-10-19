@@ -31,7 +31,7 @@
     {
       "question": "Do you design mobile apps?",
       "type": "work",
-      "project": "earntask"
+      "project": "zums"
     },
     {
       "question": "What does a one-time project cost?",
@@ -55,9 +55,9 @@
       "linkHref": "/book"
     },
     {
-      "question": "Show me a landing page you designed",
+      "question": "Show me a website you designed",
       "type": "work",
-      "project": "blackbox-ai"
+      "project": "story-story"
     }
   ],
   "logosTitle": "Trusted by founders and teams at",

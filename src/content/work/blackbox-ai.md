@@ -7,7 +7,7 @@ keywords: [ai, website, landing, marketing, developer, coding, web]
 image: /uploads/blackbox-ai.webp
 tint: lilac
 featured: true
-order: 12
+order: 15
 ---
 
 Case study coming soon.

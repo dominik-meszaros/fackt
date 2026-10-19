@@ -8,7 +8,7 @@ image: /uploads/kindscore-screen.webp
 preview: /uploads/kindscore-preview.webp
 tint: blue
 featured: true
-order: 8
+order: 9
 platform: iOS and Android
 scope: Branding, mascot and illustration, UX and wireframes, mobile UI, delivered in one month
 challengeTitle: Practice without pressure

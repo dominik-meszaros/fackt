@@ -34,7 +34,7 @@ const showBody = blocks.length === 0 || !bodyIsStub;
 if (showBody && !bodyIsStub) blocks.unshift({ id: 'overview', label: 'Overview' });
 const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 ---
-<Base title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={p.preview ?? p.image}>
+<Base title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
   <div class="m-page">
     <Nav />
     <main>
