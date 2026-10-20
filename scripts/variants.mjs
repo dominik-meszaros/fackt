@@ -49,6 +49,8 @@ let tagged = 0;
 for await (const file of walk(DIST)) {
   const html = await readFile(file, 'utf8');
   const next = html.replace(/<img\b[^>]*>/g, (tag) => {
+    // Images without an explicit loading choice wait until they are near the screen.
+    if (!/\sloading=/.test(tag) && !/fetchpriority=/.test(tag) && !/\sdata-src=/.test(tag)) tag = tag.replace(/^<img\b/, '<img loading="lazy" decoding="async"');
     if (/\ssrcset=/.test(tag) || /\sdata-srcset=/.test(tag)) return tag;
     const m = tag.match(/\s(data-src|src)="(\/uploads\/[^"?#]+)"/);
     if (!m) return tag;

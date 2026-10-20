@@ -15,10 +15,10 @@ const count = words[videos.length] ?? String(videos.length);
   <div class="vids">
     {videos.map((v, i) => (
       v.video ? (
-        <button type="button" class="vid" data-vi={i} aria-label={`Play video testimonial from ${v.name}, ${v.role} at ${v.company}`}>
+        <button type="button" class="vid" data-vi={i}>
           <img src={v.thumbnail} alt="" loading="lazy" decoding="async" />
           <span class="pl" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M3 2L10 6L3 10Z" fill="currentColor"></path></svg><span class="pt">{v.duration || 'Play'}</span></span>
-          <span class="who" aria-hidden="true"><b>{v.name}</b>{v.company}</span>
+          <span class="who"><span class="sr-only">Play video testimonial from </span><b>{v.name}</b> <span class="sr-only">{v.role} at </span>{v.company}</span>
         </button>
       ) : (
         <div class="vid">

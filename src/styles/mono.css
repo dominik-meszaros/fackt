@@ -18,6 +18,8 @@
 .m-wrap { width: min(var(--m-wrap), 100% - 32px); margin-inline: auto; }
 
 .m-sec { padding: 54px 16px 60px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+/* Sections below the hero skip layout and paint until they are near the screen (faster first load on phones). */
+.m-sec:not(.lg) { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .m-h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.15; letter-spacing: -.01em; }
 .m-lede { margin: 10px auto 0; max-width: 460px; color: var(--m-mu); font-size: 15px; }
 .m-sk { display: block; width: 84px; height: 84px; margin: 0 auto 12px; overflow: visible; }
