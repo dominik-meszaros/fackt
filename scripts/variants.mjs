@@ -8,7 +8,7 @@ import { join, extname, basename } from 'node:path';
 const DIST = 'dist';
 const UP = join(DIST, 'uploads');
 const OUT = join(UP, '_w');
-const WIDTHS = [160, 480, 960, 1440];
+const WIDTHS = [160, 480, 640, 960, 1440];
 const DEFAULT_SIZES = '(max-width: 720px) 100vw, 50vw';
 
 await mkdir(OUT, { recursive: true });
@@ -60,6 +60,11 @@ for await (const file of walk(DIST)) {
     tagged++;
     return tag.replace(/^<img\b/, `<img ${attr}="${set}" sizes="${sizes}"`);
   });
-  if (next !== html) await writeFile(file, next);
+  // The preloaded hero image gets the same choices, so the browser preloads the size it will actually use.
+  const next2 = next.replace(/<link rel="preload" as="image" href="(\/uploads\/[^"?#]+)"/g, (tag, url) => {
+    const set = srcsetOf(url);
+    return set ? `${tag} imagesrcset="${set}" imagesizes="${DEFAULT_SIZES}"` : tag;
+  });
+  if (next2 !== html) await writeFile(file, next2);
 }
 console.log(`image variants: ${made} new files, ${tagged} img tags got srcset`);

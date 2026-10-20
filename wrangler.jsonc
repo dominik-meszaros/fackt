@@ -15,6 +15,8 @@
   "keep_vars": true,
   "vars": {
     "GITHUB_CLIENT_ID": "Ov23liYHGDrgubuGRqqS",
-    "FORM_TO": "dominik@fackt.io"
+    "FORM_TO": "dominik@fackt.io",
+    // Sender for form emails. fackt.io is verified in Resend; the Resend test sender only delivers to the Resend account owner.
+    "FORM_FROM": "Fackt site <forms@fackt.io>"
   }
 }

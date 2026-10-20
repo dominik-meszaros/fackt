@@ -26,7 +26,7 @@ const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
 const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
 const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
 ---
-<Base>
+<Base lcp={stage[0]?.stageImage ?? stage[0]?.image}>
   <div class="m-page">
     <SketchDefs />
     <Nav />
