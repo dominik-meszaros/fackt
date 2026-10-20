@@ -1,0 +1,8 @@
+/* FAQ accordion (audit + service pages). The open/close motion is in src/scripts/faq.ts. */
+.faq summary { position: relative; padding-right: 32px; transition: color .2s; }
+.faq summary::before, .faq summary::after { content: ''; position: absolute; right: 4px; top: calc(50% - .75px); width: 12px; height: 1.5px; border-radius: 1px; background: #8a8a86; transition: transform .4s var(--m-ease, cubic-bezier(.2, .7, .2, 1)), background .2s; }
+.faq summary::after { transform: rotate(90deg); }
+.faq details[open]:not(.closing) summary::after, .faq details[open]:not(.closing) summary::before { transform: rotate(180deg); }
+.faq summary:hover::before, .faq summary:hover::after, .faq details[open]:not(.closing) summary::before, .faq details[open]:not(.closing) summary::after { background: #111; }
+.faq details:not([open]) summary:hover { color: #3f3f3f; }
+.faq .ans { overflow: hidden; }

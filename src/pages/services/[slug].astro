@@ -44,6 +44,7 @@ const ld = [
     mainEntity: page.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
   },
 ];
+import '../../styles/faq.css';
 ---
 <Base title={page.seoTitle} description={page.seoDescription} image={`/og/service-${page.slug}.jpg`}>
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
@@ -207,8 +208,6 @@ const ld = [
   details { border-bottom: 1px solid #ececea; padding: 18px 0; }
   summary { list-style: none; display: flex; justify-content: space-between; gap: 20px; font-weight: 500; font-size: 15px; cursor: pointer; }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: '+'; font-weight: 400; color: #8a8a86; }
-  details[open] summary::after { content: '\2212'; }
   details p { margin: 10px 0 0; color: #6a6a66; font-size: 14px; max-width: 640px; }
 
   @media (max-width: 900px) {
@@ -243,3 +242,7 @@ const ld = [
     .faqs { padding-top: 40px; }
   }
 </style>
+
+<script>
+  import '../../scripts/faq';
+</script>

@@ -34,6 +34,7 @@ const finds = [
   { t: 'Feed filters are easy to miss', a: 'Navigation', s: 'Medium', c: '' },
 ];
 const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+import '../styles/faq.css';
 ---
 <Base image="/og/audit.jpg" title="Free product audit | Fackt" description={audit.text}>
   <div class="m-page">
@@ -290,8 +291,6 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
   .faq details { border-bottom: 1px solid #ececea; padding: 18px 0; }
   .faq summary { list-style: none; display: flex; justify-content: space-between; gap: 20px; font-weight: 500; font-size: 15px; cursor: pointer; }
   .faq summary::-webkit-details-marker { display: none; }
-  .faq summary::after { content: '+'; font-weight: 400; color: #8a8a86; }
-  .faq details[open] summary::after { content: '\2212'; }
   .faq p { margin: 10px 0 0; color: #6a6a66; font-size: 14px; max-width: 640px; }
 
   /* cta */
@@ -379,4 +378,8 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
   // Process loop: starts when the section scrolls into view, so the cursor, pins and written findings stay in step.
   const loop = document.querySelector<HTMLElement>('[data-loop]');
   if (loop) new IntersectionObserver(([e]) => { if (e.isIntersecting) loop.classList.add('run'); }, { threshold: 0.2 }).observe(loop);
+</script>
+
+<script>
+  import '../scripts/faq';
 </script>
