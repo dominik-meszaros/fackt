@@ -126,7 +126,7 @@ export const pricing = {
     price: '$5,000',
     prefix: 'from',
     text: 'Fixed-scope, milestone-driven delivery.',
-    items: ['Daily design support', 'Milestones, 4 to 12 weeks', 'Clearly defined scope', 'End-to-end project support', 'Scale as you grow', 'AI, SaaS and tech expertise'],
+    items: ['Daily design support', 'Milestones, 2 to 6 weeks', 'Clearly defined scope', 'End-to-end project support', 'Scale as you grow', 'AI, SaaS and tech expertise'],
     cta: 'Book a strategy call',
   },
 };

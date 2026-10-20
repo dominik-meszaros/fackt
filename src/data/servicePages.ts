@@ -50,7 +50,7 @@ export const servicePages: ServicePage[] = [
     review: 0,
     faq: [
       { q: 'Can you work inside our existing Figma files and design system?', a: 'Yes. We can extend the system you already have, or build one with you if it does not exist yet.' },
-      { q: 'How long does a product design project take?', a: 'One-time projects run in milestones of 4 to 12 weeks depending on scope. On a retainer, requests have a 24 hour turnaround.' },
+      { q: 'How long does a product design project take?', a: 'Most projects take 2 to 6 weeks. A landing page or a focused redesign is usually 1 to 2 weeks, a full product or MVP 3 to 6. On a retainer, requests have a 24 hour turnaround.' },
       { q: 'Do you build the product too?', a: 'For products we hand off dev-ready designs to your engineers and stay available while they build. Websites we can design and build ourselves.' },
       { q: 'How does pricing work?', a: pricingAnswer },
     ],

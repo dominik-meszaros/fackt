@@ -12,8 +12,8 @@ const { logosTitle, logos } = homeSettings;
 <style>
   .lg { padding-top: 64px; }
   .t { font-size: 12.5px; color: #8a8a86; }
-  ul { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px 10px; width: min(760px, 100%); }
+  ul { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 22px 44px; width: min(820px, 100%); }
   li { font-size: 14px; font-weight: 500; color: #a3a3a3; letter-spacing: -.01em; display: flex; align-items: center; justify-content: center; min-height: 24px; }
-  img { max-height: 24px; width: auto; filter: grayscale(1); opacity: .55; }
-  @media (max-width: 720px) { ul { grid-template-columns: repeat(3, 1fr); gap: 16px 8px; } li { font-size: 13px; } }
+  img { display: block; height: 22px; width: auto; max-width: 128px; object-fit: contain; opacity: .38; }
+  @media (max-width: 720px) { ul { gap: 18px 28px; } img { height: 18px; max-width: 104px; } li { font-size: 13px; } }
 </style>

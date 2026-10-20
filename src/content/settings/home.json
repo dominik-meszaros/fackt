@@ -36,7 +36,7 @@
     {
       "question": "What does a one-time project cost?",
       "type": "answer",
-      "answer": "Fixed-scope projects start from $5,000 and are delivered in milestones over 4 to 12 weeks.",
+      "answer": "Fixed-scope projects start from $5,000 and are delivered in milestones, usually over 2 to 6 weeks.",
       "linkLabel": "See pricing",
       "linkHref": "/#pricing"
     },
@@ -64,51 +64,39 @@
   "logos": [
     {
       "name": "ClickUp",
-      "logo": ""
+      "logo": "/uploads/logos/clickup.webp"
     },
     {
       "name": "Viewmax",
-      "logo": ""
+      "logo": "/uploads/logos/viewmax.webp"
     },
     {
       "name": "BlackBox AI",
-      "logo": ""
+      "logo": "/uploads/logos/blackbox-ai.webp"
     },
     {
       "name": "Communi",
-      "logo": ""
+      "logo": "/uploads/logos/communi.webp"
     },
     {
       "name": "DevSignal",
-      "logo": ""
+      "logo": "/uploads/logos/devsignal.webp"
     },
     {
       "name": "Shredder",
-      "logo": ""
-    },
-    {
-      "name": "Earntask",
-      "logo": ""
+      "logo": "/uploads/logos/shredder.webp"
     },
     {
       "name": "Engain",
-      "logo": ""
+      "logo": "/uploads/logos/engain.webp"
     },
     {
       "name": "Flashloop",
-      "logo": ""
-    },
-    {
-      "name": "Raena",
-      "logo": ""
-    },
-    {
-      "name": "Livis",
-      "logo": ""
+      "logo": "/uploads/logos/flashloop.webp"
     },
     {
       "name": "Quittr",
-      "logo": ""
+      "logo": "/uploads/logos/quittr.webp"
     }
   ],
   "rating": {

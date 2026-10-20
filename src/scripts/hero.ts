@@ -156,8 +156,10 @@ export function initHero() {
   // Showing a project: switch the stage and bring it into view when the bar is floating.
   function goWork(slug: string) {
     if (!show(slug)) { location.href = `/work/${slug}`; return; }
+    const sheet = wrap!.classList.contains('sheet');
     close();
-    if (wrap!.classList.contains('float')) stage?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (sheet) input!.blur();
+    if (sheet || wrap!.classList.contains('float')) stage?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function answer(i: number) {
@@ -213,8 +215,16 @@ export function initHero() {
     open();
   }
 
-  function open() { panel!.hidden = false; input!.setAttribute('aria-expanded', 'true'); }
-  function close() { panel!.hidden = true; input!.setAttribute('aria-expanded', 'false'); input!.removeAttribute('aria-activedescendant'); }
+  // On phones the panel opens as a full-screen sheet: the field moves to the top, results get the whole screen.
+  const phone = matchMedia('(max-width: 720px)');
+  function open() {
+    panel!.hidden = false; input!.setAttribute('aria-expanded', 'true');
+    if (phone.matches && !wrap!.classList.contains('sheet')) { wrap!.classList.add('sheet'); document.documentElement.classList.add('ask-lock'); }
+  }
+  function close() {
+    panel!.hidden = true; input!.setAttribute('aria-expanded', 'false'); input!.removeAttribute('aria-activedescendant');
+    if (wrap!.classList.contains('sheet')) { wrap!.classList.remove('sheet'); document.documentElement.classList.remove('ask-lock'); }
+  }
   function highlight(n: number) {
     if (!rows.length) return;
     hl = (n + rows.length) % rows.length;
@@ -225,11 +235,14 @@ export function initHero() {
   function sync() { wrap!.classList.toggle('typing', !!input!.value); }
 
   list.addEventListener('mousedown', (e) => e.preventDefault());
+  // In the phone sheet, scrolling the results tucks the keyboard away so more of them fit.
+  panel.addEventListener('touchmove', () => { if (wrap.classList.contains('sheet')) input.blur(); }, { passive: true });
+  wrap.querySelector('[data-ask-cancel]')?.addEventListener('click', () => { input.value = ''; sync(); close(); input.blur(); });
   list.addEventListener('click', (e) => {
     const li = (e.target as HTMLElement).closest<HTMLElement>('.ar');
     if (li) rows[Number(li.dataset.i)]?.run();
   });
-  input.addEventListener('focus', () => { wrap.classList.add('focus'); input.placeholder = 'Ask about work, pricing or process'; render(input.value); });
+  input.addEventListener('focus', () => { wrap.classList.add('focus'); input.placeholder = matchMedia('(max-width: 720px)').matches ? 'Ask about work or pricing' : 'Ask about work, pricing or process'; render(input.value); });
   input.addEventListener('blur', () => { wrap.classList.remove('focus'); input.placeholder = ''; });
   input.addEventListener('click', () => { if (panel.hidden) render(input.value); });
   input.addEventListener('input', () => { chosen = -1; sync(); render(input.value); });
