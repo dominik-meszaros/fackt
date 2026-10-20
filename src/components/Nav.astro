@@ -4,12 +4,16 @@
 // hidden: past 640px while scrolling down. The link of the section in view is marked.
 import Mark from './home/Mark.astro';
 import { site } from '../data/site';
+import { publishedPosts } from '../data/blog';
+
+// Blog joins the nav once the first note is published (Reviews stays as a homepage section).
+const hasBlog = (await publishedPosts()).length > 0;
 
 const left = [
   { label: 'Work', href: '/#work', id: 'work' },
   { label: 'Services', href: '/#services', id: 'services' },
   { label: 'Pricing', href: '/#pricing', id: 'pricing' },
-  { label: 'Reviews', href: '/#reviews', id: 'reviews' },
+  hasBlog ? { label: 'Blog', href: '/blog', id: 'blog' } : { label: 'Reviews', href: '/#reviews', id: 'reviews' },
 ];
 const menu = [
   { label: 'Work', href: '/#work', id: 'work' },
@@ -17,6 +21,7 @@ const menu = [
   { label: 'How we work', href: '/#process', id: 'process' },
   { label: 'Reviews', href: '/#reviews', id: 'reviews' },
   { label: 'Pricing', href: '/#pricing', id: 'pricing' },
+  ...(hasBlog ? [{ label: 'Blog', href: '/blog', id: 'blog' }] : []),
 ];
 ---
 <header class="hd" data-nav>

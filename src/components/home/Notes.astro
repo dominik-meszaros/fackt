@@ -1,0 +1,23 @@
+---
+// Homepage: the three latest published notes. Hidden until the first note is published.
+import PostCard from '../blog/PostCard.astro';
+import { publishedPosts, readTime } from '../../data/blog';
+const posts = (await publishedPosts()).slice(0, 3);
+---
+{posts.length > 0 && (
+  <section class="m-sec nt" aria-label="Fackt notes">
+    <div class="top">
+      <div><span class="eb">Fackt notes</span><h2 class="m-h2">Notes from real client work.</h2></div>
+      <a class="all" href="/blog">All notes &#8594;</a>
+    </div>
+    <div class="grid">{posts.map((p) => <PostCard slug={p.id} title={p.data.title} category={p.data.category} cover={p.data.cover} time={readTime(p.body, p.data.readTime)} />)}</div>
+  </section>
+)}
+<style>
+  .nt { text-align: left; align-items: stretch; }
+  .top { width: min(960px, 100%); margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+  .eb { display: block; font-size: 12.5px; color: #767672; margin-bottom: 10px; }
+  .all { font-size: 14px; font-weight: 500; color: #111; text-decoration: none; border-bottom: 1px solid #111; white-space: nowrap; }
+  .grid { width: min(960px, 100%); margin: 28px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; gap: 28px; } .top { flex-direction: column; align-items: flex-start; } }
+</style>

@@ -254,3 +254,26 @@ collections:
       - { name: highlight, label: "Highlight (a phrase from the review)", widget: string }
       - { name: text, label: "Full review", widget: text }
       - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
+
+  - name: blog
+    editor: { preview: false }
+    label: Blog
+    label_singular: Note
+    description: 'Fackt notes. New notes start as a draft: they are built at fackt.io/blog/<slug> for you to read, but not listed or indexed. Switch off "Draft" to publish.'
+    folder: src/content/blog
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    sortable_fields: [date, title]
+    summary: '{{title}} · {{category}}'
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: "Short description (shown under the title and in Google)", widget: text }
+      - { name: category, label: Category, widget: string, hint: 'e.g. Pricing, Audit, Onboarding, Branding' }
+      - { name: cover, label: "Cover image (1600 x 900)", widget: image, choose_url: false }
+      - { name: date, label: Date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' }
+      - { name: readTime, label: "Read time (optional, e.g. 6 min)", widget: string, required: false }
+      - { name: related, label: "Related case study (optional)", widget: relation, collection: work, value_field: '{{slug}}', search_fields: [name, service], display_fields: ['{{name}}, {{service}}'], required: false }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }

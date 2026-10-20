@@ -79,4 +79,21 @@ const reviews = defineCollection({
   }),
 });
 
-export const collections = { work, quotes, videos, reviews };
+
+// Blog posts ("Fackt notes"). Drafts are built at /blog/<slug> for previewing but are not listed, linked or indexed.
+const blog = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.string(),
+    cover: z.string(),
+    date: z.coerce.date(),
+    readTime: z.string().optional(),
+    draft: z.boolean().default(true),
+    // Case study this note links to (a work slug), shown inside the post and under that case study.
+    related: z.string().optional(),
+  }),
+});
+
+export const collections = { work, quotes, videos, reviews, blog };

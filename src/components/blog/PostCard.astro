@@ -1,0 +1,24 @@
+---
+// One note as a card: cover, category, read time, title (and the description on the large version).
+interface Props { slug: string; title: string; description?: string; category: string; cover: string; time: string; big?: boolean; eager?: boolean }
+const { slug, title, description, category, cover, time, big = false, eager = false } = Astro.props;
+---
+<a class:list={['bc', { big }]} href={`/blog/${slug}`}>
+  <span class="cv"><img src={cover} alt="" width="1600" height="900" loading={eager ? 'eager' : 'lazy'} decoding="async" /></span>
+  <span class="meta"><span class="tg">{category}</span><span>{time} read</span></span>
+  <span class="tt">{title}</span>
+  {big && description && <span class="ds">{description}</span>}
+</a>
+<style>
+  .bc { display: block; color: inherit; text-decoration: none; }
+  .cv { display: block; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: #f4f4f2; box-shadow: inset 0 0 0 1px #e2e2de; }
+  .cv img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--m-ease, ease); }
+  .bc:hover .cv img { transform: scale(1.02); }
+  .meta { display: flex; gap: 10px; align-items: center; margin-top: 14px; font-size: 12.5px; color: #767672; }
+  .tg { font-weight: 500; color: #111; padding: 2px 7px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; }
+  .tt { display: block; margin-top: 8px; font-family: var(--m-serif, Newsreader, Georgia, serif); font-size: 21px; line-height: 1.25; letter-spacing: -.01em; }
+  .bc:hover .tt { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .ds { display: block; margin-top: 8px; color: #6a6a66; font-size: 14.5px; line-height: 1.55; }
+  .big .tt { font-size: 30px; line-height: 1.15; }
+  @media (max-width: 720px) { .big .tt { font-size: 25px; } }
+</style>

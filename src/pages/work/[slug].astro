@@ -7,6 +7,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import WorkCta from '../../components/pages/work/WorkCta.astro';
 import { site } from '../../data/site';
+import { publishedPosts } from '../../data/blog';
 
 export async function getStaticPaths() {
   const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -15,6 +16,7 @@ export async function getStaticPaths() {
 const { entry, next } = Astro.props;
 const said = (await getCollection('videos')).map((v) => v.data).find((v) => v.video && v.company.toLowerCase() === entry.data.name.toLowerCase());
 const { Content } = await render(entry);
+const note = (await publishedPosts()).find((b) => b.data.related === entry.id);
 const p = entry.data;
 // Full-width presentation boards (kind: board) show edge to edge under the write-up; screens show in the column.
 const boards = p.gallery.filter((g) => g.kind === 'board');
@@ -138,6 +140,13 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
           ))}
         </section>
       )}
+      {note && (
+        <a class="rnote" href={`/blog/${note.id}`}>
+          <img src={note.data.cover} alt="" loading="lazy" />
+          <span><small>Related note</small><b>{note.data.title}</b></span>
+          <span class="ra">Read &#8594;</span>
+        </a>
+      )}
       <div class="nxw">
           <a class="next" href={`/work/${next.id}`}>
             <span class="mu2">Next case study</span>
@@ -228,6 +237,12 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .mu2 { color: var(--m-mu-2); font-size: 13px; }
   .next { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px 0; border-top: 1px solid var(--m-line); border-bottom: 1px solid var(--m-line); margin-top: 32px; color: inherit; text-decoration: none; }
   .next .nx { display: flex; align-items: center; gap: 18px; }
+  .rnote { width: min(960px, 100% - 32px); margin: 48px auto 0; display: flex; align-items: center; gap: 18px; padding: 14px 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; color: inherit; text-decoration: none; }
+  .rnote:hover { box-shadow: inset 0 0 0 1px #111; }
+  .rnote img { width: 120px; height: 68px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+  .rnote small { display: block; font-size: 12px; color: #767672; }
+  .rnote b { display: block; font-weight: 500; margin-top: 2px; }
+  .rnote .ra { margin-left: auto; font-weight: 500; white-space: nowrap; }
   .next .nt { text-align: right; }
   .next .nt b { display: block; font-weight: 500; font-size: 18px; }
   .next img { width: 120px; height: 76px; object-fit: cover; object-position: top; border-radius: 3px; box-shadow: 0 0 0 1px #111; transition: transform .4s var(--m-ease); }

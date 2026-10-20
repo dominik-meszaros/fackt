@@ -15,6 +15,9 @@ import Proof from '../components/home/Proof.astro';
 import Pricing from '../components/home/Pricing.astro';
 import Working from '../components/home/Working.astro';
 import Postcard from '../components/home/Postcard.astro';
+import Notes from '../components/home/Notes.astro';
+import { publishedPosts } from '../data/blog';
+const hasNotes = (await publishedPosts()).length > 0;
 
 const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
 const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id, ...e.data }));
@@ -46,6 +49,7 @@ const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data
       <Step />
       <Working />
       <Step />
+      {hasNotes && <><Notes /><Step /></>}
       <Postcard />
     </main>
     <Footer />
