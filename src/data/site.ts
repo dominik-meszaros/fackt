@@ -9,6 +9,11 @@ export const site = {
     'Fackt is an independent UI/UX and product design studio for SaaS and tech companies. We design SaaS products, dashboards, mobile apps and landing pages that turn users into customers.',
   email: 'dominik@fackt.io',
   booking: 'https://cal.com/fackt/30min',
+  // Expert badges in the footer. Add each profile link once you have it (empty = badge shows without a link).
+  badges: [
+    { label: 'Framer Expert', href: '' },
+    { label: 'Rive Expert', href: '' },
+  ],
   // The integrated booking page. Every "Book a call" button points here.
   bookPage: '/book',
   calLink: 'fackt/30min',
@@ -17,6 +22,7 @@ export const site = {
     { label: 'X', href: 'https://x.com/kcinimoDM' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/dominik-meszaros/' },
     { label: 'Behance', href: 'https://www.behance.net/dominikmeszaros' },
+    { label: 'Contra', href: 'https://contra.com/dominik_meszaros_bpbjfgt0?referralExperimentNid=DEFAULT_REFERRAL_PROGRAM&referrerUsername=dominik_meszaros_bpbjfgt0' },
   ],
 };
 
@@ -80,7 +86,7 @@ export const testimonials = [
 ];
 
 // TODO before launch: confirm the current Contra rating.
-export const rating = { value: '4.96', source: 'Contra', href: 'https://contra.com' };
+export const rating = { value: '4.96', source: 'Contra', href: 'https://contra.com/dominik_meszaros_bpbjfgt0?referralExperimentNid=DEFAULT_REFERRAL_PROGRAM&referrerUsername=dominik_meszaros_bpbjfgt0' };
 
 export const reviews = [
   {

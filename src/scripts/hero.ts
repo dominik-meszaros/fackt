@@ -42,7 +42,7 @@ export function initHero() {
   // Stage images after the first load only when their slide (or the one before it) is shown.
   const load = (n: number) => {
     const img = shots[(n + shots.length) % shots.length]?.querySelector<HTMLImageElement>('img[data-src]');
-    if (img) { img.src = img.dataset.src!; img.removeAttribute('data-src'); }
+    if (img) { if (img.dataset.srcset) img.srcset = img.dataset.srcset; img.src = img.dataset.src!; img.removeAttribute('data-src'); }
   };
   function showSlide(i: number) {
     cur = (i + data.stage.length) % data.stage.length;
