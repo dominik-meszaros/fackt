@@ -30,7 +30,8 @@ const ld = {
   sameAs: site.socials.map((s) => s.href),
 };
 const web = { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: site.url };
-const ogImage = new URL(image, site.url).toString();
+// ?v= changes when the preview images are redrawn, so LinkedIn and X fetch the new file instead of their cached copy.
+const ogImage = new URL(image, site.url).toString() + (image.startsWith('/og/') ? '?v=2' : '');
 ---
 <!doctype html>
 <html lang="en">
