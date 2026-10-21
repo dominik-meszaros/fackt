@@ -9,7 +9,7 @@ export async function GET() {
   const posts = await publishedPosts();
   const today = new Date().toISOString().slice(0, 10);
   const pages: [string, string][] = [
-    ['/', '1.0'], ['/work', '0.9'], ['/services', '0.9'], ['/audit', '0.8'], ['/book', '0.8'],
+    ['/', '1.0'], ['/work', '0.9'], ['/services', '0.9'], ['/audit', '0.8'], ['/book', '0.8'], ['/privacy', '0.3'],
     ...servicePages.map((s) => [`/services/${s.slug}`, '0.8'] as [string, string]),
     ...work.map((w) => [`/work/${w.id}`, '0.7'] as [string, string]),
     ...(posts.length ? [['/blog', '0.8'] as [string, string]] : []),

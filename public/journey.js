@@ -205,8 +205,12 @@
   }
   var calTries = 0, calPoll = setInterval(function () { hookCal(); if (calHooked || ++calTries > 40) clearInterval(calPoll); }, 500);
 
+  // Heartbeat: while the tab is open and visible, report every 30 s so the live view in /admin/stats stays current.
+  setInterval(function () { if (document.visibilityState === "visible") flush(); }, 30000);
+
   // ---------- go ----------
   startPage();
+  setTimeout(flush, 1500); // report the visit right away (for the live view), not only when the tab closes
   tagCalLinks();
   window.facktJourney = { track: track, convert: convert, visitorId: vid };
 })();

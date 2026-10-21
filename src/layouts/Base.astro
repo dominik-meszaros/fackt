@@ -3,6 +3,7 @@ import '../styles/fonts.css';
 import '../styles/global.css';
 import '../styles/mono.css';
 import { site } from '../data/site';
+import Consent from '../components/Consent.astro';
 
 interface Props {
   lcp?: string; // main above-the-fold image, preloaded so it starts downloading right away
@@ -67,11 +68,19 @@ const ogImage = new URL(image, site.url).toString() + (image.startsWith('/og/') 
     <script type="application/ld+json" set:html={JSON.stringify([ld, web, ...schema])} />
     <script is:inline>document.documentElement.classList.add('js');</script>
     <script is:inline src="/journey.js" defer></script>
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-XV81R64FDN"></script>
-    <script is:inline>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XV81R64FDN');</script>
+    <script is:inline>
+      // Google Analytics loads only after the visitor accepts the cookie banner (components/Consent.astro).
+      window.facktLoadGA = function () {
+        if (window.facktGA) return; window.facktGA = true;
+        window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+        gtag('js', new Date()); gtag('config', 'G-XV81R64FDN');
+        var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=G-XV81R64FDN'; document.head.appendChild(s);
+      };
+    </script>
   </head>
   <body>
     <slot />
+    <Consent />
     <script>
       const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
       if ('IntersectionObserver' in window) {

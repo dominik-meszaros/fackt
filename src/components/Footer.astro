@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
       })}</span>
     </span>
     <a href={`mailto:${site.email}`}>{site.email}</a>
-    <span>&copy; {year} Fackt</span>
+    <span class="lg"><a href="/privacy">Privacy</a><a href="/privacy#cookies" data-consent-open>Cookie settings</a><span>&copy; {year} Fackt Labs LLC</span></span>
   </div>
 </footer>
 
@@ -38,6 +38,7 @@ const year = new Date().getFullYear();
   .r2 { margin-top: 18px; font-size: 12.5px; color: #8a8a86; justify-content: space-between; }
   .lc { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .bdg { display: inline-flex; gap: 6px; }
+  .lg { display: inline-flex; gap: 16px; flex-wrap: wrap; }
   .bdg .b { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px 0 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; background: #fff; color: #111; font-size: 11.5px; font-weight: 500; }
   .ft .bdg a.b:hover { text-decoration: none; box-shadow: inset 0 0 0 1px #111; }
   @media (max-width: 720px) {

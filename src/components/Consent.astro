@@ -1,0 +1,46 @@
+---
+// Cookie consent. Google Analytics only loads after "Accept". The choice is kept in localStorage ("fackt_consent").
+// The journey tracker (public/journey.js) runs without consent; see the Privacy page for what it records.
+// Anything with data-consent-open (the footer "Cookie settings" link) reopens the banner.
+---
+<div class="cs" role="dialog" aria-live="polite" aria-label="Cookie settings" hidden data-cs>
+  <p><b>Cookies</b> We would like to use Google Analytics to see which pages help people. Nothing is shared for ads. <a href="/privacy#cookies">Details</a></p>
+  <div class="bt">
+    <button type="button" class="m-btn dk" data-cs-yes>Accept</button>
+    <button type="button" class="m-btn lt" data-cs-no>Decline</button>
+  </div>
+</div>
+<style>
+  .cs { position: fixed; left: 16px; bottom: 16px; z-index: 80; width: min(380px, calc(100% - 32px)); background: #fff; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; padding: 16px 18px; font-size: 13.5px; line-height: 1.5; color: #2b2b29; }
+  .cs[hidden] { display: none; }
+  .cs p { margin: 0; }
+  .cs b { display: block; font-weight: 500; color: #111; margin-bottom: 4px; font-size: 14px; }
+  .cs a { color: #111; text-underline-offset: 3px; }
+  .bt { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .bt .m-btn { height: 38px; width: 100%; justify-content: center; }
+  @media (max-width: 720px) { .cs { left: 12px; right: 12px; bottom: 12px; width: auto; } }
+</style>
+<script>
+  const KEY = 'fackt_consent';
+  const box = document.querySelector<HTMLElement>('[data-cs]');
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; } };
+  const write = (v: 'yes' | 'no') => { try { localStorage.setItem(KEY, JSON.stringify({ v, at: Date.now() })); } catch {} };
+  const ga = () => (window as any).facktLoadGA?.();
+  const c = read();
+  if (c?.v === 'yes') ga();
+  else if (!c && box) setTimeout(() => (box.hidden = false), 1200);
+  box?.querySelector('[data-cs-yes]')?.addEventListener('click', () => { write('yes'); box.hidden = true; ga(); });
+  box?.querySelector('[data-cs-no]')?.addEventListener('click', () => {
+    const had = read()?.v === 'yes';
+    write('no'); box.hidden = true;
+    if (had) { // stop Google Analytics now and clear its cookies
+      (window as any)['ga-disable-G-XV81R64FDN'] = true;
+      document.cookie.split(';').map((x) => x.split('=')[0].trim()).filter((n) => n.startsWith('_ga'))
+        .forEach((n) => { document.cookie = `${n}=; Max-Age=0; path=/; domain=.${location.hostname.replace(/^www\./, '')}`; document.cookie = `${n}=; Max-Age=0; path=/`; });
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const t = (e.target as HTMLElement).closest?.('[data-consent-open]');
+    if (t && box) { e.preventDefault(); box.hidden = false; }
+  });
+</script>

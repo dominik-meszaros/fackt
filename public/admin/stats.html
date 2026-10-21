@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Fackt stats</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    /* Fackt stats: reads the "stats" function in Supabase (project iasgepbkdqyhjoxjfkrh). The key lives in journey_config.stats_key. */
+    @font-face { font-family: Geist; src: url(/fonts/geist-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: Geist; src: url(/fonts/geist-latin-500-normal.woff2) format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: Geist; src: url(/fonts/geist-latin-600-normal.woff2) format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Geist Mono'; src: url(/fonts/geist-mono-latin-400-normal.woff2) format('woff2'); font-weight: 400; font-display: swap; }
+    :root { --ink: #111; --mut: #6a6a66; --faint: #9a9a96; --line: #e4e4e0; --bg: #fbfaf7; --card: #fff; --up: #1a7f37; --down: #b42318; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    .wrap { width: min(1120px, 100% - 32px); margin: 0 auto; padding: 22px 0 60px; }
+    header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 500; text-decoration: none; }
+    .brand small { color: var(--faint); font-weight: 400; }
+    .tabs { display: flex; margin-left: auto; box-shadow: inset 0 0 0 1px var(--ink); border-radius: 3px; overflow: hidden; }
+    .tabs button { border: 0; background: none; font: inherit; font-size: 13px; padding: 7px 12px; cursor: pointer; color: var(--ink); }
+    .tabs button + button { box-shadow: inset 1px 0 0 var(--line); }
+    .tabs button.on { background: var(--ink); color: #fff; }
+    .upd { font: 11.5px 'Geist Mono', monospace; color: var(--faint); }
+    .card { background: var(--card); box-shadow: inset 0 0 0 1px var(--line); border-radius: 4px; padding: 18px 20px; }
+    .eb { font: 11px 'Geist Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin: 0 0 12px; }
+    .live { margin-top: 22px; display: grid; grid-template-columns: 260px 1fr; gap: 0; padding: 0; background: var(--ink); color: #fff; box-shadow: 4px 4px 0 #c9c9c4; }
+    .live .n { padding: 22px 24px; border-right: 1px solid #2a2a2a; }
+    .live .n b { display: block; font-size: 56px; line-height: 1; font-weight: 500; letter-spacing: -.03em; }
+    .live .n span { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: #bdbdb8; font-size: 13px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 0 rgba(61,220,132,.6); animation: pulse 1.8s infinite; }
+    .dot.off { background: #666; animation: none; }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(61,220,132,0); } 100% { box-shadow: 0 0 0 0 rgba(61,220,132,0); } }
+    .live ul { list-style: none; margin: 0; padding: 14px 22px; display: grid; gap: 2px; align-content: center; min-height: 120px; }
+    .live li { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 7px 0; border-bottom: 1px solid #262626; font-size: 13.5px; }
+    .live li:last-child { border: 0; }
+    .live li em { font-style: normal; color: #9a9a96; font-size: 12.5px; }
+    .live .empty { color: #8a8a86; font-size: 13.5px; }
+    .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 18px; }
+    .kpi .l { font-size: 12.5px; color: var(--mut); }
+    .kpi .v { font-size: 28px; font-weight: 500; letter-spacing: -.02em; margin-top: 2px; }
+    .kpi .d { font-size: 12px; margin-top: 2px; color: var(--faint); }
+    .kpi .d.up { color: var(--up); } .kpi .d.down { color: var(--down); }
+    .chart { margin-top: 12px; }
+    .bars { display: flex; align-items: flex-end; gap: 3px; height: 150px; padding-top: 10px; }
+    .bars div { flex: 1; background: var(--ink); min-height: 2px; border-radius: 2px 2px 0 0; position: relative; }
+    .bars div:hover { background: #555; }
+    .bars div:hover::after { content: attr(data-t); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--ink); color: #fff; font-size: 11.5px; padding: 3px 7px; border-radius: 3px; z-index: 2; }
+    .axis { display: flex; justify-content: space-between; font: 11px 'Geist Mono', monospace; color: var(--faint); margin-top: 6px; }
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .rows { display: grid; gap: 0; }
+    .row { display: grid; grid-template-columns: minmax(0, 1fr) 90px 38px; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid #f0f0ec; font-size: 13.5px; }
+    .row:first-child { border: 0; }
+    .row .k { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .b { height: 6px; background: #efefeb; border-radius: 3px; overflow: hidden; }
+    .row .b i { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+    .row .c { text-align: right; font-variant-numeric: tabular-nums; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { text-align: left; font-weight: 400; color: var(--faint); font-size: 12px; padding: 0 0 8px; }
+    td { padding: 8px 0; border-top: 1px solid #f0f0ec; font-variant-numeric: tabular-nums; }
+    th.r, td.r { text-align: right; }
+    .feed { display: grid; }
+    .v { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 14px; padding: 12px 0; border-top: 1px solid #f0f0ec; font-size: 13.5px; }
+    .v:first-child { border: 0; }
+    .v time { color: var(--faint); font: 12px 'Geist Mono', monospace; padding-top: 2px; }
+    .v .w b { font-weight: 500; }
+    .v .w span { color: var(--mut); }
+    .v .ch { margin-top: 3px; color: var(--ink); line-height: 1.55; }
+    .v .ch i { color: #c2c2be; font-style: normal; padding: 0 4px; }
+    .v .ev { margin-top: 3px; color: var(--mut); font-size: 12.5px; }
+    .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--line); color: var(--mut); margin-left: 6px; vertical-align: 1px; }
+    .tag.hot { background: var(--ink); color: #fff; box-shadow: none; }
+    .v .t { color: var(--mut); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .none { color: var(--faint); font-size: 13.5px; padding: 6px 0; }
+    .foot { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--mut); }
+    /* key gate */
+    .gate { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+    .gate form { width: min(360px, 100%); background: #fff; box-shadow: 0 0 0 1px var(--ink), 4px 4px 0 var(--ink); padding: 26px 24px; }
+    .gate h1 { font-size: 20px; font-weight: 500; margin: 14px 0 4px; }
+    .gate p { margin: 0 0 16px; color: var(--mut); font-size: 13.5px; }
+    .gate input { width: 100%; height: 40px; border: 0; box-shadow: inset 0 0 0 1px #cfcfcb; border-radius: 3px; padding: 0 12px; font: 14px 'Geist Mono', monospace; }
+    .gate input:focus { outline: 0; box-shadow: inset 0 0 0 1.5px var(--ink); }
+    .gate button { margin-top: 10px; width: 100%; height: 40px; border: 0; border-radius: 3px; background: var(--ink); color: #fff; font: 500 14px Geist, sans-serif; cursor: pointer; }
+    .gate .err { color: var(--down); font-size: 12.5px; margin: 8px 0 0; min-height: 1em; }
+    [hidden] { display: none !important; }
+    @media (max-width: 860px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); } .kpis .kpi:last-child { grid-column: span 2; }
+      .g2, .g3 { grid-template-columns: 1fr; }
+      .live { grid-template-columns: 1fr; } .live .n { border-right: 0; border-bottom: 1px solid #2a2a2a; }
+      .tabs { margin-left: 0; order: 3; width: 100%; } .tabs button { flex: 1; }
+      .v { grid-template-columns: 1fr; gap: 4px; } .v .t { order: -1; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute"><symbol id="mk" viewBox="0 0 20 20"><path d="M1.03 0H18.97V6.67H13.57V13.33H7.55V20H1.03Z" /></symbol></svg>
+
+  <div class="gate" data-gate hidden>
+    <form data-gate-form>
+      <svg width="22" height="22"><use href="#mk" /></svg>
+      <h1>Fackt stats</h1>
+      <p>Enter your stats key. This browser remembers it.</p>
+      <input name="key" type="password" autocomplete="current-password" placeholder="Stats key" required />
+      <button type="submit">Open stats</button>
+      <p class="err" data-gate-err></p>
+    </form>
+  </div>
+
+  <div class="wrap" data-app hidden>
+    <header>
+      <a class="brand" href="/"><svg width="18" height="18"><use href="#mk" /></svg>Fackt <small>stats</small></a>
+      <span class="upd" data-upd></span>
+      <div class="tabs" role="tablist" aria-label="Range">
+        <button data-days="1">Today</button><button data-days="7" class="on">7 days</button><button data-days="30">30 days</button><button data-days="90">90 days</button>
+      </div>
+    </header>
+
+    <section class="card live" aria-label="Live">
+      <div class="n"><b data-live-n>0</b><span><i class="dot off" data-live-dot></i><span data-live-l>on the site right now</span></span></div>
+      <ul data-live-list></ul>
+    </section>
+
+    <section class="kpis" data-kpis></section>
+
+    <section class="card chart"><p class="eb">Visitors per day</p><div class="bars" data-bars></div><div class="axis" data-axis></div></section>
+
+    <div class="g2">
+      <section class="card"><p class="eb">Where they came from</p><div class="rows" data-sources></div></section>
+      <section class="card"><p class="eb">Top pages</p><table><thead><tr><th>Page</th><th class="r">Views</th><th class="r">Avg time</th><th class="r">Read to end</th></tr></thead><tbody data-pages></tbody></table></section>
+    </div>
+    <div class="g3">
+      <section class="card"><p class="eb">Devices</p><div class="rows" data-devices></div></section>
+      <section class="card"><p class="eb">Locations (by time zone)</p><div class="rows" data-places></div></section>
+      <section class="card"><p class="eb">Leads</p><div class="rows" data-leads></div></section>
+    </div>
+    <section class="card" style="margin-top:12px"><p class="eb">Recent visits</p><div class="feed" data-feed></div></section>
+
+    <div class="foot">
+      <a href="https://analytics.google.com/analytics/web/#/realtime" rel="noopener" target="_blank">Google Analytics realtime &#8599;</a>
+      <a href="/admin/">Content (CMS)</a>
+      <a href="#" data-forget>Forget key on this browser</a>
+      <span>Counts people tracked by fackt.io's own visit measurement. Updates every 15 seconds.</span>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var API = 'https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/stats';
+  var KEY = 'fackt_stats_key';
+  var $ = function (s) { return document.querySelector(s); };
+  var key = null; try { key = localStorage.getItem(KEY); } catch (e) {}
+  var days = 7, timer = null;
+  try { days = Number(localStorage.getItem('fackt_stats_days')) || 7; } catch (e) {}
+
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var num = function (n) { return Number(n || 0).toLocaleString('en-US'); };
+  var dur = function (ms) { var s = Math.round((ms || 0) / 1000); if (s < 60) return s + 's'; var m = Math.floor(s / 60); if (m < 60) return m + 'm ' + (s % 60) + 's'; return Math.floor(m / 60) + 'h ' + (m % 60) + 'm'; };
+  var ago = function (ts) { var s = Math.max(0, Math.round((Date.now() - ts) / 1000)); if (s < 60) return 'now'; var m = Math.round(s / 60); if (m < 60) return m + 'm ago'; var h = Math.round(m / 60); if (h < 24) return h + 'h ago'; return Math.round(h / 24) + 'd ago'; };
+  var when = function (ts) { var d = new Date(ts); var today = new Date().toDateString() === d.toDateString(); return today ? d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
+  var rows = function (list, total) {
+    if (!list.length) return '<p class="none">No data yet.</p>';
+    var max = list[0].v || 1;
+    return list.map(function (x) { return '<div class="row"><span class="k" title="' + esc(x.k) + '">' + esc(x.k) + '</span><span class="b"><i style="width:' + Math.max(3, Math.round(x.v / max * 100)) + '%"></i></span><span class="c">' + num(x.v) + '</span></div>'; }).join('');
+  };
+
+  function gate(msg) {
+    $('[data-app]').hidden = true; $('[data-gate]').hidden = false;
+    $('[data-gate-err]').textContent = msg || '';
+    $('[data-gate-form] input').focus();
+  }
+  $('[data-gate-form]').addEventListener('submit', function (e) {
+    e.preventDefault(); key = e.target.key.value.trim();
+    try { localStorage.setItem(KEY, key); } catch (err) {}
+    load(true);
+  });
+  $('[data-forget]').addEventListener('click', function (e) { e.preventDefault(); try { localStorage.removeItem(KEY); } catch (err) {} key = null; clearInterval(timer); gate(); });
+  document.querySelectorAll('[data-days]').forEach(function (b) {
+    b.classList.toggle('on', Number(b.dataset.days) === days);
+    b.addEventListener('click', function () {
+      days = Number(b.dataset.days); try { localStorage.setItem('fackt_stats_days', days); } catch (e) {}
+      document.querySelectorAll('[data-days]').forEach(function (x) { x.classList.toggle('on', x === b); });
+      load();
+    });
+  });
+
+  function load(first) {
+    if (!key) return gate();
+    fetch(API + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
+      .then(function (r) { if (r.status === 403) throw new Error('key'); if (!r.ok) throw new Error('net'); return r.json(); })
+      .then(function (d) {
+        $('[data-gate]').hidden = true; $('[data-app]').hidden = false;
+        render(d);
+        if (!timer) timer = setInterval(function () { if (document.visibilityState === 'visible') load(); }, 15000);
+      })
+      .catch(function (err) {
+        if (err.message === 'key') { try { localStorage.removeItem(KEY); } catch (e) {} key = null; clearInterval(timer); timer = null; gate(first ? 'That key did not work.' : 'Your key no longer works. Enter it again.'); }
+        else $('[data-upd]').textContent = 'Could not refresh, retrying';
+      });
+  }
+
+  function render(d) {
+    var t = d.totals, label = days === 1 ? 'yesterday' : 'previous ' + days + ' days';
+    $('[data-upd]').textContent = 'Updated ' + new Date(d.generated).toLocaleTimeString('en-GB');
+    // live
+    $('[data-live-n]').textContent = d.live.count;
+    $('[data-live-dot]').classList.toggle('off', !d.live.count);
+    $('[data-live-l]').textContent = d.live.count === 1 ? 'person on the site right now' : 'people on the site right now';
+    $('[data-live-list]').innerHTML = d.live.list.length ? d.live.list.slice(0, 6).map(function (x) {
+      return '<li><span>' + esc(x.page) + '</span><em>' + esc(x.src) + ' &#183; ' + esc(x.city) + ' &#183; ' + esc(x.device) + ' &#183; ' + dur(Date.now() - x.since) + '</em></li>';
+    }).join('') : '<li class="empty">Quiet right now. Visits show up here within about 30 seconds.</li>';
+    // kpis
+    var dv = t.visitors - t.prevVisitors;
+    var delta = t.prevVisitors || t.visitors ? '<div class="d ' + (dv > 0 ? 'up' : dv < 0 ? 'down' : '') + '">' + (dv > 0 ? '+' : '') + dv + ' vs ' + label + '</div>' : '<div class="d">&nbsp;</div>';
+    var k = function (l, v, sub) { return '<div class="card kpi"><div class="l">' + l + '</div><div class="v">' + v + '</div>' + (sub || '<div class="d">&nbsp;</div>') + '</div>'; };
+    $('[data-kpis]').innerHTML =
+      k('Visitors', num(t.visitors), delta) +
+      k('Page views', num(t.views), '<div class="d">' + (t.sessions ? (t.views / t.sessions).toFixed(1) : 0) + ' per visit</div>') +
+      k('Avg visit', dur(t.avgTime), '<div class="d">' + Math.round(t.bounce * 100) + '% left after one page</div>') +
+      k('Returning', num(t.returning), '<div class="d">' + (t.visitors ? Math.round(t.returning / t.visitors * 100) : 0) + '% of visitors</div>') +
+      k('Leads', num(t.forms + t.bookings), '<div class="d">' + t.bookings + ' booked, ' + t.forms + ' forms</div>');
+    // chart
+    var max = Math.max.apply(null, d.daily.map(function (x) { return x.v; }).concat([1]));
+    $('[data-bars]').innerHTML = d.daily.map(function (x) {
+      var lab = new Date(x.d + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      return '<div style="height:' + Math.max(1.5, x.v / max * 100) + '%" data-t="' + lab + ': ' + x.v + '"></div>';
+    }).join('');
+    var f = function (s) { return new Date(s + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); };
+    $('[data-axis]').innerHTML = d.daily.length ? '<span>' + f(d.daily[0].d) + '</span><span>' + f(d.daily[d.daily.length - 1].d) + '</span>' : '';
+    // lists
+    $('[data-sources]').innerHTML = rows(d.sources);
+    $('[data-devices]').innerHTML = rows(d.devices);
+    $('[data-places]').innerHTML = rows(d.places);
+    $('[data-pages]').innerHTML = d.pages.length ? d.pages.map(function (p) {
+      return '<tr><td>' + esc(p.k) + '</td><td class="r">' + num(p.v) + '</td><td class="r">' + dur(p.t) + '</td><td class="r">' + Math.round(p.end * 100) + '%</td></tr>';
+    }).join('') : '<tr><td colspan="4" class="none">No data yet.</td></tr>';
+    $('[data-leads]').innerHTML = d.conversions.length ? d.conversions.map(function (c) {
+      return '<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">' + (c.email ? '<a href="mailto:' + esc(c.email) + '">' + esc(c.name) + '</a>' : esc(c.name)) + ' <span class="tag' + (c.source === 'booking' ? ' hot' : '') + '">' + (c.source === 'booking' ? 'booked' : 'form') + '</span></span><span class="c" style="color:var(--faint)">' + ago(c.at) + '</span></div>';
+    }).join('') : '<p class="none">No leads in this range.</p>';
+    // feed
+    $('[data-feed]').innerHTML = d.recent.length ? d.recent.map(function (v) {
+      return '<div class="v"><time>' + when(v.at) + '</time><div class="w"><b>' + esc(v.src) + '</b> <span>&#183; ' + esc(v.city) + ' &#183; ' + esc(v.device) + '</span>' +
+        (v.converted ? '<span class="tag hot">lead</span>' : '') + (v.returning ? '<span class="tag">returning</span>' : '') +
+        '<div class="ch">' + v.chain.slice(0, 8).map(esc).join('<i>&#8594;</i>') + (v.chain.length > 8 ? ' <span>+' + (v.chain.length - 8) + '</span>' : '') + '</div>' +
+        (v.events.length ? '<div class="ev">' + v.events.map(esc).join(' &#183; ') + '</div>' : '') +
+        '</div><span class="t">' + dur(v.time) + '</span></div>';
+    }).join('') : '<p class="none">No visits in this range yet.</p>';
+  }
+
+  load(true);
+})();
+</script>
+</body>
+</html>

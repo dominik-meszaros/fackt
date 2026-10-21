@@ -1,0 +1,123 @@
+---
+// Privacy and cookies. Plain text on purpose: edit it here. Update `updated` whenever the content changes.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+const updated = '21 October 2026';
+const toc = [
+  ['who', 'Who we are'], ['what', 'What we collect'], ['why', 'Why, and on what basis'], ['cookies', 'Cookies and storage'],
+  ['who-else', 'Services we use'], ['keep', 'How long we keep it'], ['rights', 'Your rights'], ['changes', 'Changes'],
+];
+---
+<Base title="Privacy and cookies | Fackt" description="How fackt.io handles your data: what we collect, why, which services we use and how to reach us.">
+  <div class="m-page">
+    <Nav />
+    <main>
+      <header class="ah">
+        <span class="crumb"><a href="/">Fackt</a> <span>/</span> <b>Privacy</b></span>
+        <h1>Privacy and cookies</h1>
+        <p class="lede">The short version: we measure how people use this site so we can make it better, we use what you send us only to reply, and we never sell your data or use it for ads.</p>
+        <p class="up">Last updated {updated}</p>
+      </header>
+      <div class="ar">
+        <aside class="toc" aria-label="On this page"><b>On this page</b>{toc.map(([id, t]) => <a href={`#${id}`}>{t}</a>)}</aside>
+        <article class="bd">
+          <h2 id="who">Who we are</h2>
+          <p>This site is run by <strong>Fackt Labs LLC</strong>, a company registered in the United States, trading as Fackt. We are the controller of the personal data described here.</p>
+          <p>For anything about your data, email <a href={`mailto:${site.email}`}>{site.email}</a>. A real person (Dom, the founder) reads it.</p>
+
+          <h2 id="what">What we collect</h2>
+          <h3>When you browse</h3>
+          <p>Our own visit measurement records which pages you open, how long you stay and how far you scroll, the site that sent you (and any campaign tags in the link), your device type and operating system, your browser language and time zone, and clicks on things like the booking page or our email address. It uses a random ID stored in your browser so repeat visits can be grouped. It does not store your IP address, and it does not follow you to other websites.</p>
+          <p>If you accept cookies, Google Analytics also collects similar usage data. See <a href="#cookies">Cookies and storage</a>.</p>
+          <h3>When you contact us</h3>
+          <p>The postcard and free audit forms send us what you type: usually your name, email, your product's address and your message. If you book a call, Cal.com passes us your name, email, the time you picked and any notes. We link a form or booking to your earlier visits on this site, so we can see which pages you read before getting in touch.</p>
+          <h3>Our servers</h3>
+          <p>Like any website, our hosting provider handles technical data such as your IP address and browser details to deliver pages and keep the site safe.</p>
+
+          <h2 id="why">Why, and on what basis</h2>
+          <table>
+            <thead><tr><th>What</th><th>Why</th><th>Legal basis (GDPR)</th></tr></thead>
+            <tbody>
+              <tr><td>Visit measurement</td><td>To see which pages help, fix what does not and understand where interest comes from</td><td>Our legitimate interest in running and improving the site</td></tr>
+              <tr><td>Google Analytics</td><td>Wider traffic statistics</td><td>Your consent, which you can withdraw at any time</td></tr>
+              <tr><td>Forms and bookings</td><td>To reply, prepare your audit or call, and send a proposal if you ask for one</td><td>Steps you ask for before a contract, and our legitimate interest in answering enquiries</td></tr>
+              <tr><td>Hosting data</td><td>To deliver the site and protect it from abuse</td><td>Our legitimate interest in a working, secure site</td></tr>
+            </tbody>
+          </table>
+          <p>You can object to visit measurement at any time by emailing us, and we will delete what we hold about your visits.</p>
+
+          <h2 id="cookies">Cookies and storage</h2>
+          <p>We ask before setting any Google Analytics cookies. You can change your mind with <a href="#cookies" data-consent-open>Cookie settings</a>, which is also in the footer of every page.</p>
+          <table>
+            <thead><tr><th>Name</th><th>Type</th><th>Purpose</th><th>Kept</th></tr></thead>
+            <tbody>
+              <tr><td>fackt_consent</td><td>Browser storage</td><td>Remembers your cookie choice</td><td>Until you clear it</td></tr>
+              <tr><td>fj_vid, fj_ses</td><td>Browser storage</td><td>Visit measurement: a random visitor ID and the current visit</td><td>Until you clear it</td></tr>
+              <tr><td>_ga, _ga_XV81R64FDN</td><td>Cookie, only after you accept</td><td>Google Analytics: tells visits apart</td><td>Up to 2 years</td></tr>
+            </tbody>
+          </table>
+          <p>The booking page loads the Cal.com calendar, which may set its own cookies to work. Cal.com explains these in its own privacy policy.</p>
+
+          <h2 id="who-else">Services we use</h2>
+          <p>We use a few trusted providers to run the site. They process data only on our behalf and under their data protection terms.</p>
+          <ul>
+            <li><strong>Cloudflare</strong>, hosting and security</li>
+            <li><strong>Supabase</strong>, the database for our visit measurement</li>
+            <li><strong>Resend</strong>, delivers form messages and visit summaries to our inbox</li>
+            <li><strong>Cal.com</strong>, call bookings</li>
+            <li><strong>Google</strong> (Google Analytics, and Google Workspace for email), only with your consent for Analytics</li>
+          </ul>
+          <p>Some of these providers are based in, or store data in, the United States. Where data leaves the EU, it is protected by the EU-US Data Privacy Framework or the European Commission's standard contractual clauses.</p>
+          <p>We do not sell personal data, and we do not use it for advertising.</p>
+
+          <h2 id="keep">How long we keep it</h2>
+          <p>Visit measurement data is kept for up to 13 months and then deleted. Messages and bookings are kept as long as we are in touch, and for as long as the law requires if you become a client (for example, for invoices). Ask us at any time and we will delete what we do not have to keep.</p>
+
+          <h2 id="rights">Your rights</h2>
+          <p>You can ask us for a copy of your data, to correct it, to delete it, to limit how we use it, or to receive it in a portable format. You can object to processing based on our legitimate interest and withdraw consent at any time. Email <a href={`mailto:${site.email}`}>{site.email}</a> and we will answer within 30 days.</p>
+          <p>If you think we have not handled your data properly, you can complain to a data protection authority in the EU country where you live or work. In Slovakia, that is the Office for Personal Data Protection of the Slovak Republic (dataprotection.gov.sk).</p>
+
+          <h2 id="changes">Changes</h2>
+          <p>If we change how we handle data, we will update this page and the date at the top.</p>
+        </article>
+      </div>
+    </main>
+    <Footer />
+  </div>
+</Base>
+<style>
+  .ah { width: min(720px, 100% - 32px); margin: 0 auto; padding-top: 56px; }
+  .crumb { font-size: 12.5px; color: #767672; display: flex; gap: 8px; align-items: center; }
+  .crumb a { color: inherit; text-decoration: none; }
+  .crumb b { color: #111; font-weight: 500; }
+  h1 { margin: 16px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 48px; line-height: 1.08; letter-spacing: -.02em; }
+  .lede { margin: 16px 0 0; font-size: 18px; line-height: 1.55; color: #6a6a66; }
+  .up { margin: 18px 0 0; font-size: 13px; color: #767672; }
+  .ar { width: min(960px, 100% - 32px); margin: 44px auto 80px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+  .toc { position: sticky; top: 96px; align-self: start; font-size: 13px; }
+  .toc b { display: block; font-weight: 500; margin-bottom: 10px; }
+  .toc a { display: block; padding: 6px 0 6px 12px; color: #6a6a66; text-decoration: none; border-left: 1.5px solid #ececea; }
+  .toc a:hover { color: #111; border-left-color: #111; }
+  .bd { max-width: 680px; font-size: 16px; line-height: 1.7; color: #2b2b29; }
+  .bd h2 { margin: 40px 0 10px; font-family: var(--m-serif); font-weight: 400; font-size: 28px; line-height: 1.2; color: #111; scroll-margin-top: 96px; }
+  .bd h2:first-child { margin-top: 0; }
+  .bd h3 { margin: 24px 0 6px; font-size: 16px; font-weight: 500; color: #111; }
+  .bd p { margin: 0 0 14px; }
+  .bd ul { margin: 0 0 16px; padding-left: 22px; }
+  .bd li { margin: 6px 0; }
+  .bd a { color: #111; text-underline-offset: 3px; }
+  .bd strong { font-weight: 500; color: #111; }
+  .bd table { width: 100%; border-collapse: collapse; margin: 8px 0 20px; font-size: 14px; line-height: 1.5; }
+  .bd th { text-align: left; font-weight: 500; padding: 10px 10px 10px 0; border-bottom: 1.5px solid #111; }
+  .bd td { padding: 11px 10px 11px 0; border-bottom: 1px solid #ececea; vertical-align: top; }
+  @media (max-width: 720px) {
+    .ah { padding-top: 28px; }
+    h1 { font-size: 34px; }
+    .lede { font-size: 16px; }
+    .ar { grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 28px; }
+    .toc { display: none; }
+    .bd table { display: block; overflow-x: auto; font-size: 13px; }
+  }
+</style>
