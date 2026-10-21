@@ -148,6 +148,8 @@ const agenda = [
     Cal('init', 'fackt', { origin: 'https://cal.com' });
     const config: Record<string, string> = { layout: 'month_view', theme: 'light' };
     if (notes) config.notes = notes;
+    const vid = (window as any).facktJourney?.visitorId || (() => { try { return JSON.parse(localStorage.getItem('fj_vid') || 'null'); } catch { return null; } })();
+    if (vid) config['metadata[fackt_vid]'] = vid;
     Cal.ns.fackt('inline', { elementOrSelector: '#cal-inline', calLink, config });
     Cal.ns.fackt('ui', {
       theme: 'light',

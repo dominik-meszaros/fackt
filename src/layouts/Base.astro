@@ -66,6 +66,9 @@ const ogImage = new URL(image, site.url).toString() + (image.startsWith('/og/') 
     <link rel="preload" href="/fonts/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
     <script type="application/ld+json" set:html={JSON.stringify([ld, web, ...schema])} />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline src="/journey.js" defer></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-XV81R64FDN"></script>
+    <script is:inline>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XV81R64FDN');</script>
   </head>
   <body>
     <slot />
