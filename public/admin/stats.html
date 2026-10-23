@@ -101,6 +101,20 @@
     .stack { display: flex; flex-direction: column; gap: 3px; flex: 1; justify-content: flex-end; height: 100%; }
     .stack span { display: block; border-radius: 2px 2px 0 0; }
     @media (max-width: 860px) { .kpis.k4 { grid-template-columns: repeat(2, 1fr); } .kpis.k4 .kpi:last-child { grid-column: auto; } }
+    .moves { margin-top: 12px; padding: 0; }
+    .moves .hd { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 20px 6px; }
+    .moves .hd b { font-size: 16px; font-weight: 500; }
+    .moves .hd span { font-size: 12.5px; color: var(--faint); }
+    .mv { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 14px 20px; border-top: 1px solid #f0f0ec; }
+    .mv .kd { align-self: start; justify-self: start; font-size: 11.5px; font-weight: 500; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
+    .mv .kd.double { background: var(--ink); color: #fff; }
+    .mv .kd.fix { box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
+    .mv .kd.watch { background: #efefeb; color: var(--mut); }
+    .mv h3 { margin: 0; font-size: 15px; font-weight: 500; }
+    .mv p { margin: 3px 0 0; font-size: 13.5px; color: var(--mut); }
+    .mv p.do { color: var(--ink); }
+    .mv p.do::before { content: "Do: "; font-weight: 500; }
+    @media (max-width: 860px) { .mv { grid-template-columns: 1fr; gap: 8px; } }
     [hidden] { display: none !important; }
     @media (max-width: 860px) {
       .kpis { grid-template-columns: repeat(2, 1fr); } .kpis .kpi:last-child { grid-column: span 2; }
@@ -138,6 +152,8 @@
       <div class="n"><b data-live-n>0</b><span><i class="dot off" data-live-dot></i><span data-live-l>on the site right now</span></span></div>
       <ul data-live-list></ul>
     </section>
+
+    <section class="card moves" aria-label="Next moves"><div class="hd"><b>Next moves</b><span data-moves-range></span></div><div data-moves></div></section>
 
     <section class="kpis" data-kpis></section>
 
@@ -241,6 +257,12 @@
     $('[data-live-list]').innerHTML = d.live.list.length ? d.live.list.slice(0, 6).map(function (x) {
       return '<li><span>' + esc(x.page) + '</span><em>' + esc(x.src) + ' &#183; ' + esc(x.city) + ' &#183; ' + esc(x.device) + ' &#183; ' + dur(Date.now() - x.since) + '</em></li>';
     }).join('') : '<li class="empty">Quiet right now. Visits show up here within about 30 seconds.</li>';
+    // next moves
+    var KD = { double: 'Double down', fix: 'Fix', watch: 'Watch' };
+    $('[data-moves-range]').textContent = 'Based on ' + (days === 1 ? 'today' : 'the last ' + days + ' days');
+    $('[data-moves]').innerHTML = (d.moves || []).map(function (m) {
+      return '<div class="mv"><span class="kd ' + m.kind + '">' + KD[m.kind] + '</span><div><h3>' + esc(m.title) + '</h3><p>' + esc(m.why) + '</p><p class="do">' + esc(m.do) + '</p></div></div>';
+    }).join('');
     // kpis
     var dv = t.visitors - t.prevVisitors;
     var delta = t.prevVisitors || t.visitors ? '<div class="d ' + (dv > 0 ? 'up' : dv < 0 ? 'down' : '') + '">' + (dv > 0 ? '+' : '') + dv + ' vs ' + label + '</div>' : '<div class="d">&nbsp;</div>';
