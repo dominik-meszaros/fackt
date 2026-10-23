@@ -86,6 +86,21 @@
     .gate input:focus { outline: 0; box-shadow: inset 0 0 0 1.5px var(--ink); }
     .gate button { margin-top: 10px; width: 100%; height: 40px; border: 0; border-radius: 3px; background: var(--ink); color: #fff; font: 500 14px Geist, sans-serif; cursor: pointer; }
     .gate .err { color: var(--down); font-size: 12.5px; margin: 8px 0 0; min-height: 1em; }
+    .seo { margin-top: 28px; }
+    .seo h2 { font-size: 18px; font-weight: 500; margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .seo h2 small { font-size: 13px; color: var(--mut); font-weight: 400; }
+    .kpis.k4 { grid-template-columns: repeat(4, 1fr); margin-top: 12px; }
+    .bars.two div { background: var(--ink); }
+    .bars.two div.ai { background: #9a9a96; }
+    .leg { display: flex; gap: 14px; font-size: 12px; color: var(--mut); margin-top: 8px; }
+    .leg i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--ink); margin-right: 6px; }
+    .leg i.ai { background: #9a9a96; }
+    .gsc { margin-top: 12px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .gsc p { margin: 0; color: var(--mut); font-size: 13.5px; max-width: 640px; }
+    .gsc a.b { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 3px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 500; font-size: 13.5px; }
+    .stack { display: flex; flex-direction: column; gap: 3px; flex: 1; justify-content: flex-end; height: 100%; }
+    .stack span { display: block; border-radius: 2px 2px 0 0; }
+    @media (max-width: 860px) { .kpis.k4 { grid-template-columns: repeat(2, 1fr); } .kpis.k4 .kpi:last-child { grid-column: auto; } }
     [hidden] { display: none !important; }
     @media (max-width: 860px) {
       .kpis { grid-template-columns: repeat(2, 1fr); } .kpis .kpi:last-child { grid-column: span 2; }
@@ -137,6 +152,20 @@
       <section class="card"><p class="eb">Locations (by time zone)</p><div class="rows" data-places></div></section>
       <section class="card"><p class="eb">Leads</p><div class="rows" data-leads></div></section>
     </div>
+    <section class="seo" aria-label="Search">
+      <h2>Search and AI <small>Visitors who found fackt.io on Google, Bing and other search engines, or through AI assistants like ChatGPT</small></h2>
+      <div class="kpis k4" data-seo-kpis></div>
+      <section class="card chart"><p class="eb">Search and AI visitors per day</p><div class="bars" data-seo-bars></div><div class="axis" data-seo-axis></div><div class="leg"><span><i></i>Search engines</span><span><i class="ai"></i>AI assistants</span></div></section>
+      <div class="g2">
+        <section class="card"><p class="eb">Pages people land on from search</p><table><thead><tr><th>Page</th><th class="r">Visits</th><th class="r">Avg time</th><th class="r">Kept reading</th></tr></thead><tbody data-seo-land></tbody></table></section>
+        <div style="display:grid;gap:12px;align-content:start">
+          <section class="card"><p class="eb">Search engines</p><div class="rows" data-seo-eng></div></section>
+          <section class="card"><p class="eb">AI assistants</p><div class="rows" data-seo-ai></div></section>
+        </div>
+      </div>
+      <div class="card gsc"><p><b style="color:var(--ink);font-weight:500">Keywords and Google rankings</b> are only in Google Search Console: what people searched, how often fackt.io showed up, its average position and the click rate per page.</p><a class="b" href="https://search.google.com/search-console?resource_id=sc-domain:fackt.io" target="_blank" rel="noopener">Open Search Console &#8599;</a></div>
+    </section>
+
     <section class="card" style="margin-top:12px"><p class="eb">Recent visits</p><div class="feed" data-feed></div></section>
 
     <div class="foot">
@@ -240,6 +269,27 @@
     $('[data-leads]').innerHTML = d.conversions.length ? d.conversions.map(function (c) {
       return '<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">' + (c.email ? '<a href="mailto:' + esc(c.email) + '">' + esc(c.name) + '</a>' : esc(c.name)) + ' <span class="tag' + (c.source === 'booking' ? ' hot' : '') + '">' + (c.source === 'booking' ? 'booked' : 'form') + '</span></span><span class="c" style="color:var(--faint)">' + ago(c.at) + '</span></div>';
     }).join('') : '<p class="none">No leads in this range.</p>';
+    // seo
+    var s = d.seo;
+    if (s) {
+      var sd = s.searchVisitors - s.prevSearch;
+      $('[data-seo-kpis]').innerHTML =
+        k('From search', num(s.searchVisitors), (s.prevSearch || s.searchVisitors) ? '<div class="d ' + (sd > 0 ? 'up' : sd < 0 ? 'down' : '') + '">' + (sd > 0 ? '+' : '') + sd + ' vs ' + label + '</div>' : '') +
+        k('Share of visitors', Math.round(s.share * 100) + '%', '<div class="d">came from a search engine</div>') +
+        k('From AI assistants', num(s.aiVisitors), '<div class="d">ChatGPT, Perplexity, Claude, Gemini</div>') +
+        k('Search visit', dur(s.avgTime), '<div class="d">' + num(s.leads) + ' lead' + (s.leads === 1 ? '' : 's') + ' from search</div>');
+      var smax = Math.max.apply(null, s.daily.map(function (x) { return x.s + x.a; }).concat([1]));
+      $('[data-seo-bars]').innerHTML = s.daily.map(function (x) {
+        var lab = new Date(x.d + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        return '<div style="height:' + Math.max(1.5, (x.s + x.a) / smax * 100) + '%;background:none;display:flex" data-t="' + lab + ': ' + x.s + ' search, ' + x.a + ' AI"><span class="stack"><span style="flex:' + x.a + ';background:#9a9a96"></span><span style="flex:' + Math.max(x.s, x.s + x.a ? 0 : 1) + ';background:' + (x.s + x.a ? 'var(--ink)' : '#e4e4e0') + '"></span></span></div>';
+      }).join('');
+      $('[data-seo-axis]').innerHTML = $('[data-axis]').innerHTML;
+      $('[data-seo-land]').innerHTML = s.landing.length ? s.landing.map(function (p) {
+        return '<tr><td>' + esc(p.k) + '</td><td class="r">' + num(p.v) + '</td><td class="r">' + dur(p.t) + '</td><td class="r">' + Math.round(p.deep * 100) + '%</td></tr>';
+      }).join('') : '<tr><td colspan="4" class="none">No search visits in this range yet.</td></tr>';
+      $('[data-seo-eng]').innerHTML = rows(s.engines);
+      $('[data-seo-ai]').innerHTML = s.ai.length ? rows(s.ai) : '<p class="none">None yet.</p>';
+    }
     // feed
     $('[data-feed]').innerHTML = d.recent.length ? d.recent.map(function (v) {
       return '<div class="v"><time>' + when(v.at) + '</time><div class="w"><b>' + esc(v.src) + '</b> <span>&#183; ' + esc(v.city) + ' &#183; ' + esc(v.device) + '</span>' +
