@@ -2,6 +2,9 @@
 // CMS: Settings > Pricing.
 import SectionHead from './SectionHead.astro';
 import { pricingSettings as P } from '../../data/settings';
+import { publishedPosts } from '../../data/blog';
+// Links the pricing note once it is published (Blog > How much SaaS product design costs).
+const note = (await publishedPosts()).find((p) => p.data.category === 'Pricing');
 const ck = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 ---
 <section class="m-sec" id="pricing">
@@ -18,8 +21,10 @@ const ck = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
     ))}
   </div>
   <div class="pstrip"><span><b>Not sure yet?</b> Start with a free audit of your product, within 2 days.</span><a class="m-btn dk" href="/audit">Get a free audit</a></div>
+  {note && <a class="pnote" href={`/blog/${note.id}`}>What changes the price, and when a retainer beats a project &#8594;</a>}
 </section>
 <style>
+  .pnote { display: inline-block; margin-top: 18px; font-size: 14px; color: #111; text-underline-offset: 3px; }
   .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; width: min(960px, 100%); text-align: left; }
   .plan { background: #f2f2f0; border-radius: 4px; padding: 30px 30px 28px; display: flex; flex-direction: column; }
   .plan.k { background: #111; color: #fff; }
