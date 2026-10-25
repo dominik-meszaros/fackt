@@ -277,3 +277,24 @@ collections:
       - { name: related, label: "Related case study (optional)", widget: relation, collection: work, value_field: '{{slug}}', search_fields: [name, service], display_fields: ['{{name}}, {{service}}'], required: false }
       - { name: draft, label: Draft, widget: boolean, default: true }
       - { name: body, label: Text, widget: markdown }
+  - name: free
+    label: Free files
+    label_singular: Free file
+    folder: src/content/free
+    create: true
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    summary: '{{title}} · fackt.io/free/{{slug}}'
+    description: 'One page per free Figma file, at fackt.io/free/<slug>. The Figma link is NOT here: add it in Supabase > Table editor > list_resources, in a row with the same slug, so it only goes out by email.'
+    fields:
+      - { label: 'Address (slug)', name: slug, widget: string, hint: 'Short, easy to say in a video: login-page, onboarding. Must match the slug in Supabase.' }
+      - { label: 'Title', name: title, widget: string, hint: 'What the file is, e.g. SaaS login page. Used in emails.' }
+      - { label: 'Headline', name: headline, widget: string, hint: 'What they get, e.g. The SaaS login page from the video, free in Figma' }
+      - { label: 'Short line under the headline', name: lede, widget: text }
+      - { label: 'Google description', name: description, widget: text, hint: '120 to 155 characters.' }
+      - { label: 'Preview image', name: preview, widget: image, hint: 'A big export of the main frame, about 1600 x 1100.' }
+      - { label: 'Preview is a sketch placeholder', name: previewIsSketch, widget: boolean, default: false, required: false }
+      - { label: 'YouTube video link', name: videoUrl, widget: string, required: false }
+      - { label: 'What is inside (3 bullets)', name: inside, widget: list, field: { label: Bullet, name: item, widget: string }, required: false }
+      - { label: 'Button text', name: button, widget: string, default: 'Send me the file' }
+      - { label: 'Draft (hidden from Google)', name: draft, widget: boolean, default: true }

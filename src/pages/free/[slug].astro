@@ -1,0 +1,164 @@
+---
+// Free file page: fackt.io/free/<slug>. One job: get the email. Content in src/content/free/<slug>.md (CMS: Free files),
+// the Figma link in Supabase (list_resources, same slug). Signups go to the "list" function, which sends the file.
+import Base from '../../layouts/Base.astro';
+import Mark from '../../components/home/Mark.astro';
+import { site } from '../../data/site';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  return (await getCollection('free')).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const r = entry.data;
+const LIST = 'https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/list';
+const inside = r.inside.filter((x) => !x.startsWith('[Dom'));
+---
+<Base title={`${r.headline} | Fackt`} description={r.description} image={r.preview} noindex={r.draft} lcp={r.preview}>
+  <div class="fp">
+    <header class="top">
+      <a href="/" class="brand"><Mark size={16} /><b>Fackt</b> <span>notes</span></a>
+      {r.videoUrl && <a class="vid" href={r.videoUrl} rel="noopener">&#9654; Watch the video</a>}
+    </header>
+    {r.draft && <p class="draft">Draft: only people with this link can see it. Add the Figma link in Supabase and switch off Draft in the CMS to go live.</p>}
+    <main class="hero">
+      <div class="copy">
+        <span class="k">Free Figma file</span>
+        <h1>{r.headline}</h1>
+        <p class="lede">{r.lede}</p>
+        <form class="fm" data-free={entry.id} data-endpoint={LIST} data-no-lead novalidate>
+          <p class="hp" aria-hidden="true"><label>Leave this empty <input name="hp" tabindex="-1" autocomplete="off" /></label></p>
+          <div class="row" data-row>
+            <label class="sr" for="fe">Email</label>
+            <input id="fe" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.com" required aria-describedby="fe-msg fe-consent" />
+            <button type="submit" class="m-btn dk go" data-go><span>{r.button}</span><i class="spin" aria-hidden="true"></i></button>
+          </div>
+          <p class="msg" id="fe-msg" role="alert" data-msg></p>
+          <p class="consent" id="fe-consent">You get the file plus Fackt notes, short emails from Dom on designing SaaS products people pay for. Unsubscribe anytime. <a href="/privacy#email">Privacy</a></p>
+        </form>
+        <div class="done" data-done hidden tabindex="-1">
+          <b>Check your inbox, the file is on its way.</b>
+          <p>It comes from notes@fackt.io within a minute. Open it and click the button to get the Figma file.</p>
+          <p class="again">Didn't get it? <button type="button" data-again>Send it again</button> &#183; <button type="button" data-other>Use another email</button></p>
+          <p class="note" data-again-msg role="status"></p>
+        </div>
+        {!r.videoUrl ? null : <p class="back">Came here without the video? <a href={r.videoUrl} rel="noopener">Watch it first</a>, it walks through every decision in the file.</p>}
+      </div>
+      <figure class="pv">
+        <img src={r.preview} alt={`Preview of the ${r.title} Figma file`} width="1600" height="1100" loading="eager" fetchpriority="high" decoding="async" />
+      </figure>
+    </main>
+    <section class="more">
+      {inside.length > 0 && (
+        <div>
+          <span class="k">What is inside</span>
+          <ul>{inside.map((x) => <li>{x}</li>)}</ul>
+        </div>
+      )}
+      <div class="me">
+        <span class="k">From Dom</span>
+        <p>I run Fackt, a product design studio for SaaS teams. On the channel I take real products apart: what makes people stay, what makes them leave. Want me to look at yours? <a href="/audit">Get a free audit</a>.</p>
+      </div>
+    </section>
+    <footer class="ft"><span>&copy; {new Date().getFullYear()} Fackt Labs LLC</span><a href="/privacy">Privacy</a><a href={`mailto:${site.email}`}>{site.email}</a></footer>
+  </div>
+</Base>
+<style>
+  .fp { min-height: 100vh; display: flex; flex-direction: column; }
+  .top { width: min(1120px, 100% - 32px); margin: 0 auto; height: 68px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 8px; color: #111; text-decoration: none; font-size: 15px; }
+  .brand b { font-weight: 500; } .brand span { color: #8a8a86; }
+  .vid { font-size: 13.5px; color: #111; text-decoration: none; box-shadow: inset 0 0 0 1px #dcdcd8; padding: 8px 12px; border-radius: 3px; }
+  .vid:hover { box-shadow: inset 0 0 0 1px #111; }
+  .draft { margin: 0; background: #2335ff; color: #fff; font-size: 13px; text-align: center; padding: 8px 16px; }
+  .hero { width: min(1120px, 100% - 32px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; align-items: center; padding: 40px 0 56px; }
+  .k { font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #6a6a66; }
+  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 50px; line-height: 1.05; letter-spacing: -.02em; }
+  .lede { margin: 16px 0 0; font-size: 17px; line-height: 1.55; color: #55554f; max-width: 460px; }
+  .fm { margin-top: 28px; max-width: 480px; }
+  .hp, .sr { position: absolute; left: -9999px; }
+  .row { display: flex; gap: 8px; padding: 6px; background: #fff; box-shadow: 0 0 0 1.5px #111, 4px 4px 0 #111; border-radius: 4px; }
+  .row.bad { box-shadow: 0 0 0 1.5px #b42318, 4px 4px 0 #b42318; }
+  .row input { flex: 1; min-width: 0; border: 0; outline: 0; font: 16px Geist, system-ui, sans-serif; padding: 0 10px; background: transparent; color: #111; }
+  .row input::placeholder { color: #a5a5a1; }
+  .go { height: 46px; padding: 0 18px; font-size: 14.5px; position: relative; }
+  .go[disabled] { opacity: .75; cursor: default; transform: none; }
+  .go .spin { display: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: sp .7s linear infinite; }
+  .go.busy .spin { display: inline-block; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .msg { min-height: 1.2em; margin: 10px 0 0; font-size: 13.5px; color: #b42318; }
+  .consent { margin: 4px 0 0; font-size: 12.5px; line-height: 1.5; color: #77776f; }
+  .consent a { color: inherit; text-underline-offset: 2px; }
+  .done { margin-top: 28px; max-width: 480px; padding: 20px 22px; background: #fff; box-shadow: 0 0 0 1.5px #111, 4px 4px 0 #111; border-radius: 4px; outline: 0; }
+  .done b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 24px; line-height: 1.2; }
+  .done p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.5; color: #55554f; }
+  .done .again { font-size: 13.5px; color: #77776f; }
+  .done button { border: 0; background: none; padding: 0; font: inherit; color: #111; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+  .done button[disabled] { color: #a5a5a1; cursor: default; }
+  .done .note { min-height: 1em; font-size: 13px; }
+  .back { margin: 22px 0 0; font-size: 13.5px; color: #77776f; } .back a { color: #111; }
+  .pv { margin: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px #dcdcd8, 0 30px 60px -30px rgba(17,17,17,.25); background: #f2f2f0; }
+  .pv img { display: block; width: 100%; height: auto; }
+  .more { width: min(1120px, 100% - 32px); margin: 0 auto; padding: 44px 0 64px; border-top: 1px solid #ececea; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .more ul { margin: 12px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.7; }
+  .me p { margin: 12px 0 0; font-size: 15.5px; line-height: 1.6; color: #3a3a37; max-width: 480px; } .me a { color: #111; font-weight: 500; }
+  .ft { margin-top: auto; width: min(1120px, 100% - 32px); margin-left: auto; margin-right: auto; padding: 22px 0 28px; border-top: 1px solid #ececea; display: flex; gap: 20px; font-size: 12.5px; color: #8a8a86; }
+  .ft a { color: inherit; text-decoration: none; } .ft a:hover { text-decoration: underline; }
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 28px; padding: 18px 0 40px; }
+    h1 { font-size: 36px; }
+    .lede { font-size: 16px; }
+    .row { flex-direction: column; } .row input { height: 46px; } .go { width: 100%; justify-content: center; }
+    .more { grid-template-columns: 1fr; gap: 28px; }
+    .ft { flex-wrap: wrap; gap: 10px 18px; }
+  }
+</style>
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-free]');
+  if (form) {
+    const slug = form.dataset.free!, endpoint = form.dataset.endpoint!;
+    const input = form.querySelector<HTMLInputElement>('input[name=email]')!;
+    const row = form.querySelector<HTMLElement>('[data-row]')!;
+    const go = form.querySelector<HTMLButtonElement>('[data-go]')!;
+    const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+    const done = document.querySelector<HTMLElement>('[data-done]')!;
+    const again = document.querySelector<HTMLButtonElement>('[data-again]')!;
+    const againMsg = document.querySelector<HTMLElement>('[data-again-msg]')!;
+    const ok = (v: string) => /^[^@\s]{1,64}@[^@\s]+\.[a-z]{2,}$/i.test(v.trim());
+    const q = new URLSearchParams(location.search);
+    const utm: Record<string, string> = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'ref'].forEach((k) => { const v = q.get(k); if (v) utm[k] = v; });
+    const source = utm.utm_source || (document.referrer.includes('youtube.') ? 'youtube' : document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : 'direct');
+    if (q.get('soon')) { msg.style.color = '#111'; msg.textContent = 'You are confirmed. The Figma link is not live yet; it will be in your inbox as soon as it is.'; }
+    const bad = (t: string) => { row.classList.add('bad'); msg.style.color = ''; msg.textContent = t; };
+    const clear = () => { row.classList.remove('bad'); msg.textContent = ''; };
+    input.addEventListener('blur', () => { if (input.value && !ok(input.value)) bad('That email looks off. Check it and try again.'); });
+    input.addEventListener('input', () => { if (row.classList.contains('bad') && ok(input.value)) clear(); });
+    async function submit() {
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: input.value.trim(), resource: slug, source, utm, hp: (form!.elements.namedItem('hp') as HTMLInputElement).value }) });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) throw new Error(j.error || 'failed');
+      return j;
+    }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!ok(input.value)) return bad('That email looks off. Check it and try again.');
+      clear(); go.disabled = true; go.classList.add('busy');
+      try {
+        await submit();
+        (window as any).facktJourney?.track(`Asked for the free file: ${slug}`);
+        form.hidden = true; done.hidden = false; done.focus();
+      } catch (err) {
+        bad((err as Error).message === 'email' ? 'That email looks off. Check it and try again.' : 'Something went wrong, try again.');
+      } finally { go.disabled = false; go.classList.remove('busy'); }
+    });
+    again.addEventListener('click', async () => {
+      again.disabled = true; againMsg.textContent = 'Sending...';
+      try { await submit(); againMsg.textContent = `Sent again to ${input.value.trim()}. Check spam and Promotions too.`; }
+      catch { againMsg.textContent = 'That did not go through. Try again in a minute.'; }
+      setTimeout(() => (again.disabled = false), 30000);
+    });
+    document.querySelector('[data-other]')!.addEventListener('click', () => { done.hidden = true; form.hidden = false; input.select(); againMsg.textContent = ''; });
+  }
+</script>

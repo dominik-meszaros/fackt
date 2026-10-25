@@ -156,6 +156,7 @@
   document.addEventListener("submit", function (e) {
     var f = e.target, fields = {};
     if (!f || !f.elements) return;
+    if (f.hasAttribute && f.hasAttribute("data-no-lead")) return; // email list signups are counted on their own, not as leads
     Array.prototype.forEach.call(f.elements, function (el) {
       if (!el.name || el.type === "password" || el.type === "hidden" || el.type === "submit") return;
       if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;

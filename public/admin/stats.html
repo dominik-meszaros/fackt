@@ -168,6 +168,15 @@
       <section class="card"><p class="eb">Locations (by time zone)</p><div class="rows" data-places></div></section>
       <section class="card"><p class="eb">Leads</p><div class="rows" data-leads></div></section>
     </div>
+    <section class="seo" aria-label="Email list">
+      <h2>Fackt notes email list <small>Free files on fackt.io/free: page views, then signups, then confirmed emails. The gaps show what to fix.</small></h2>
+      <div class="kpis k4" data-list-kpis></div>
+      <div class="g2">
+        <section class="card"><p class="eb">Per free file</p><table><thead><tr><th>File</th><th class="r">Page views</th><th class="r">Signups</th><th class="r">Confirmed</th><th class="r">View to signup</th></tr></thead><tbody data-list-files></tbody></table></section>
+        <section class="card"><p class="eb">Where signups came from</p><div class="rows" data-list-src></div></section>
+      </div>
+    </section>
+
     <section class="seo" aria-label="Search">
       <h2>Search and AI <small>Visitors who found fackt.io on Google, Bing and other search engines, or through AI assistants like ChatGPT</small></h2>
       <div class="kpis k4" data-seo-kpis></div>
@@ -291,6 +300,19 @@
     $('[data-leads]').innerHTML = d.conversions.length ? d.conversions.map(function (c) {
       return '<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">' + (c.email ? '<a href="mailto:' + esc(c.email) + '">' + esc(c.name) + '</a>' : esc(c.name)) + ' <span class="tag' + (c.source === 'booking' ? ' hot' : '') + '">' + (c.source === 'booking' ? 'booked' : 'form') + '</span></span><span class="c" style="color:var(--faint)">' + ago(c.at) + '</span></div>';
     }).join('') : '<p class="none">No leads in this range.</p>';
+    // email list
+    var L = d.list;
+    if (L) {
+      $('[data-list-kpis]').innerHTML =
+        k('On the list', num(L.total), '<div class="d">confirmed, all time</div>') +
+        k('Signups', num(L.signups), '<div class="d">in this range</div>') +
+        k('Confirmed', num(L.confirmed), '<div class="d">' + (L.signups ? Math.round(L.confirmed / L.signups * 100) : 0) + '% of signups</div>') +
+        k('Unsubscribed', num(L.unsub), '<div class="d">in this range</div>');
+      $('[data-list-files]').innerHTML = L.files.length ? L.files.map(function (f) {
+        return '<tr><td><a href="/free/' + esc(f.k) + '" target="_blank" rel="noopener">' + esc(f.k) + '</a></td><td class="r">' + num(f.views) + '</td><td class="r">' + num(f.signups) + '</td><td class="r">' + num(f.confirmed) + '</td><td class="r">' + (f.views ? Math.round(f.signups / f.views * 100) + '%' : '') + '</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="none">No visits to free files yet.</td></tr>';
+      $('[data-list-src]').innerHTML = L.sources.length ? rows(L.sources) : '<p class="none">No signups yet.</p>';
+    }
     // seo
     var s = d.seo;
     if (s) {

@@ -4,9 +4,9 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
-const updated = '21 October 2026';
+const updated = '25 October 2026';
 const toc = [
-  ['who', 'Who we are'], ['what', 'What we collect'], ['why', 'Why, and on what basis'], ['cookies', 'Cookies and storage'],
+  ['who', 'Who we are'], ['what', 'What we collect'], ['why', 'Why, and on what basis'], ['email', 'Email list'], ['cookies', 'Cookies and storage'],
   ['who-else', 'Services we use'], ['keep', 'How long we keep it'], ['rights', 'Your rights'], ['changes', 'Changes'],
 ];
 ---
@@ -42,11 +42,16 @@ const toc = [
             <tbody>
               <tr><td>Visit measurement</td><td>To see which pages help, fix what does not and understand where interest comes from</td><td>Our legitimate interest in running and improving the site</td></tr>
               <tr><td>Google Analytics</td><td>Wider traffic statistics</td><td>Your consent, which you can withdraw at any time</td></tr>
+              <tr><td>Email list</td><td>To send the free file you asked for and Fackt notes</td><td>Your consent, given by confirming your email; withdraw it with any unsubscribe link</td></tr>
               <tr><td>Forms and bookings</td><td>To reply, prepare your audit or call, and send a proposal if you ask for one</td><td>Steps you ask for before a contract, and our legitimate interest in answering enquiries</td></tr>
               <tr><td>Hosting data</td><td>To deliver the site and protect it from abuse</td><td>Our legitimate interest in a working, secure site</td></tr>
             </tbody>
           </table>
           <p>You can object to visit measurement at any time by emailing us, and we will delete what we hold about your visits.</p>
+
+          <h2 id="email">Email list</h2>
+          <p>When you ask for a free file, we save your email address, which file you asked for, where you came from (for example a YouTube video) and when. The first email holds a button that opens the file and confirms your address; only then do you get Fackt notes, short emails from Dom about designing SaaS products. The legal basis is your consent.</p>
+          <p>Every email has an unsubscribe link, and unsubscribing works right away. We keep your address until you unsubscribe, then only what we need to make sure you are not emailed again. The list is stored with Supabase and emails are sent with Resend.</p>
 
           <h2 id="cookies">Cookies and storage</h2>
           <p>We ask before setting any Google Analytics cookies. You can change your mind with <a href="#cookies" data-consent-open>Cookie settings</a>, which is also in the footer of every page.</p>
@@ -64,8 +69,8 @@ const toc = [
           <p>We use a few trusted providers to run the site. They process data only on our behalf and under their data protection terms.</p>
           <ul>
             <li><strong>Cloudflare</strong>, hosting and security</li>
-            <li><strong>Supabase</strong>, the database for our visit measurement</li>
-            <li><strong>Resend</strong>, delivers form messages and visit summaries to our inbox</li>
+            <li><strong>Supabase</strong>, the database for our visit measurement and email list</li>
+            <li><strong>Resend</strong>, sends our emails: form messages, visit summaries and Fackt notes</li>
             <li><strong>Cal.com</strong>, call bookings</li>
             <li><strong>Google</strong> (Google Analytics, and Google Workspace for email), only with your consent for Analytics</li>
           </ul>

@@ -96,4 +96,22 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { work, quotes, videos, reviews, blog };
+// Free files (fackt.io/free/<slug>): one entry per file. The Figma link itself lives in Supabase
+// (table list_resources, same slug), so it is only sent by email and can be changed in one place.
+const free = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/free' }),
+  schema: z.object({
+    title: z.string(),
+    headline: z.string(),
+    lede: z.string(),
+    description: z.string(),
+    preview: z.string(),
+    previewIsSketch: z.boolean().default(false),
+    videoUrl: z.string().optional(),
+    inside: z.array(z.string()).default([]),
+    button: z.string().default('Send me the file'),
+    draft: z.boolean().default(true),
+  }),
+});
+
+export const collections = { work, quotes, videos, reviews, blog, free };
