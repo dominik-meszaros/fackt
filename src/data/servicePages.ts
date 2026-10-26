@@ -57,9 +57,9 @@ export const servicePages: ServicePage[] = [
   },
   {
     slug: 'web-design-development',
-    seoTitle: 'SaaS Website Design and Development | Framer and Webflow | Fackt',
+    seoTitle: 'SaaS Website Design and Development | Framer, Webflow and Code | Fackt',
     seoDescription:
-      'Website design and development for SaaS and tech: landing pages, marketing sites and redesigns that turn visitors into signups, built in Framer and Webflow.',
+      'Website design and development for SaaS and tech: landing pages, marketing sites and redesigns that turn visitors into signups, built in Framer, Webflow or custom code.',
     headline: 'Websites for SaaS and tech that turn visitors into signups.',
     lede: 'From pre-launch landing pages to complete marketing site redesigns, we design and build sites that explain your product fast and make the next step obvious.',
     tint: 'peach',
@@ -67,7 +67,7 @@ export const servicePages: ServicePage[] = [
     deliverables: [
       { title: 'Landing pages', text: 'Focused pages for launches, campaigns and paid traffic.' },
       { title: 'Marketing site redesigns', text: 'Structure, messaging hierarchy and visuals rebuilt around your product.' },
-      { title: 'Framer and Webflow builds', text: 'Fast, responsive sites your team can edit without a developer.' },
+      { title: 'No-code or code builds', text: 'Framer and Webflow sites your team can edit without a developer, or a custom coded build when you need more.' },
       { title: 'CMS setup', text: 'Blog, changelog, case studies and careers you can update yourself.' },
       { title: 'Interactions and animation', text: 'Motion that guides attention instead of distracting from it.' },
       { title: 'SEO-ready structure', text: 'Clean headings, metadata and performance from day one.' },
@@ -76,12 +76,13 @@ export const servicePages: ServicePage[] = [
       { title: 'Strategy call', text: 'Goals, audience and what the site needs to convert.' },
       { title: 'Structure', text: 'Sitemap and page wireframes agreed before visual design.' },
       { title: 'Design', text: 'High fidelity pages for desktop, tablet and mobile.' },
-      { title: 'Build and launch', text: 'Built in Framer or Webflow, tested and launched with you.' },
+      { title: 'Build and launch', text: 'Built in Framer, Webflow or code, tested and launched with you.' },
     ],
-    tools: ['Figma', 'Framer', 'Webflow', 'Rive'],
+    tools: ['Figma', 'Framer', 'Webflow', 'Rive', 'Code'],
     review: 0,
     faq: [
       { q: 'Framer or Webflow?', a: 'Both work well. We recommend one after the strategy call based on your team, content needs and how often the site changes.' },
+      { q: 'Do you also build sites in code?', a: 'Yes. When a site needs more than Framer or Webflow can do, such as custom features, integrations or app-like pages, we build it in code.' },
       { q: 'Can we edit the site ourselves after launch?', a: 'Yes. We set up the CMS and components so your team can update pages and publish without us.' },
       { q: 'Can you redesign only part of our site?', a: 'Yes. Many projects start with the homepage or a single landing page and grow from there.' },
       { q: 'How does pricing work?', a: pricingAnswer },
