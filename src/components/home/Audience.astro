@@ -1,47 +1,117 @@
 ---
-// Who we work with: the four kinds of teams we fit, plus the industries we have shipped for.
-// Data: src/data/audience.ts. Full page: /who-we-work-with.
-import SectionHead from './SectionHead.astro';
-import { teams, industries } from '../../data/audience';
+// Who we work with (homepage, design W11 on the canvas): "We design for [founders / SaaS teams / app startups / agencies]"
+// rolls through the four teams while the matching card below lifts and turns black, 3s each, 12s loop.
+// Hovering or focusing the cards pauses the loop. Agencies work is white label, so that card shows an "Under NDA" mock.
+// Team copy: src/data/audience.ts. Full page: /who-we-work-with.
+import { getCollection } from 'astro:content';
+import { teams } from '../../data/audience';
+import { stageCategories } from '../../data/stage';
+
+const all = await getCollection('work');
+const stageImg = new Map(stageCategories.flatMap((c) => c.slides.map((s) => [s.slug, s.image] as [string, string])));
+const img = (slug: string) => { const e = all.find((w) => w.id === slug); return stageImg.get(slug) ?? e?.data.preview ?? e?.data.image ?? ''; };
+// What each card shows. Funded teams: BlackBox AI (logo only until its case study is public).
+const show: Record<string, { kind: 'work' | 'logo' | 'nda'; name?: string; href: string; src?: string }> = {
+  'early-stage': { kind: 'work', name: 'Communi', href: '/work/communi', src: img('communi') },
+  funded: { kind: 'logo', name: 'BlackBox AI', href: '/who-we-work-with#funded', src: '/uploads/logos/blackbox-ai.webp' },
+  mobile: { kind: 'work', name: 'Zums', href: '/work/zums', src: img('zums') },
+  agencies: { kind: 'nda', href: '/who-we-work-with#agencies' },
+};
+const words = ['founders', 'SaaS teams', 'app startups', 'agencies'];
 ---
-<section class="m-sec" id="who">
-  <SectionHead icon="people" title="Who we work with" lede="Founders and product teams building SaaS and apps. This is where we fit best." />
-  <div class="teams">
-    {teams.map((t) => (
-      <a class="tm" href={`/who-we-work-with#${t.id}`}>
-        <b>{t.title}</b>
-        <p>{t.text}</p>
-        <span class="st">Usually starts with: {t.start}</span>
-      </a>
-    ))}
+<section class="m-sec au" id="who" aria-labelledby="who-h">
+  <span class="eb">Who we work with</span>
+  <h2 class="hl" id="who-h">
+    <span class="q">We design for</span>
+    <span class="wh" aria-hidden="true"><span class="rl">{[...words, words[0]].map((w) => <span>{w}</span>)}</span></span>
+    <span class="sr-only">founders, SaaS teams, app startups and agencies</span>
+  </h2>
+  <div class="row" data-who-row>
+    {teams.map((t, i) => {
+      const s = show[t.id];
+      return (
+        <a class="cd" href={s.href} style={`--i:${i}`}>
+          <span class="no">0{i + 1}</span>
+          <b class="tt">{t.title}</b>
+          {s.kind === 'work' && <span class="th"><img src={s.src} alt={`${s.name}, design by Fackt`} loading="lazy" decoding="async" width="2240" height="1120" /></span>}
+          {s.kind === 'logo' && <span class="th logo"><img src={s.src} alt={s.name} loading="lazy" decoding="async" /></span>}
+          {s.kind === 'nda' && <span class="th nda" aria-hidden="true"><span class="ui"></span><span class="b1"></span><span class="b2"></span><span class="stamp">Under NDA</span></span>}
+          <span class="lb">Starts with</span>
+          <span class="v">{t.start}</span>
+          <span class="cp">{s.kind === 'nda' ? <>White label: <strong>examples on a call</strong></> : <>Closest work: <strong>{s.name} &#8594;</strong></>}</span>
+        </a>
+      );
+    })}
   </div>
-  <div class="ind">
-    <span>Industries we have shipped for:</span>
-    {industries.map((i) => <a href={`/who-we-work-with#${i.id}`}>{i.title}</a>)}
+  <div class="ft">
+    <a class="m-btn lt" href="/who-we-work-with">See who we work with</a>
+    <a class="m-btn dk" href="/audit">Get a free audit</a>
   </div>
-  <a class="more" href="/who-we-work-with">See who we work with &#8594;</a>
 </section>
+
 <style>
-  .teams { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 40px; width: min(960px, 100%); text-align: left; border-top: 1px solid #ececea; }
-  .tm { padding: 24px 22px 4px 0; color: inherit; text-decoration: none; display: flex; flex-direction: column; }
-  .tm + .tm { padding-left: 22px; border-left: 1px solid #ececea; }
-  b { font-weight: 500; font-size: 15px; }
-  .tm:hover b { text-decoration: underline; }
-  p { margin: 8px 0 0; font-size: 13.5px; color: #6f6f6f; line-height: 1.5; flex: 1; }
-  .st { margin-top: 14px; font-size: 12px; color: #8a8a86; }
-  .ind { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin-top: 36px; max-width: 760px; font-size: 13px; color: #6a6a66; }
-  .ind span { margin-right: 4px; }
-  .ind a { display: inline-flex; align-items: center; height: 30px; padding: 0 10px; border-radius: 2px; color: #111; text-decoration: none; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
-  .ind a:hover { box-shadow: inset 0 0 0 1px #111; }
-  .more { margin-top: 26px; font-size: 13.5px; font-weight: 500; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
-  .more:hover { border-bottom-width: 2px; }
-  @media (max-width: 900px) and (min-width: 721px) { .teams { grid-template-columns: 1fr 1fr; } .tm:nth-child(3) { padding-left: 0; border-left: 0; } }
+  .au { --cycle: 12s; }
+  .eb { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hl { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 64px; line-height: 76px; letter-spacing: -.03em; display: flex; justify-content: center; gap: 18px; }
+  .q { color: #9a9a96; }
+  .wh { position: relative; height: 76px; overflow: hidden; text-align: left; min-width: 390px; }
+  .rl { display: flex; flex-direction: column; animation: rl var(--cycle) infinite cubic-bezier(.8, 0, .2, 1); }
+  .rl span { height: 76px; white-space: nowrap; }
+  @keyframes rl { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-76px); } 50%, 70% { transform: translateY(-152px); } 75%, 95% { transform: translateY(-228px); } 100% { transform: translateY(-304px); } }
+  .wh::after { content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 3px; background: #111; transform-origin: left; animation: ul calc(var(--cycle) / 4) infinite linear; }
+  @keyframes ul { 0% { transform: scaleX(0); } 85%, 100% { transform: scaleX(1); } }
+
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: min(1040px, 100%); margin-top: 40px; text-align: left; }
+  .cd { display: flex; flex-direction: column; padding: 16px; border-radius: 6px; color: #111; text-decoration: none; background: #fff; box-shadow: 0 0 0 1px #dcdcd8; animation: on var(--cycle) calc(var(--i) * var(--cycle) / 4) infinite; }
+  @keyframes on {
+    0%, 24% { background: #111; color: #fff; box-shadow: 0 0 0 1px #111, 5px 5px 0 #c8c8c4; transform: translateY(-10px); }
+    27%, 100% { background: #fff; color: #111; box-shadow: 0 0 0 1px #dcdcd8; transform: none; }
+  }
+  .row:hover .cd, .row:focus-within .cd { animation-play-state: paused; }
+  .au:has(.row:hover) .rl, .au:has(.row:hover) .wh::after, .au:has(.row:focus-within) .rl { animation-play-state: paused; }
+  .cd:hover, .cd:focus-visible { outline: none; box-shadow: 0 0 0 1.5px #111, 3px 3px 0 #111 !important; }
+  .no { font: 500 11.5px 'Geist Mono', ui-monospace, monospace; opacity: .6; }
+  .tt { display: block; margin-top: 4px; font-family: var(--m-serif); font-weight: 400; font-size: 21px; line-height: 1.15; min-height: 50px; }
+  .th { position: relative; display: block; margin-top: 10px; aspect-ratio: 2 / 1; border-radius: 4px; overflow: hidden; background: #f2f2f0; }
+  .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .th.logo { display: grid; place-items: center; background: #0d0d0d; }
+  .th.logo img { width: 62%; height: auto; object-fit: contain; filter: invert(1); }
+  .nda .ui { position: absolute; inset: 12% 10%; border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px #dcdcd8;
+    background-image: linear-gradient(#ececea, #ececea), linear-gradient(#ececea, #ececea), linear-gradient(#ececea, #ececea);
+    background-size: 28% 9%, 60% 7%, 70% 28%; background-position: 8% 14%, 8% 40%, 8% 84%; background-repeat: no-repeat; }
+  .nda .b1, .nda .b2 { position: absolute; left: 18%; height: 10%; background: #111; border-radius: 1px; }
+  .nda .b1 { top: 30%; width: 46%; }
+  .nda .b2 { top: 52%; width: 30%; }
+  .nda .stamp { position: absolute; right: 10%; top: 50%; transform: translateY(-50%) rotate(-8deg); padding: 4px 8px; border: 2px solid #111; border-radius: 3px; background: #fff; color: #111;
+    font: 600 10.5px Geist, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3px #111; }
+  .lb { display: block; margin-top: 12px; font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; opacity: .55; }
+  .v { display: block; margin-top: 2px; font-size: 14px; font-weight: 500; }
+  .cp { display: block; margin-top: 8px; font-size: 12.5px; opacity: .75; }
+  .cp strong { font-weight: 500; }
+  .ft { display: flex; justify-content: center; gap: 8px; margin-top: 32px; }
+
+  @media (max-width: 900px) {
+    .hl { font-size: 48px; line-height: 58px; gap: 12px; }
+    .wh { height: 58px; min-width: 290px; }
+    .rl span { height: 58px; }
+    @keyframes rl { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-58px); } 50%, 70% { transform: translateY(-116px); } 75%, 95% { transform: translateY(-174px); } 100% { transform: translateY(-232px); } }
+    .row { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 720px) {
-    .teams { grid-template-columns: 1fr; margin-top: 24px; }
-    .tm, .tm + .tm { padding: 18px 0; border-left: 0; border-bottom: 1px solid #ececea; }
-    p { font-size: 13px; }
-    .ind { margin-top: 24px; }
-    .ind span { width: 100%; margin: 0 0 4px; }
-    .ind a { height: 36px; padding: 0 12px; }
+    .hl { flex-direction: column; align-items: center; gap: 0; font-size: 38px; line-height: 46px; }
+    .wh { height: 46px; min-width: 0; width: 100%; text-align: center; }
+    .rl span { height: 46px; }
+    @keyframes rl { 0%, 20% { transform: translateY(0); } 25%, 45% { transform: translateY(-46px); } 50%, 70% { transform: translateY(-92px); } 75%, 95% { transform: translateY(-138px); } 100% { transform: translateY(-184px); } }
+    .wh::after { left: 25%; right: 25%; }
+    .row { gap: 10px; margin-top: 28px; }
+    .cd { padding: 12px; }
+    .tt { font-size: 17px; min-height: 40px; }
+    .cp { display: none; }
+    .ft { flex-direction: column; width: 100%; max-width: 360px; }
+    .ft .m-btn { justify-content: center; height: 44px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rl, .cd, .wh::after { animation: none; }
   }
 </style>
