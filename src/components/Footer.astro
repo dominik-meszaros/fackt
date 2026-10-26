@@ -1,50 +1,148 @@
 ---
+// Footer, option FT4 "Pixel wave" from the canvas: brand block, four link columns, a pixel FACKT wordmark
+// that a wave ripples through every few seconds (CSS only, off for reduced motion), then one quiet bottom row.
 import Mark from './home/Mark.astro';
 import { site } from '../data/site';
+import { homeSettings } from '../data/settings';
 import { publishedPosts } from '../data/blog';
 const hasBlog = (await publishedPosts()).length > 0;
+const figma = (homeSettings as any).figmaUrl as string | undefined;
 const year = new Date().getFullYear();
+
+type L = { label: string; href: string; ext?: boolean; fig?: boolean; data?: Record<string, string> };
+const cols: { title: string; links: L[] }[] = [
+  { title: 'Services', links: [
+    { label: 'Product design', href: '/services/product-design' },
+    { label: 'Web design and development', href: '/services/web-design-development' },
+    { label: 'Motion design', href: '/services/motion-design' },
+    { label: 'Visual branding', href: '/services/visual-branding' },
+    { label: 'All services', href: '/services' },
+  ] },
+  { title: 'Work', links: [
+    { label: 'Communi', href: '/work/communi' },
+    { label: 'Floxy', href: '/work/floxy' },
+    { label: 'Zums', href: '/work/zums' },
+    { label: 'ViewMax', href: '/work/viewmax' },
+    { label: 'Glowtify', href: '/work/glowtify' },
+    { label: 'All work', href: '/work' },
+  ] },
+  { title: 'Studio', links: [
+    { label: 'Who we work with', href: '/who-we-work-with' },
+    { label: 'How we work', href: '/#process' },
+    { label: 'Pricing', href: '/#pricing' },
+    { label: 'Reviews', href: '/#reviews' },
+    ...(hasBlog ? [{ label: 'Blog', href: '/blog' }] : []),
+  ] },
+  { title: 'Free', links: [
+    { label: 'Free audit', href: '/audit' },
+    { label: 'Free Figma files', href: '/free/onboarding' },
+    ...(figma ? [{ label: 'Raw work in Figma', href: figma, ext: true, fig: true, data: { 'data-journey': 'Opened the raw work in Figma (footer)' } }] : []),
+    { label: 'Book a call', href: site.bookPage },
+  ] },
+];
+
+// Pixel wordmark: 5x7 letters, one blank column between letters.
+const FONT: Record<string, string[]> = {
+  F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
+  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
+  C: ['01111', '10000', '10000', '10000', '10000', '10000', '01111'],
+  K: ['10001', '10010', '10100', '11000', '10100', '10010', '10001'],
+  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
+};
+function field(cols: number, rows: number, x0: number, y0: number) {
+  const on = new Set<string>();
+  let x = x0;
+  for (const ch of 'FACKT') {
+    FONT[ch].forEach((line, r) => [...line].forEach((v, c) => { if (v === '1') on.add(`${x + c},${y0 + r}`); }));
+    x += 6;
+  }
+  const cells: { on: boolean; d: string }[] = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push({ on: on.has(`${c},${r}`), d: `${((c + r * 1.8) * 0.045).toFixed(3)}s` });
+  return cells;
+}
+const wide = field(40, 9, 5, 1);
+const narrow = field(31, 9, 1, 1);
+const FIG = '<svg width="8" height="12" viewBox="0 0 38 57" aria-hidden="true"><path fill="currentColor" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0zM0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0zM19 0v19h9.5a9.5 9.5 0 1 0 0-19H19zM0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5zM0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>';
 ---
 <footer class="ft">
-  <div class="row">
-    <a class="fb" href="/"><span data-egg-trigger class="egg-mark"><Mark size={16} /></span><b>Fackt</b></a>
-    <nav aria-label="Footer">
-      <a href="/#work">Work</a><a href="/#services">Services</a><a href="/who-we-work-with">Who we work with</a><a href="/#pricing">Pricing</a>{hasBlog && <a href="/blog">Blog</a>}<a href="/audit">Free audit</a><a href={site.bookPage}>Book a call</a>
+  <div class="top">
+    <div class="brand">
+      <a class="fb" href="/"><span data-egg-trigger class="egg-mark"><Mark size={18} /></span><b>Fackt</b></a>
+      <p>Product design for SaaS and tech companies. {site.location}, working worldwide.</p>
+      <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+    <nav class="cols" aria-label="Footer">
+      {cols.map((c) => (
+        <div class="col">
+          <span class="ch">{c.title}</span>
+          {c.links.map((l) => (
+            <a href={l.href} {...(l.ext ? { target: '_blank', rel: 'noopener' } : {})} {...(l.data || {})}>
+              {l.fig && <Fragment set:html={FIG} />}{l.label}{l.ext && <span aria-hidden="true"> &#8599;</span>}
+            </a>
+          ))}
+        </div>
+      ))}
     </nav>
-    <div class="so">{site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}</div>
   </div>
-  <div class="row r2">
-    <span class="lc">Product design for SaaS, {site.location}
-      <span class="bdg">{site.badges.map((b) => {
-        const inner = <><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.6 2.1 3.3-.3.9 3.2 2.9 1.6-1.2 3.1 1.2 3.1-2.9 1.6-.9 3.2-3.3-.3L12 22l-2.6-2.1-3.3.3-.9-3.2-2.9-1.6 1.2-3.1-1.2-3.1 2.9-1.6.9-3.2 3.3.3z" fill="#111"></path><path d="M8 12.3l2.6 2.6L16 9.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>{b.label}</>;
-        return b.href ? <a class="b" href={b.href} rel="noopener">{inner}</a> : <span class="b">{inner}</span>;
-      })}</span>
-    </span>
-    <a href={`mailto:${site.email}`}>{site.email}</a>
+
+  <div class="px px-w" aria-hidden="true">{wide.map((c) => <i class={c.on ? 'on' : undefined} style={`animation-delay:${c.d}`}></i>)}</div>
+  <div class="px px-n" aria-hidden="true">{narrow.map((c) => <i class={c.on ? 'on' : undefined} style={`animation-delay:${c.d}`}></i>)}</div>
+
+  <div class="btm">
+    <span class="so">{site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}</span>
+    <span class="bdg">{site.badges.map((b) => {
+      const inner = <><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.6 2.1 3.3-.3.9 3.2 2.9 1.6-1.2 3.1 1.2 3.1-2.9 1.6-.9 3.2-3.3-.3L12 22l-2.6-2.1-3.3.3-.9-3.2-2.9-1.6 1.2-3.1-1.2-3.1 2.9-1.6.9-3.2 3.3.3z" fill="#111"></path><path d="M8 12.3l2.6 2.6L16 9.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>{b.label}</>;
+      return b.href ? <a class="b" href={b.href} rel="noopener">{inner}</a> : <span class="b">{inner}</span>;
+    })}</span>
     <span class="lg"><a href="/privacy">Privacy</a><a href="/privacy#cookies" data-consent-open>Cookie settings</a><span>&copy; {year} Fackt Labs LLC</span></span>
   </div>
 </footer>
 
 <style>
-  .ft { width: min(960px, 100% - 32px); margin: 0 auto; padding: 26px 0 30px; border-top: 1px solid #dcdcd8; font-size: 13.5px; color: #111; }
+  .ft { width: min(960px, 100% - 32px); margin: 0 auto; padding: 56px 0 30px; border-top: 1px solid #dcdcd8; font-size: 13.5px; color: #111; }
   .ft a { color: inherit; text-decoration: none; }
-  .ft a:hover { text-decoration: underline; }
-  .row { display: flex; align-items: center; gap: 24px; }
-  .fb { display: flex; align-items: center; gap: 8px; }
+  .top { display: grid; grid-template-columns: 260px 1fr; gap: 40px; }
+  .fb { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; }
   .fb b { font-weight: 500; }
   .egg-mark { display: inline-flex; cursor: pointer; }
-  nav { display: flex; gap: 22px; margin-left: 24px; }
-  .so { display: flex; gap: 18px; margin-left: auto; }
-  .r2 { margin-top: 18px; font-size: 12.5px; color: #8a8a86; justify-content: space-between; }
-  .lc { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .brand p { margin: 12px 0 0; color: #6a6a66; max-width: 230px; line-height: 1.5; }
+  .mail { display: inline-block; margin-top: 16px; font-weight: 500; border-bottom: 1px solid #111; }
+  .mail:hover { border-bottom-color: transparent; }
+  .cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .col { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
+  .col a { color: #3f3f3f; }
+  .col a:hover { color: #111; text-decoration: underline; text-underline-offset: 3px; }
+  .col a :global(svg) { vertical-align: -1px; margin-right: 4px; }
+  .ch { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; margin-bottom: 4px; }
+
+  .px { display: grid; margin-top: 48px; }
+  .px-w { grid-template-columns: repeat(40, minmax(0, 1fr)); }
+  .px-n { display: none; grid-template-columns: repeat(31, minmax(0, 1fr)); }
+  .px i { display: block; aspect-ratio: 1; border-radius: 1px; background: #c8c8c4; transform: scale(.18); animation: pw 5.5s ease-in-out infinite; }
+  .px i.on { background: #111; transform: scale(.86); animation-name: pwo; }
+  @keyframes pw { 0%, 16%, 100% { transform: scale(.18); } 7% { transform: scale(.62); background: #8a8a86; } }
+  @keyframes pwo { 0%, 16%, 100% { transform: scale(.86); } 7% { transform: scale(1) rotate(45deg); } }
+
+  .btm { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 36px; padding-top: 18px; border-top: 1px solid #ececea; font-size: 12.5px; color: #8a8a86; }
+  .so, .lg { display: inline-flex; gap: 16px; flex-wrap: wrap; }
+  .so a { color: #111; }
+  .btm a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .bdg { display: inline-flex; gap: 6px; }
-  .lg { display: inline-flex; gap: 16px; flex-wrap: wrap; }
   .bdg .b { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px 0 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; background: #fff; color: #111; font-size: 11.5px; font-weight: 500; }
   .ft .bdg a.b:hover { text-decoration: none; box-shadow: inset 0 0 0 1px #111; }
+
+  @media (max-width: 860px) {
+    .top { grid-template-columns: 1fr; gap: 32px; }
+  }
   @media (max-width: 720px) {
-    .row { flex-wrap: wrap; gap: 14px 18px; }
-    nav { margin-left: 0; flex-basis: 100%; order: 2; flex-wrap: wrap; gap: 12px 18px; }
-    .so { order: 1; }
-    .r2 { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .ft { padding: 40px 0 28px; }
+    .cols { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
+    .px { margin-top: 36px; }
+    .px-w { display: none; }
+    .px-n { display: grid; }
+    .btm { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .px i { animation: none; }
   }
 </style>
