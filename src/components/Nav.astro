@@ -4,6 +4,10 @@
 // hidden: past 640px while scrolling down. The link of the section in view is marked.
 import Mark from './home/Mark.astro';
 import { site } from '../data/site';
+import { homeSettings } from '../data/settings';
+// Raw work in Figma: CMS > Settings > Homepage > Figma link. The button only shows when a link is set.
+const figma = (homeSettings as any).figmaUrl as string | undefined;
+const FIG = '<svg width="11" height="16" viewBox="0 0 38 57" aria-hidden="true"><path fill="currentColor" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0zM0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0zM19 0v19h9.5a9.5 9.5 0 1 0 0-19H19zM0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5zM0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>';
 import { publishedPosts } from '../data/blog';
 
 // Blog joins the nav once the first note is published (Reviews stays as a homepage section).
@@ -32,6 +36,7 @@ const menu = [
     </div>
     <a class="brand" href="/" aria-label="Fackt home"><Mark size={18} />Fackt<span class="sx" data-sec-label></span></a>
     <div class="r">
+      {figma && <a class="fg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma" title="Open our raw work in Figma"><Fragment set:html={FIG} /><span>Raw work</span><span class="sr-only"> in Figma (opens in a new tab)</span></a>}
       <a href="/audit" class="rv aud"><i aria-hidden="true"></i>Free audit</a>
       <a class="m-btn dk cta" href={site.bookPage}>Book a call</a>
       <button class="mbtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-menu-open>
@@ -60,6 +65,7 @@ const menu = [
   <div class="mmb">
     <a class="mcta" href={site.bookPage}>Book a free call</a>
     <a class="maud" href="/audit">Or get a free product audit &#8594;</a>
+    {figma && <a class="maud mfg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma"><Fragment set:html={FIG} />See our raw work in Figma &#8599;</a>}
     <div class="mso">
       {site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}
       <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -75,6 +81,11 @@ const menu = [
   .l, .r { display: flex; align-items: center; gap: 22px; }
   .r { justify-content: flex-end; gap: 18px; }
   .l a, .rv { position: relative; color: #3f3f3f; }
+  .fg { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px 0 10px; border-radius: 16px; font-weight: 500; color: #111; box-shadow: inset 0 0 0 1px #c8c8c4; transition: box-shadow .2s, background .2s, color .2s; }
+  .fg:hover, .fg:focus-visible { box-shadow: inset 0 0 0 1px #111; background: #111; color: #fff; outline: none; }
+  .fg :global(svg) { flex-shrink: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .maud.mfg { display: flex; align-items: center; justify-content: center; gap: 8px; }
   .aud { display: inline-flex; align-items: center; gap: 7px; font-weight: 500; color: #111; }
   .aud i { width: 6px; height: 6px; border-radius: 1px; background: #111; }
   .l a:hover, .rv:hover { color: #111; }
@@ -114,7 +125,7 @@ const menu = [
   @media (max-width: 760px) {
     .hd-space { height: 60px; }
     .bar { display: flex; height: 60px; }
-    .l, .rv { display: none; }
+    .l, .rv, .fg { display: none; }
     .brand { margin-right: auto; }
     .r { gap: 8px; }
     .cta { height: 40px; }
