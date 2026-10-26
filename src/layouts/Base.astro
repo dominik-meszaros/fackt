@@ -82,6 +82,7 @@ const ogImage = new URL(image, site.url).toString() + (image.startsWith('/og/') 
     <slot />
     <Consent />
     <script>
+      import '../scripts/dropdown';
       const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(

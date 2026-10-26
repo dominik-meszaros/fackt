@@ -105,3 +105,29 @@ button, input { font: inherit; color: inherit; }
 @media (max-width: 720px) {
   :root { --gutter: 16px; --radius-lg: 24px; --radius-md: 20px; }
 }
+
+/* Custom dropdowns (src/scripts/dropdown.ts). The native select stays in place; only its popup is replaced. */
+select.dd-field { pointer-events: none; }
+.dd-menu { position: absolute; z-index: 90; max-height: min(360px, 60vh); overflow: auto; padding: 6px; background: #fff; border-radius: 4px;
+  box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; font: 400 15px Geist, system-ui, sans-serif; color: #111; animation: dd-in .14s ease-out; }
+.dd-menu.dd-up { animation-name: dd-in-up; }
+.dd-list { display: flex; flex-direction: column; }
+.dd-opt { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 38px; padding: 8px 12px; border-radius: 2px; cursor: pointer; white-space: nowrap; }
+.dd-opt i { width: 14px; height: 14px; flex-shrink: 0; }
+.dd-opt[aria-selected="true"] { font-weight: 500; }
+.dd-opt[aria-selected="true"] i { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5L10 17.5L19 7' fill='none' stroke='%23111' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.dd-opt:hover, .dd-opt:focus-visible { background: #f2f2f0; }
+
+.dd-back { position: fixed; inset: 0; z-index: 89; background: rgba(17, 17, 17, .32); animation: dd-fade .18s ease-out; }
+.dd-menu.dd-sheet { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; max-height: 70vh; padding: 0 8px calc(8px + env(safe-area-inset-bottom)); border-radius: 10px; animation: dd-sheet .22s cubic-bezier(.2, .8, .2, 1); }
+.dd-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 6px 10px; background: #fff; font-size: 13px; color: #6a6a66; border-bottom: 1px solid #ececea; margin-bottom: 6px; }
+.dd-x { all: unset; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 17px; cursor: pointer; color: #111; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 13px; }
+.dd-sheet .dd-opt { min-height: 52px; font-size: 16px; white-space: normal; }
+.dd-out { opacity: 0; transition: opacity .14s; }
+html.dd-lock, html.dd-lock body { overflow: hidden; }
+@keyframes dd-in { from { opacity: 0; transform: translateY(-4px); } }
+@keyframes dd-in-up { from { opacity: 0; transform: translateY(4px); } }
+@keyframes dd-sheet { from { transform: translateY(100%); } }
+@keyframes dd-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .dd-menu, .dd-back { animation: none; } }
+label:has(select.dd-field), .dd-field { cursor: pointer; }
