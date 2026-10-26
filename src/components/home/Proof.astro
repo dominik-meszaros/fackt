@@ -3,7 +3,7 @@
 import SectionHead from './SectionHead.astro';
 import { homeSettings } from '../../data/settings';
 interface Video { name: string; role: string; company: string; duration: string; thumbnail: string; video: string }
-interface Review { name: string; role: string; highlight: string; text: string }
+interface Review { name: string; role: string; highlight: string; text: string; link?: string }
 interface Props { videos: Video[]; reviews: Review[] }
 const { videos, reviews } = Astro.props;
 const r = homeSettings.rating;
@@ -33,7 +33,7 @@ const count = words[videos.length] ?? String(videos.length);
       <figure class="rev">
         <p class="k">&#8220;{x.highlight}&#8221;</p>
         <blockquote>{x.text}</blockquote>
-        <figcaption><b>{x.name}</b>, {x.role}</figcaption>
+        <figcaption><b>{x.name}</b>, {x.role}{x.link && <a class="src" href={x.link} target="_blank" rel="noopener">{/x\.com|twitter\.com/.test(x.link) ? 'View on X' : /contra\./.test(x.link) ? 'View on Contra' : 'View source'} &#8599;</a>}</figcaption>
       </figure>
     ))}
   </div>
@@ -62,6 +62,8 @@ const count = words[videos.length] ?? String(videos.length);
   <script type="application/json" data-vd-data set:html={JSON.stringify(videos.map((v) => ({ name: v.name, role: v.role, company: v.company, video: v.video, poster: v.thumbnail })))} />
 </section>
 <style>
+  .rev figcaption .src { margin-left: 10px; color: inherit; font-size: .92em; text-underline-offset: 3px; opacity: .8; }
+  .rev figcaption .src:hover { opacity: 1; }
   .vids { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 40px; width: min(960px, 100%); }
   .vid { all: unset; box-sizing: border-box; position: relative; aspect-ratio: 4 / 5; border-radius: 3px; overflow: hidden; text-align: left; background: #ddd; }
   button.vid { cursor: pointer; }

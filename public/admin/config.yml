@@ -155,6 +155,7 @@ collections:
       - { name: role, label: "Role and company", widget: string }
       - { name: quote, label: "Quote (word for word from the review)", widget: text }
       - { name: photo, label: "Photo (optional, otherwise initials)", widget: image, required: false, choose_url: false }
+      - { name: link, label: "Source link (optional: the X post or review it came from)", widget: string, required: false }
       - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
 
   - name: work
@@ -253,6 +254,7 @@ collections:
       - { name: role, label: "Role and company", widget: string }
       - { name: highlight, label: "Highlight (a phrase from the review)", widget: string }
       - { name: text, label: "Full review", widget: text }
+      - { name: link, label: "Source link (optional: the X post or review it came from)", widget: string, required: false }
       - { name: order, label: "Order", widget: number, value_type: int, default: 99 }
 
   - name: blog

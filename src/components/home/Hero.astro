@@ -5,12 +5,16 @@ import { site } from '../../data/site';
 import { homeSettings } from '../../data/settings';
 
 interface Project { slug: string; name: string; service: string; category: string; summary: string; keywords: string[]; image: string; imageKind: string; tint: string; stageLabel?: string; stageQuery?: string; stageImage?: string; cat?: number }
-interface Quote { name: string; role: string; quote: string; photo?: string }
+interface Quote { name: string; role: string; quote: string; photo?: string; link?: string }
 interface Props { stage: Project[]; cats: string[]; all: Project[]; quotes: Quote[] }
 const { stage, cats, all, quotes } = Astro.props;
+// Label for a quote's public source link: "View on X", "View on Contra"...
+const srcLabel = (u?: string) => !u ? 'View source' : /x\.com|twitter\.com/.test(u) ? 'View on X' : /linkedin\./.test(u) ? 'View on LinkedIn' : /contra\./.test(u) ? 'View on Contra' : 'View source';
 const h = homeSettings;
 const initials = (n: string) => n.split(/\s+/).slice(0, 2).map((w) => w[0]).join('');
 const pad = (n: number) => String(n).padStart(2, '0');
+// "See work like yours": one case study per stage category, so a visitor can open a project close to theirs from the first screen.
+const like = cats.map((c, ci) => ({ label: c, slug: stage.find((s) => s.cat === ci)?.slug })).filter((l) => l.slug);
 const index = {
   projects: all,
   stage: stage.map((p) => ({ slug: p.slug, cat: p.cat ?? 0, label: p.stageLabel ?? p.service })),
@@ -24,9 +28,12 @@ const index = {
   <p class="sub">{h.heroText}</p>
   <div class="ctas">
     <a class="m-btn dk" href={site.bookPage}>Book a strategy call</a>
-    <a class="m-btn lt" href="#work">View work</a>
+    <a class="m-btn lt" href="/audit">Get a free audit</a>
   </div>
-  <p class="nr">Not ready for a call? <a href="/audit">Get a free audit &#8594;</a></p>
+  <nav class="like" aria-label="See work like yours">
+    <span>See work like yours:</span>
+    {like.map((l) => <a href={`/work/${l.slug}`} data-like={l.label}>{l.label} <i aria-hidden="true">&#8594;</i></a>)}
+  </nav>
 
   {quotes.length > 0 && (
     <figure class="tq" data-quotes>
@@ -35,19 +42,19 @@ const index = {
         <div class="tqa" role="tablist" aria-label="Client quotes">
           {quotes.map((q, i) => (
             <button type="button" role="tab" class:list={['av', { on: i === 0 }]} aria-selected={i === 0 ? 'true' : 'false'} aria-label={`${q.name}, ${q.role}`}
-              data-q={i} data-text={q.quote} data-name={q.name} data-role={q.role}>
+              data-q={i} data-text={q.quote} data-name={q.name} data-role={q.role} data-link={q.link || ''}>
               {q.photo ? <img src={q.photo} alt="" width="30" height="30" loading="lazy" /> : <span aria-hidden="true">{initials(q.name)}</span>}
             </button>
           ))}
         </div>
-        <figcaption><b data-q-name>{quotes[0].name}</b><span data-q-role>{quotes[0].role}</span></figcaption>
+        <figcaption><b data-q-name>{quotes[0].name}</b><span data-q-role>{quotes[0].role}</span><a class="tql" data-q-link href={quotes[0].link || '#'} hidden={!quotes[0].link} target="_blank" rel="noopener">{srcLabel(quotes[0].link)} &#8599;</a></figcaption>
         <span class="tqn" data-q-idx>01 / {pad(quotes.length)}</span>
       </div>
     </figure>
   )}
 
   <div class="stage" id="stage">
-    <span class="tagl" data-stage-label>{stage[0]?.name}, {stage[0]?.service}</span>
+    <a class="tagl" href={`/work/${stage[0]?.slug}`} data-stage-link><span data-stage-label>{stage[0]?.name}, {stage[0]?.service}</span><b>View case study &#8594;</b></a>
     <span class="tagr" data-stage-idx>01 / {pad(stage.filter((s) => s.cat === 0).length)}</span>
     {stage.map((p, i) => (
       <a href={`/work/${p.slug}`} class:list={['shot', { ph: p.imageKind === 'phone' && !p.stageImage, bleed: !!p.stageImage, on: i === 0 }]} data-slug={p.slug} data-i={i}
@@ -95,8 +102,12 @@ const index = {
   h1 span { color: #9a9a96; }
   .sub { margin: 14px auto 0; max-width: 430px; color: #6f6f6f; }
   .ctas { display: flex; gap: 8px; margin-top: 22px; }
-  .nr { margin: 14px 0 0; font-size: 13px; color: #6a6a66; }
-  .nr a { color: #111; font-weight: 500; border-bottom: 1px solid #111; }
+  .like { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin: 16px auto 0; max-width: 620px; font-size: 13px; color: #6a6a66; }
+  .like span { margin-right: 2px; }
+  .like a { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border-radius: 2px; color: #111; font-weight: 500; text-decoration: none; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s, background .2s; }
+  .like a i { font-style: normal; color: #8a8a86; transition: transform .2s, color .2s; }
+  .like a:hover { box-shadow: inset 0 0 0 1px #111; }
+  .like a:hover i { color: #111; transform: translateX(2px); }
 
   .tq { margin: 24px auto 0; width: min(600px, 100%); text-align: left; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; border-radius: 3px; padding: 18px 20px 14px; }
   .tq blockquote { margin: 0; min-height: 44px; font-family: var(--m-serif); font-style: italic; font-size: 16.5px; line-height: 1.38; color: #111; }
@@ -111,6 +122,8 @@ const index = {
   figcaption { flex: 1; display: flex; flex-direction: column; font-size: 13px; line-height: 1.25; }
   figcaption b { font-weight: 500; color: #111; }
   figcaption span { color: #8a8a86; font-size: 12px; }
+  .tql { margin-top: 3px; font-size: 12px; color: #111; text-underline-offset: 2px; width: fit-content; }
+  .tql[hidden] { display: none; }
   .tqn { font: 500 12px Geist, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #8a8a86; }
 
   .stage { position: relative; width: min(1120px, 100%); height: 560px; margin: 40px auto 0; border-radius: 4px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; }
@@ -129,7 +142,9 @@ const index = {
   .chips.auto .chip.on::after { animation: chipfill var(--stage-ms, 4500ms) linear forwards; }
   @keyframes chipfill { to { width: 100%; } }
   .tagl, .tagr { position: absolute; top: 20px; z-index: 2; font-size: 12.5px; font-weight: 500; font-variant-numeric: tabular-nums; color: #111; background: #fff; padding: 4px 9px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; }
-  .tagl { left: 24px; }
+  .tagl { left: 24px; display: inline-flex; gap: 10px; align-items: center; text-decoration: none; transition: box-shadow .2s; }
+  .tagl b { font-weight: 500; padding-left: 10px; border-left: 1px solid #dcdcd8; }
+  .tagl:hover { box-shadow: inset 0 0 0 1px #111, 2px 2px 0 #111; }
   .tagr { right: 24px; color: #6a6a66; }
 
   .ask { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3; width: min(640px, 100% - 24px); text-align: left; }
@@ -200,7 +215,12 @@ const index = {
     .shot.ph { width: 122px; top: 48px; }
     .shot.ph img { border-radius: 20px; }
     .tagl, .tagr { top: 12px; font-size: 11.5px; padding: 3px 7px; }
-    .tagl { left: 12px; } .tagr { right: 12px; }
+    .tagl { left: 12px; gap: 8px; } .tagr { right: 12px; }
+    .tagl b { padding-left: 8px; }
+    .like { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 360px; gap: 6px; margin-top: 14px; }
+    .like span { grid-column: 1 / -1; margin: 0 0 2px; font-size: 12.5px; }
+    .like a { height: 40px; justify-content: space-between; padding: 0 12px; font-size: 13.5px; }
+    .tql { padding: 6px 0; margin: -3px 0 -6px; }
     .ask { bottom: 12px; }
     .askbar { height: 46px; gap: 8px; padding: 0 5px 0 12px; }
     .askbar input { font-size: 16px; }

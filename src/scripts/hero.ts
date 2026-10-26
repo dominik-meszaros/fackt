@@ -37,6 +37,7 @@ export function initHero() {
   const shots = Array.from(document.querySelectorAll<HTMLAnchorElement>('#stage .shot'));
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-chip]'));
   const label = document.querySelector<HTMLElement>('[data-stage-label]');
+  const link = document.querySelector<HTMLAnchorElement>('[data-stage-link]');
   const idx = document.querySelector<HTMLElement>('[data-stage-idx]');
   let cur = 0;
   // Stage images after the first load only when their slide (or the one before it) is shown.
@@ -57,6 +58,7 @@ export function initHero() {
     });
     chips.forEach((c) => { const on = Number(c.dataset.chip) === sl.cat; c.classList.toggle('on', on); c.setAttribute('aria-pressed', String(on)); });
     if (label) label.textContent = `${p.name}, ${p.service}`;
+    if (link) link.href = `/work/${p.slug}`;
     if (idx) { const inCat = data.stage.filter((s) => s.cat === sl.cat); idx.textContent = `${pad(inCat.indexOf(sl) + 1)} / ${pad(inCat.length)}`; }
   }
   function show(slug: string) {
@@ -310,6 +312,7 @@ function initQuotes() {
   const name = box.querySelector<HTMLElement>('[data-q-name]');
   const role = box.querySelector<HTMLElement>('[data-q-role]');
   const idx = box.querySelector<HTMLElement>('[data-q-idx]');
+  const link = box.querySelector<HTMLAnchorElement>('[data-q-link]');
   function pick(i: number) {
     const b = btns[i];
     btns.forEach((x, j) => { x.classList.toggle('on', j === i); x.setAttribute('aria-selected', String(j === i)); });
@@ -317,6 +320,11 @@ function initQuotes() {
     if (name) name.textContent = b.dataset.name ?? '';
     if (role) role.textContent = b.dataset.role ?? '';
     if (idx) idx.textContent = `${pad(i + 1)} / ${pad(btns.length)}`;
+    if (link) {
+      const u = b.dataset.link || '';
+      link.hidden = !u;
+      if (u) { link.href = u; link.textContent = `${/x\.com|twitter\.com/.test(u) ? 'View on X' : /linkedin\./.test(u) ? 'View on LinkedIn' : /contra\./.test(u) ? 'View on Contra' : 'View source'} \u2197`; }
+    }
   }
   btns.forEach((b, i) => b.addEventListener('click', () => pick(i)));
   box.addEventListener('keydown', (e) => {

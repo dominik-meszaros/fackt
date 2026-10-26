@@ -4,7 +4,7 @@
 // Anything with data-consent-open (the footer "Cookie settings" link) reopens the banner.
 ---
 <div class="cs" role="dialog" aria-live="polite" aria-label="Cookie settings" hidden data-cs>
-  <p><b>Cookies</b> We would like to use Google Analytics to see which pages help people. Nothing is shared for ads. <a href="/privacy#cookies">Details</a></p>
+  <p><b>Cookies</b> <span class="lg">We would like to use Google Analytics to see which pages help people. Nothing is shared for ads.</span><span class="sm">Can we use Google Analytics? Never for ads.</span> <a href="/privacy#cookies">Details</a></p>
   <div class="bt">
     <button type="button" class="m-btn dk" data-cs-yes>Accept</button>
     <button type="button" class="m-btn lt" data-cs-no>Decline</button>
@@ -15,10 +15,19 @@
   .cs[hidden] { display: none; }
   .cs p { margin: 0; }
   .cs b { display: block; font-weight: 500; color: #111; margin-bottom: 4px; font-size: 14px; }
+  .cs .sm { display: none; }
   .cs a { color: #111; text-underline-offset: 3px; }
   .bt { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
   .bt .m-btn { height: 38px; width: 100%; justify-content: center; }
-  @media (max-width: 720px) { .cs { left: 12px; right: 12px; bottom: 12px; width: auto; } }
+  /* Phones: a slim bar, so the first screen and the next tap stay visible */
+  @media (max-width: 720px) {
+    .cs { left: 8px; right: 8px; bottom: 8px; width: auto; padding: 10px 12px; font-size: 12.5px; line-height: 1.4; box-shadow: 0 0 0 1px #111, 3px 3px 0 #111; display: flex; gap: 10px; align-items: center; }
+    .cs b, .cs .lg { display: none; }
+    .cs .sm { display: inline; }
+    .cs p { flex: 1; min-width: 0; }
+    .bt { margin: 0; grid-template-columns: auto auto; gap: 6px; }
+    .bt .m-btn { height: 36px; padding: 0 12px; font-size: 13px; }
+  }
 </style>
 <script>
   const KEY = 'fackt_consent';

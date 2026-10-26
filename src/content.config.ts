@@ -51,6 +51,7 @@ const quotes = defineCollection({
     role: z.string(),
     quote: z.string(),
     photo: z.string().optional().default(''),
+    link: z.string().optional().default(''),
     order: z.number().default(99),
   }),
 });
@@ -75,6 +76,7 @@ const reviews = defineCollection({
     role: z.string(),
     highlight: z.string(),
     text: z.string(),
+    link: z.string().optional().default(''),
     order: z.number().default(99),
   }),
 });
