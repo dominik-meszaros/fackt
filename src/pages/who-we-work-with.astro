@@ -1,0 +1,142 @@
+---
+// Who we work with: teams we fit and industries we have shipped for. Data: src/data/audience.ts.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import SvcCta from '../components/pages/services/SvcCta.astro';
+import { teams, industries } from '../data/audience';
+
+const all = await getCollection('work');
+const bySlug = new Map(all.map((e) => [e.id, { slug: e.id, ...e.data }]));
+const inds = industries.map((i) => ({ ...i, items: i.work.map((s) => bySlug.get(s)).filter(Boolean) as any[] }));
+const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+---
+<Base
+  title="Who we work with: SaaS founders, product teams, mobile apps and agencies | Fackt"
+  description="Fackt works with early-stage SaaS founders, funded SaaS teams, mobile app startups and agencies, across creator tools, AI, infrastructure, fintech and education."
+>
+  <div class="m-page">
+    <SketchDefs />
+    <Nav />
+    <main>
+      <section class="wrap hd">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Fackt</a><span>/</span><b aria-current="page">Who we work with</b></nav>
+        <h1>Built for founders and teams<br class="br" /> shipping SaaS and apps.</h1>
+        <p class="lede">Four kinds of teams, one studio. Find yours, see what we usually do together and the work closest to your product.</p>
+        <nav class="jump" aria-label="On this page">
+          {teams.map((t) => <a href={`#${t.id}`}>{t.title}</a>)}
+          <a href="#industries">Industries</a>
+        </nav>
+      </section>
+
+      <section class="wrap list">
+        {teams.map((t, i) => (
+          <div class="row" id={t.id}>
+            <span class="n">0{i + 1}</span>
+            <div class="tx">
+              <h2>{t.title}</h2>
+              <p>{t.text}</p>
+            </div>
+            <div class="side">
+              <span class="lb">What we usually do</span>
+              <ul>{t.does.map((d) => <li><Fragment set:html={CK} />{d}</li>)}</ul>
+              <span class="lb st">Usually starts with</span>
+              <a class="lnk" href="/#pricing">{t.start} &#8594;</a>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section class="wrap inds" id="industries">
+        <span class="eb">Industries</span>
+        <h2 class="h2">Where we have shipped.</h2>
+        <p class="lede sm">Not on the list? Most of what makes a product clear carries across industries. Ask us on a free call.</p>
+        {inds.map((g) => (
+          <div class="ig" id={g.id}>
+            <h3>{g.title}</h3>
+            <div class="cards">
+              {g.items.map((p) => (
+                <a class="cd" href={`/work/${p.slug}`}>
+                  <span class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></span>
+                  <b>{p.name}</b><small>{p.service}</small>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <SvcCta title="Not sure where you fit?" text="Book a free 30 minute call with Dom, or get a free audit of your product and see how we think first." />
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  .wrap { width: min(960px, 100% - 32px); margin: 0 auto; }
+  .hd { padding: 56px 0 8px; }
+  .crumb { font-size: 12.5px; color: #8a8a86; display: flex; gap: 8px; align-items: center; }
+  .crumb a { color: inherit; text-decoration: none; }
+  .crumb a:hover { color: #111; }
+  .crumb b { color: #111; font-weight: 500; }
+  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.06; letter-spacing: -.02em; }
+  .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 560px; }
+  .lede.sm { font-size: 14.5px; margin-top: 10px; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 24px; }
+  .jump a { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 2px; font-size: 13px; font-weight: 500; color: #111; text-decoration: none; box-shadow: inset 0 0 0 1px #dcdcd8; }
+  .jump a:hover { box-shadow: inset 0 0 0 1px #111; }
+
+  .list { padding-top: 36px; }
+  .row { display: grid; grid-template-columns: 48px 1fr 300px; gap: 28px; align-items: start; padding: 32px 0; border-top: 1px solid #dcdcd8; scroll-margin-top: 96px; }
+  .row:last-child { border-bottom: 1px solid #dcdcd8; }
+  .n { font-size: 12px; color: #8a8a86; padding-top: 8px; }
+  .row h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.15; }
+  .row p { margin: 10px 0 0; color: #6a6a66; font-size: 15px; max-width: 440px; line-height: 1.55; }
+  .lb { display: block; font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; margin-bottom: 10px; }
+  .lb.st { margin: 20px 0 6px; }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+  li { display: flex; gap: 8px; align-items: center; }
+  li :global(svg) { flex-shrink: 0; }
+  .lnk { display: inline-block; font-weight: 500; font-size: 14px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .lnk:hover { border-bottom-width: 2px; }
+
+  .inds { padding-top: 64px; }
+  .eb { font-size: 12.5px; color: #8a8a86; display: block; margin-bottom: 10px; }
+  .h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 36px; line-height: 1.12; letter-spacing: -.01em; }
+  .ig { padding: 28px 0 4px; scroll-margin-top: 96px; }
+  .ig + .ig { border-top: 1px solid #ececea; margin-top: 24px; }
+  h3 { margin: 0 0 14px; font-size: 16px; font-weight: 500; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cd { color: inherit; text-decoration: none; }
+  .im { position: relative; display: block; height: 170px; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; overflow: hidden; }
+  .im img { position: absolute; left: 18px; top: 18px; width: calc(100% - 36px); border-radius: 2px; box-shadow: 0 0 0 1px #111; transition: transform .4s var(--m-ease); }
+  .cd:hover .im img { transform: translateY(-3px); }
+  .im.ph img { left: 50%; width: 82px; translate: -50% 0; border-radius: 10px; }
+  .im.pv { background: #fff; }
+  .im.pv::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px #e2e2de; pointer-events: none; }
+  .im.pv img, .cd:hover .im.pv img { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transform: none; border-radius: 0; box-shadow: none; }
+  .cd b { display: block; margin-top: 10px; font-weight: 500; font-size: 14px; }
+  .cd:hover b { text-decoration: underline; }
+  .cd small { display: block; margin-top: 2px; font-size: 12.5px; color: #8a8a86; }
+
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 1fr; gap: 14px; }
+    .n { padding: 0; }
+    .cards { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .hd { padding-top: 28px; }
+    h1 { font-size: 36px; }
+    .br { display: none; }
+    .lede { font-size: 14.5px; }
+    .jump a { height: 36px; }
+    .row { padding: 24px 0; }
+    .row h2 { font-size: 26px; }
+    .inds { padding-top: 44px; }
+    .h2 { font-size: 28px; }
+    .cards { grid-template-columns: 1fr; }
+    .im { height: 190px; }
+  }
+</style>

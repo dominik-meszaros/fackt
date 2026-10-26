@@ -10,6 +10,7 @@ import Hero from '../components/home/Hero.astro';
 import Logos from '../components/home/Logos.astro';
 import Work from '../components/home/Work.astro';
 import Services from '../components/home/Services.astro';
+import Audience from '../components/home/Audience.astro';
 import Process from '../components/home/Process.astro';
 import Proof from '../components/home/Proof.astro';
 import Pricing from '../components/home/Pricing.astro';
@@ -38,6 +39,8 @@ const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data
       <Logos />
       <Step />
       <Work projects={featured} total={all.length} />
+      <Step />
+      <Audience />
       <Step />
       <Services />
       <Step />
