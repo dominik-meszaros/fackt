@@ -36,7 +36,7 @@ const menu = [
     </div>
     <a class="brand" href="/" aria-label="Fackt home"><Mark size={18} />Fackt<span class="sx" data-sec-label></span></a>
     <div class="r">
-      {figma && <a class="fg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma" title="Open our raw work in Figma"><Fragment set:html={FIG} /><span>Raw work</span><span class="sr-only"> in Figma (opens in a new tab)</span></a>}
+      {figma && <a class="fg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma" aria-label="Raw work in Figma (opens in a new tab)"><Fragment set:html={FIG} /><span class="tip" aria-hidden="true">Raw work in Figma</span></a>}
       <a href="/audit" class="rv aud"><i aria-hidden="true"></i>Free audit</a>
       <a class="m-btn dk cta" href={site.bookPage}>Book a call</a>
       <button class="mbtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-menu-open>
@@ -81,9 +81,12 @@ const menu = [
   .l, .r { display: flex; align-items: center; gap: 22px; }
   .r { justify-content: flex-end; gap: 18px; }
   .l a, .rv { position: relative; color: #3f3f3f; }
-  .fg { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px 0 10px; border-radius: 16px; font-weight: 500; color: #111; box-shadow: inset 0 0 0 1px #c8c8c4; transition: box-shadow .2s, background .2s, color .2s; }
-  .fg:hover, .fg:focus-visible { box-shadow: inset 0 0 0 1px #111; background: #111; color: #fff; outline: none; }
-  .fg :global(svg) { flex-shrink: 0; }
+  /* Raw work in Figma (canvas option F1): square icon button, label shows as a tooltip on hover and focus */
+  .fg { position: relative; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 3px; color: #111; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
+  .fg:hover, .fg:focus-visible { box-shadow: inset 0 0 0 1px #111, 2px 2px 0 #111; outline: none; }
+  .fg :global(svg) { width: 10px; height: 15px; }
+  .fg .tip { position: absolute; top: calc(100% + 8px); left: 50%; translate: -50% 0; padding: 5px 9px; border-radius: 3px; background: #111; color: #fff; font-size: 12px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transform: translateY(-3px); transition: opacity .15s, transform .15s; }
+  .fg:hover .tip, .fg:focus-visible .tip { opacity: 1; transform: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .maud.mfg { display: flex; align-items: center; justify-content: center; gap: 8px; }
   .aud { display: inline-flex; align-items: center; gap: 7px; font-weight: 500; color: #111; }
