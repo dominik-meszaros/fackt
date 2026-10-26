@@ -43,9 +43,9 @@ export const teams = [
 
 // `mobile` = the case study shown instead when a mobile app startup picks this industry.
 export const industries: { id: string; short: string; title: string; work: string[]; mobile?: string }[] = [
-  { id: 'creator', short: 'creator tools and marketing', title: 'Creator economy and marketing', work: ['communi', 'promote-app', 'story-story'], mobile: 'communi-mobile' },
-  { id: 'ai', short: 'AI and video', title: 'AI and video', work: ['glowtify', 'viewmax'] },
-  { id: 'infra', short: 'infrastructure and dev tools', title: 'Infrastructure and developer tools', work: ['floxy', 'tradox'] },
-  { id: 'rewards', short: 'rewards and fintech', title: 'Rewards, earning and fintech', work: ['zums', 'earntask'], mobile: 'zums' },
-  { id: 'education', short: 'education', title: 'Education and learning', work: ['kindscore', 'deaflingo'], mobile: 'kindscore' },
+  { id: 'creator', short: 'a creator or marketing tool', title: 'Creator economy and marketing', work: ['communi', 'promote-app', 'story-story'], mobile: 'communi-mobile' },
+  { id: 'ai', short: 'an AI product', title: 'AI and video', work: ['glowtify', 'viewmax'] },
+  { id: 'infra', short: 'infrastructure or dev tools', title: 'Infrastructure and developer tools', work: ['floxy', 'tradox'] },
+  { id: 'rewards', short: 'a rewards or fintech app', title: 'Rewards, earning and fintech', work: ['zums', 'earntask'], mobile: 'zums' },
+  { id: 'education', short: 'an education app', title: 'Education and learning', work: ['kindscore', 'deaflingo'], mobile: 'kindscore' },
 ];

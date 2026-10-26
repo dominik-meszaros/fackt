@@ -75,6 +75,9 @@
     .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--line); color: var(--mut); margin-left: 6px; vertical-align: 1px; }
     .tag.hot { background: var(--ink); color: #fff; box-shadow: none; }
     .v .t { color: var(--mut); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .ab-v { margin: 0 0 12px; font-size: 15px; color: var(--ink); }
+    tr.win td { background: rgba(0,0,0,.03); }
+    td .n { color: var(--faint); font-size: 12px; margin-left: 4px; }
     .none { color: var(--faint); font-size: 13.5px; padding: 6px 0; }
     .foot { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--mut); }
     /* key gate */
@@ -168,6 +171,15 @@
       <section class="card"><p class="eb">Locations (by time zone)</p><div class="rows" data-places></div></section>
       <section class="card"><p class="eb">Leads</p><div class="rows" data-leads></div></section>
     </div>
+    <section class="seo" aria-label="A/B test">
+      <h2>A/B test: Who we work with <small>Half of visitors see A2 (result card), half see A4 (written answer). Counted since the test started, whatever range is picked above. Main measure: took a next step (opened a case study, the audit or a call).</small></h2>
+      <div class="card"><p class="ab-v" data-ab-verdict></p>
+        <table><thead><tr><th>Version</th><th class="r">Visitors</th><th class="r">Took a next step</th><th class="r">Changed the answer</th><th class="r">Opened a case study</th><th class="r">Audit</th><th class="r">Call</th><th class="r">Read another page</th><th class="r">Leads</th></tr></thead><tbody data-ab></tbody></table>
+        <p class="none" data-ab-note></p>
+        <p class="none">Check a version yourself (not counted): <a href="/who-we-work-with?v=a2" target="_blank" rel="noopener">A2</a> &#183; <a href="/who-we-work-with?v=a4" target="_blank" rel="noopener">A4</a></p>
+      </div>
+    </section>
+
     <section class="seo" aria-label="Email list">
       <h2>Fackt notes email list <small>Free files on fackt.io/free: page views, then signups, then confirmed emails. The gaps show what to fix.</small></h2>
       <div class="kpis k4" data-list-kpis></div>
@@ -300,6 +312,18 @@
     $('[data-leads]').innerHTML = d.conversions.length ? d.conversions.map(function (c) {
       return '<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">' + (c.email ? '<a href="mailto:' + esc(c.email) + '">' + esc(c.name) + '</a>' : esc(c.name)) + ' <span class="tag' + (c.source === 'booking' ? ' hot' : '') + '">' + (c.source === 'booking' ? 'booked' : 'form') + '</span></span><span class="c" style="color:var(--faint)">' + ago(c.at) + '</span></div>';
     }).join('') : '<p class="none">No leads in this range.</p>';
+    // A/B test
+    var X = d.experiment;
+    if (X) {
+      var rate = function (n, v) { return v ? Math.round(n / v * 100) + '%' : ''; };
+      var lab = { a2: 'A2, result card', a4: 'A4, written answer' };
+      $('[data-ab-verdict]').textContent = X.verdict;
+      $('[data-ab]').innerHTML = ['a2', 'a4'].map(function (k) {
+        var g = X.variants[k];
+        return '<tr' + (X.winner === k ? ' class="win"' : '') + '><td>' + lab[k] + (X.winner === k ? ' <span class="tag hot">winner</span>' : '') + '</td><td class="r">' + num(g.visitors) + '</td><td class="r"><b>' + rate(g.step, g.visitors) + '</b> <span class="n">' + g.step + '</span></td><td class="r">' + rate(g.engaged, g.visitors) + '</td><td class="r">' + rate(g.caseStudy, g.visitors) + '</td><td class="r">' + g.audit + '</td><td class="r">' + g.call + '</td><td class="r">' + rate(g.nextPage, g.visitors) + '</td><td class="r">' + g.leads + '</td></tr>';
+      }).join('');
+      $('[data-ab-note]').textContent = X.started ? 'Running since ' + new Date(X.started).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. A winner is called at ' + X.min + '+ visitors per version and a clear gap.' : '';
+    }
     // email list
     var L = d.list;
     if (L) {

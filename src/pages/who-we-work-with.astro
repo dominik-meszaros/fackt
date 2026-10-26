@@ -1,6 +1,6 @@
 ---
 // Who we work with. Three parts, each its own layout:
-// 1. Match: a sentence the visitor completes ("We are ... working on ...") with a live result card.
+// 1. Match (A/B test of two heroes, see below): a sentence the visitor completes ("We are ... working on ...") with a live result card.
 // 2. Teams: four hanging tags on a rail, each with a stamp for how work usually starts.
 // 3. Industries: a typographic index; hovering a row shows its work (desktop), thumbnails inline on phones.
 // Data: src/data/audience.ts. Stage images: src/data/stage.ts.
@@ -32,52 +32,78 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <SketchDefs />
     <Nav />
     <main>
-      <!-- 1. Match -->
-      <section class="wrap match" data-match>
-        <div class="ml">
-          <nav class="crumb" aria-label="Breadcrumb"><a href="/">Fackt</a><span>/</span><b aria-current="page">Who we work with</b></nav>
-          <h1>Who we work with</h1>
+      <!-- 1. Match: A/B test. A2 = sentence + wide result card. A4 = the answer written back as a sentence.
+           Each visitor gets one at random (kept in localStorage "fackt_ab_who"); ?v=a2 or ?v=a4 forces one for checking (not counted). -->
+      <div class="ab-a2" data-ab="a2" hidden>
+      <!-- 1. Match (A2: sentence on top, wide result below) -->
+      <section class="wrap match2">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Fackt</a><span>/</span><b aria-current="page">Who we work with</b></nav>
+        <h1>Who we work with</h1>
+        <p class="you"><b>You</b> Tell us about your team</p>
           <p class="sent">
-            <span>We are</span>
+            <span>You&#8217;re</span>
             <label class="pick"><span class="sr-only">Your team</span>
               <select data-team>{teams.map((t) => <option value={t.id}>{t.short}</option>)}</select>
               <i aria-hidden="true"></i>
             </label>
-            <span>working on</span>
+            <span>building</span>
             <label class="pick"><span class="sr-only">Your industry</span>
               <select data-ind>
-                <option value="">anything in SaaS</option>
+                <option value="">a SaaS product</option>
                 {industries.map((i) => <option value={i.id}>{i.short}</option>)}
               </select>
               <i aria-hidden="true"></i>
             </label>
           </p>
-          <p class="hint">Change the underlined words. The card shows the work closest to yours and how we would start.</p>
-        </div>
-
-        <aside class="card" aria-live="polite">
-          <span class="eb">Your closest match</span>
-          <a class="shot" href={`/work/${first.slug}`} data-m-link>
+        <p class="hint">Pick the words that fit you. We&#8217;ll answer with the closest project we&#8217;ve shipped and how we&#8217;d start with you.</p>
+        <div class="res" data-m-card>
+          <a class="big" href={`/work/${first.slug}`} data-m-link>
             <img src={first.img} alt="" data-m-img width="2240" height="1120" decoding="async" />
+            <span class="cap"><span class="lb">Our closest project</span><b data-m-name>{first.name}</b><span data-m-svc>{first.service}</span><i aria-hidden="true">&#8594;</i></span>
           </a>
-          <a class="cw" href={`/work/${first.slug}`} data-m-link2><b data-m-name>{first.name}</b><span data-m-svc>{first.service}</span><i aria-hidden="true">&#8594;</i></a>
-          <div class="cg">
-            <div>
-              <span class="lb">How we would start</span>
-              <span class="stamp" data-m-start>{t0.start}</span>
-            </div>
-            <div>
-              <span class="lb">First things we do</span>
-              <ul data-m-does>{t0.does.slice(0, 3).map((d) => <li><Fragment set:html={CK} />{d}</li>)}</ul>
-            </div>
+          <div class="info">
+            <span class="lb">How we&#8217;d start with you</span>
+            <span class="stamp" data-m-start>{t0.start}</span>
+            <span class="lb gap">What we&#8217;d do first</span>
+            <ul data-m-does>{t0.does.slice(0, 3).map((d) => <li><Fragment set:html={CK} />{d}</li>)}</ul>
+            <div class="cb"><a class="m-btn dk" href="/audit">Get a free audit</a><a class="m-btn lt" href={site.bookPage}>Book a call</a></div>
           </div>
-          <div class="cb">
-            <a class="m-btn dk" href="/audit">Get a free audit</a>
-            <a class="m-btn lt" href={site.bookPage}>Book a call</a>
-          </div>
-        </aside>
+        </div>
       </section>
 
+      </div>
+      <div class="ab-a4" data-ab="a4" hidden>
+      <!-- 1. Match (A4: the answer is written back as a sentence) -->
+      <section class="wrap match4">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Fackt</a><span>/</span><b aria-current="page">Who we work with</b></nav>
+        <h1>Who we work with</h1>
+        <p class="you"><b>You</b> Tell us about your team</p>
+          <p class="sent">
+            <span>You&#8217;re</span>
+            <label class="pick"><span class="sr-only">Your team</span>
+              <select data-team>{teams.map((t) => <option value={t.id}>{t.short}</option>)}</select>
+              <i aria-hidden="true"></i>
+            </label>
+            <span>building</span>
+            <label class="pick"><span class="sr-only">Your industry</span>
+              <select data-ind>
+                <option value="">a SaaS product</option>
+                {industries.map((i) => <option value={i.id}>{i.short}</option>)}
+              </select>
+              <i aria-hidden="true"></i>
+            </label>
+          </p>
+        <div class="ans" data-m-card>
+          <span class="who"><b>Fackt</b> replies</span>
+          <p class="reply">Then we&#8217;d usually start with <span class="stamp" data-m-start-lc>a {t0.start.toLowerCase()}</span>, beginning with <u data-m-does-first>{/^[A-Z][a-z]/.test(t0.does[0]) ? t0.does[0].charAt(0).toLowerCase() + t0.does[0].slice(1) : t0.does[0]}</u>. The closest thing we&#8217;ve shipped is
+            <span class="nw"><a class="pill" href={`/work/${first.slug}`} data-m-link><img src={first.img} alt="" data-m-img width="2240" height="1120" decoding="async" /><b data-m-name>{first.name}</b>&#8594;</a>.</span></p>
+          <div class="cb"><a class="m-btn dk" href="/audit">Get a free audit</a><a class="m-btn lt" href={site.bookPage}>Book a call</a></div>
+        </div>
+        <p class="hint">Change the underlined words and our answer rewrites itself.</p>
+      </section>
+
+      </div>
+      <script is:inline>(function(){var k="fackt_ab_who",q=new URLSearchParams(location.search).get("v"),v=null,f=false;if(q==="a2"||q==="a4"){v=q;f=true}else{try{v=localStorage.getItem(k)}catch(e){}if(v!=="a2"&&v!=="a4"){v=Math.random()<.5?"a2":"a4";try{localStorage.setItem(k,v)}catch(e){}}}window.__abWho={v:v,forced:f};var el=document.querySelector('[data-ab="'+v+'"]');if(el)el.hidden=false;})();</script>
       <!-- 2. Teams -->
       <section class="wrap tags-sec">
         <div class="sh"><span class="eb">The teams</span><h2>Four kinds of teams, one studio.</h2></div>
@@ -126,25 +152,33 @@ const pad = (n: number) => String(n).padStart(2, '0');
   const el = document.getElementById('who-data');
   if (el) {
     const d = JSON.parse(el.textContent || '{}') as { teams: { id: string; pick: string; start: string; does: string[] }[]; industries: { id: string; work: string[]; mobile?: string }[]; work: Record<string, W> };
-    const q = <T extends Element>(s: string) => document.querySelector<T>(s);
+    const ab = (window as any).__abWho as { v: string; forced: boolean } | undefined;
+    const root: ParentNode = document.querySelector('[data-ab]:not([hidden])') ?? document;
+    const q = <T extends Element>(s: string) => root.querySelector<T>(s);
+    const dq = <T extends Element>(s: string) => document.querySelector<T>(s);
     const team = q<HTMLSelectElement>('[data-team]'), ind = q<HTMLSelectElement>('[data-ind]');
-    const card = q<HTMLElement>('.match .card');
+    const card = q<HTMLElement>('[data-m-card]');
     const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+    // lower-case the first letter unless it starts an acronym (MVP, UX, iOS stays as is)
+    const lc = (x: string) => (/^[A-Z][a-z]/.test(x) ? x.charAt(0).toLowerCase() + x.slice(1) : x);
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
     const update = () => {
       const t = d.teams.find((x) => x.id === team!.value)!;
       const i = d.industries.find((x) => x.id === ind!.value);
       const slug = i ? (t.id === 'mobile' && i.mobile ? i.mobile : i.work[0]) : t.pick;
       const w = d.work[slug];
-      if (!w || !card) return;
-      card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip');
-      const im = q<HTMLImageElement>('[data-m-img]')!; im.removeAttribute('srcset'); im.src = w.img;
-      q<HTMLAnchorElement>('[data-m-link]')!.href = `/work/${w.slug}`;
-      q<HTMLAnchorElement>('[data-m-link2]')!.href = `/work/${w.slug}`;
-      q('[data-m-name]')!.textContent = w.name;
-      q('[data-m-svc]')!.textContent = w.service;
-      q('[data-m-start]')!.textContent = t.start;
-      q('[data-m-does]')!.innerHTML = t.does.map((x) => `<li>${CK}${esc(x)}</li>`).join('');
+      if (!w) return;
+      if (card) { card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip'); }
+      const all = <T extends Element>(sel: string) => root.querySelectorAll<T>(sel);
+      all<HTMLImageElement>('[data-m-img]').forEach((im) => { im.removeAttribute('srcset'); im.src = w.img; });
+      all<HTMLAnchorElement>('[data-m-link], [data-m-link2]').forEach((a) => { a.href = `/work/${w.slug}`; });
+      all('[data-m-name]').forEach((n) => { n.textContent = w.name; });
+      all('[data-m-svc]').forEach((n) => { n.textContent = w.service; });
+      all('[data-m-start]').forEach((n) => { n.textContent = t.start; });
+      all('[data-m-start-lc]').forEach((n) => { n.textContent = `a ${t.start.toLowerCase()}`; });
+      all('[data-m-does]').forEach((n) => { n.innerHTML = t.does.map((x) => `<li>${CK}${esc(x)}</li>`).join(''); });
+      all('[data-m-does-first]').forEach((n) => { n.textContent = lc(t.does[0]); });
+      all('[data-m-does-text]').forEach((n) => { const l = t.does.map((x) => `<u>${esc(x.charAt(0).toLowerCase() + x.slice(1))}</u>`); n.innerHTML = `${l.slice(0, -1).join(', ')} and ${l.at(-1)}`; });
     };
     // Preselect from the hash: /who-we-work-with#mobile or #ai
     const h = location.hash.slice(1);
@@ -163,16 +197,31 @@ const pad = (n: number) => String(n).padStart(2, '0');
       sel.style.width = `${Math.min(max, Math.ceil(meas.getBoundingClientRect().width) + parseFloat(cs.paddingRight) + 2)}px`;
     };
     const fitAll = () => { fit(team); fit(ind); };
-    team?.addEventListener('change', () => { fit(team); update(); });
-    ind?.addEventListener('change', () => { fit(ind); update(); });
+    // A/B tracking: events land in the visit's "Also" list as "AB who:<variant> ..." and are counted on /admin/stats
+    const tag = ab && !ab.forced ? `AB who:${ab.v}` : '';
+    let changed = false;
+    const track = (label: string) => {
+      if (!tag) return;
+      const go = () => (window as any).facktJourney?.track(`${tag} ${label}`);
+      if ((window as any).facktJourney) go(); else addEventListener('load', go, { once: true });
+    };
+    track('shown');
+    const onChange = () => { if (!changed) { changed = true; track('changed answer'); } };
+    if (tag && root instanceof HTMLElement) {
+      root.querySelectorAll<HTMLAnchorElement>('[data-m-link], [data-m-link2]').forEach((a) => a.setAttribute('data-journey', `${tag} opened case study`));
+      root.querySelectorAll<HTMLAnchorElement>('a[href="/audit"]').forEach((a) => a.setAttribute('data-journey', `${tag} clicked audit`));
+      root.querySelectorAll<HTMLAnchorElement>('a[href="/book"]').forEach((a) => a.setAttribute('data-journey', `${tag} clicked call`));
+    }
+    team?.addEventListener('change', () => { fit(team); update(); onChange(); });
+    ind?.addEventListener('change', () => { fit(ind); update(); onChange(); });
     if (h) update();
     fitAll();
     document.fonts?.ready.then(fitAll);
     addEventListener('resize', fitAll);
 
     // Industry index: a preview that follows the pointer (mouse only)
-    const peek = q<HTMLElement>('[data-peek]'), pimg = q<HTMLImageElement>('[data-peek-img]');
-    const idx = q<HTMLElement>('[data-idx]');
+    const peek = dq<HTMLElement>('[data-peek]'), pimg = dq<HTMLImageElement>('[data-peek-img]');
+    const idx = dq<HTMLElement>('[data-idx]');
     if (peek && pimg && idx && matchMedia('(hover: hover) and (min-width: 861px)').matches) {
       idx.addEventListener('pointermove', (e) => {
         const a = (e.target as HTMLElement).closest<HTMLElement>('[data-img]');
@@ -201,32 +250,67 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .stamp { display: inline-block; padding: 6px 10px; border: 1.5px solid #111; border-radius: 3px; font: 600 12px Geist, system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-2deg); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3px #111; }
   .stamp.sm { font-size: 10.5px; padding: 5px 9px; }
 
-  /* 1. Match */
-  .match { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 56px; align-items: center; padding: 56px 0 72px; }
-  h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 20px; line-height: 1.2; color: #6a6a66; }
-  .sent { margin: 18px 0 0; font-family: var(--m-serif); font-size: 46px; line-height: 1.22; letter-spacing: -.02em; }
-  .sent > span { color: #9a9a96; }
-  .pick { position: relative; display: inline-flex; align-items: baseline; }
-  .pick select { appearance: none; -webkit-appearance: none; border: 0; background: none; font: inherit; color: #111; letter-spacing: inherit; padding: 0 30px 0 0; margin: 0 6px 0 0; cursor: pointer; border-bottom: 2px solid #111; border-radius: 0; max-width: 100%; }
-  .pick select:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
-  .pick i { position: absolute; right: 12px; top: 55%; width: 10px; height: 10px; border-right: 2px solid #111; border-bottom: 2px solid #111; transform: translateY(-75%) rotate(45deg); pointer-events: none; }
-  .hint { margin: 22px 0 0; font-size: 14px; color: #6a6a66; max-width: 440px; }
-  .card { background: #fff; padding: 18px; border-radius: 4px; box-shadow: 0 0 0 1px #111, 6px 6px 0 #111; }
-  .card.flip { animation: flip .45s var(--m-ease); }
-  @keyframes flip { from { transform: translateY(6px) rotate(-.6deg); box-shadow: 0 0 0 1px #111, 2px 2px 0 #111; } }
-  .card .eb { margin-bottom: 12px; }
-  .shot { display: block; aspect-ratio: 2 / 1; border-radius: 3px; overflow: hidden; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; }
-  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--m-ease); }
-  .shot:hover img { transform: scale(1.03); }
-  .cw { display: flex; align-items: baseline; gap: 8px; margin-top: 12px; color: #111; text-decoration: none; }
-  .cw b { font-weight: 500; font-size: 15px; }
-  .cw span { font-size: 13px; color: #8a8a86; flex: 1; }
-  .cw i { font-style: normal; transition: transform .2s; }
-  .cw:hover b { text-decoration: underline; }
-  .cw:hover i { transform: translateX(3px); }
-  .cg { display: grid; grid-template-columns: auto 1fr; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px dashed #c8c8c4; }
-  .cb { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
-  .cb .m-btn { justify-content: center; height: 40px; }
+  /* 1. Match: both test variants, each scoped to its wrapper */
+  
+  .ab-a2 h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 20px; line-height: 1.2; color: #6a6a66; }
+  .ab-a2 .sent { margin: 8px 0 0; font-family: var(--m-serif); font-size: 46px; line-height: 1.22; letter-spacing: -.02em; }
+  .ab-a2 .sent > span { color: #9a9a96; }
+  .ab-a2 .pick { position: relative; display: inline-flex; align-items: baseline; }
+  .ab-a2 .pick select { appearance: none; -webkit-appearance: none; border: 0; background: none; font: inherit; color: #111; letter-spacing: inherit; padding: 0 30px 0 0; margin: 0 6px 0 0; cursor: pointer; border-bottom: 2px solid #111; border-radius: 0; max-width: 100%; }
+  .ab-a2 .pick select:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+  .ab-a2 .pick i { position: absolute; right: 12px; top: 55%; width: 10px; height: 10px; border-right: 2px solid #111; border-bottom: 2px solid #111; transform: translateY(-75%) rotate(45deg); pointer-events: none; }
+  .ab-a2 .hint { margin: 16px 0 0; font-size: 14px; color: #6a6a66; max-width: 480px; }
+  .ab-a2 .flip { animation: flip .45s var(--m-ease); }
+  @keyframes flip { from { opacity: .4; transform: translateY(6px); } }
+  .ab-a2 .match2 { padding: 56px 0 72px; }
+  .ab-a2 .res { display: grid; grid-template-columns: minmax(0, 1fr) 300px; margin-top: 36px; border-radius: 4px; box-shadow: 0 0 0 1px #111, 6px 6px 0 #111; overflow: hidden; background: #fff; }
+  .ab-a2 .big { position: relative; display: block; aspect-ratio: 2 / 1; overflow: hidden; background: #f2f2f0; }
+  .ab-a2 .big img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--m-ease); }
+  .ab-a2 .big:hover img { transform: scale(1.03); }
+  .ab-a2 .cap { position: absolute; left: 16px; bottom: 16px; display: flex; align-items: baseline; gap: 8px; padding: 8px 12px; background: #fff; border-radius: 2px; color: #111; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 13px; }
+  .ab-a2 .cap .lb { margin: 0 4px 0 0; }
+  .ab-a2 .cap b { font-weight: 500; font-size: 14px; }
+  .ab-a2 .cap span:not(.lb) { color: #8a8a86; }
+  .ab-a2 .info { padding: 22px; border-left: 1px solid #111; display: flex; flex-direction: column; }
+  .ab-a2 .info .gap { margin-top: 22px; }
+  .ab-a2 .info .stamp { align-self: flex-start; }
+  .ab-a2 .cb { display: grid; gap: 8px; margin-top: auto; padding-top: 20px; }
+  .ab-a2 .cb .m-btn { justify-content: center; height: 40px; }
+  @media (max-width: 860px) { .ab-a2 .res { grid-template-columns: 1fr; } .ab-a2 .info { border-left: 0; border-top: 1px solid #111; } }
+  @media (max-width: 720px) { .ab-a2 .match2 { padding: 28px 0 48px; } .ab-a2 .sent { font-size: 27px; line-height: 1.4; } .ab-a2 .pick select { padding-right: 24px; } .ab-a2 .pick i { right: 9px; width: 8px; height: 8px; } .ab-a2 .big { aspect-ratio: 4 / 3; } .ab-a2 .cap .lb { display: none; } }
+
+  .ab-a2 .you { display: flex; align-items: center; gap: 8px; margin: 22px 0 0; font-size: 13px; color: #6a6a66; }
+  .ab-a2 .you b { display: inline-grid; place-items: center; height: 22px; padding: 0 8px; border-radius: 11px; background: #111; color: #fff; font-size: 11.5px; font-weight: 500; }
+
+  
+  .ab-a4 h1 { margin: 14px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 20px; line-height: 1.2; color: #6a6a66; }
+  .ab-a4 .sent { margin: 8px 0 0; font-family: var(--m-serif); font-size: 46px; line-height: 1.22; letter-spacing: -.02em; }
+  .ab-a4 .sent > span { color: #9a9a96; }
+  .ab-a4 .pick { position: relative; display: inline-flex; align-items: baseline; }
+  .ab-a4 .pick select { appearance: none; -webkit-appearance: none; border: 0; background: none; font: inherit; color: #111; letter-spacing: inherit; padding: 0 30px 0 0; margin: 0 6px 0 0; cursor: pointer; border-bottom: 2px solid #111; border-radius: 0; max-width: 100%; }
+  .ab-a4 .pick select:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+  .ab-a4 .pick i { position: absolute; right: 12px; top: 55%; width: 10px; height: 10px; border-right: 2px solid #111; border-bottom: 2px solid #111; transform: translateY(-75%) rotate(45deg); pointer-events: none; }
+  .ab-a4 .hint { margin: 16px 0 0; font-size: 14px; color: #6a6a66; max-width: 480px; }
+  .ab-a4 .flip { animation: flip .45s var(--m-ease); }
+  @keyframes flip { from { opacity: .4; transform: translateY(6px); } }
+  .ab-a4 .match4 { padding: 56px 0 72px; }
+  .ab-a4 .match4 > * { max-width: 900px; }
+  .ab-a4 .ans { position: relative; margin-top: 48px; padding: 28px 30px 26px 30px; background: #fafaf8; border-radius: 4px 18px 18px 18px; box-shadow: 0 0 0 1px #111, 5px 5px 0 #111; }
+  .ab-a4 .who { position: absolute; left: 0; top: -30px; display: flex; align-items: center; gap: 8px; font: 500 13px Geist, system-ui, sans-serif; color: #6a6a66; }
+  .ab-a4 .who b { display: inline-grid; place-items: center; height: 22px; padding: 0 8px; border-radius: 11px; background: #fff; color: #111; box-shadow: inset 0 0 0 1.5px #111; font-size: 11.5px; font-weight: 500; }
+  .ab-a4 .reply { margin: 0; font-family: var(--m-serif); font-size: 30px; line-height: 1.5; letter-spacing: -.01em; color: #111; }
+  .ab-a4 .reply :global(u) { text-decoration: none; background: linear-gradient(transparent 62%, #e9e9e4 62%); }
+  .ab-a4 .reply .stamp { font-size: 13px; vertical-align: 6px; margin: 0 2px; }
+  .ab-a4 .nw { white-space: nowrap; }
+  .ab-a4 .pill { display: inline-flex; align-items: center; gap: 10px; padding: 4px 14px 4px 4px; vertical-align: 2px; border-radius: 40px; background: #fff; box-shadow: 0 0 0 1px #111, 2px 2px 0 #111; color: #111; text-decoration: none; font: 500 16px Geist, system-ui, sans-serif; }
+  .ab-a4 .pill img { width: 76px; height: 38px; object-fit: cover; border-radius: 30px; }
+  .ab-a4 .pill:hover { transform: translate(-1px, -1px); box-shadow: 0 0 0 1px #111, 3px 3px 0 #111; }
+  .ab-a4 .cb { display: flex; gap: 8px; margin-top: 22px; }
+  .ab-a4 .cb .m-btn { height: 40px; }
+  @media (max-width: 720px) { .ab-a4 .match4 { padding: 28px 0 48px; } .ab-a4 .sent { font-size: 27px; line-height: 1.4; } .ab-a4 .pick select { padding-right: 24px; } .ab-a4 .pick i { right: 9px; width: 8px; height: 8px; } .ab-a4 .ans { padding: 20px 18px; } .ab-a4 .reply { font-size: 21px; } .ab-a4 .pill img { width: 56px; height: 28px; } .ab-a4 .cb .m-btn { flex: 1; justify-content: center; } }
+
+  .ab-a4 .you { display: flex; align-items: center; gap: 8px; margin: 22px 0 0; font-size: 13px; color: #6a6a66; }
+  .ab-a4 .you b { display: inline-grid; place-items: center; height: 22px; padding: 0 8px; border-radius: 11px; background: #111; color: #fff; font-size: 11.5px; font-weight: 500; }
 
   /* 2. Teams: tags hanging from a rail */
   .tags-sec { position: relative; padding: 24px 0 40px; }
