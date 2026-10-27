@@ -8,8 +8,10 @@ import WorkCta from '../../components/pages/work/WorkCta.astro';
 const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order).map((e) => ({ slug: e.id, ...e.data }));
 const LABEL: Record<string, string> = { product: 'Product', web: 'Web', mobile: 'Mobile', branding: 'Branding', motion: 'Motion' };
 const cats = Object.keys(LABEL).map((k) => ({ k, label: LABEL[k], n: all.filter((p) => p.category === k).length })).filter((c) => c.n > 0);
+const workLd = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Work by Fackt', url: 'https://fackt.io/work',
+  mainEntity: { '@type': 'ItemList', itemListElement: all.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `https://fackt.io/work/${p.slug}`, name: `${p.name}: ${p.service}` })) } }];
 ---
-<Base image="/og/work.jpg" title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt.">
+<Base image="/og/work.jpg" title="Work: SaaS product, web and mobile design by Fackt" description="Selected SaaS product design, web design, mobile app and branding projects by Fackt." schema={workLd}>
   <div class="m-page">
     <Nav />
     <main>

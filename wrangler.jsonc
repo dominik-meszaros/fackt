@@ -7,8 +7,8 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    // Send the API to the worker before asset matching, so browser navigations to /api/* are not turned into the 404 page.
-    "run_worker_first": ["/api/*"]
+    // Every request goes through the worker first: it serves the API, logs AI and search crawlers, then hands pages to the assets.
+    "run_worker_first": true
   },
   // Public settings live here so every deploy keeps them.
   // Secrets (GITHUB_CLIENT_SECRET, RESEND_API_KEY) stay in Cloudflare > Settings > Variables and secrets.
@@ -17,6 +17,8 @@
     "GITHUB_CLIENT_ID": "Ov23liYHGDrgubuGRqqS",
     "FORM_TO": "dominik@fackt.io",
     // Sender for form emails. fackt.io is verified in Resend; the Resend test sender only delivers to the Resend account owner.
-    "FORM_FROM": "Fackt site <forms@fackt.io>"
+    "FORM_FROM": "Fackt site <forms@fackt.io>",
+    // Lets the worker log crawler visits to Supabase (the "crawl" function checks it against journey_config.crawl_key).
+    "CRAWL_KEY": "bfdc7682bf11afebe91f7efc0d8e6a8ff75f"
   }
 }

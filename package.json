@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/variants.mjs",
+    "build": "astro build && node scripts/variants.mjs && node scripts/aiseo.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

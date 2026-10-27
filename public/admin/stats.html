@@ -90,6 +90,12 @@
     .gate button { margin-top: 10px; width: 100%; height: 40px; border: 0; border-radius: 3px; background: var(--ink); color: #fff; font: 500 14px Geist, sans-serif; cursor: pointer; }
     .gate .err { color: var(--down); font-size: 12.5px; margin: 8px 0 0; min-height: 1em; }
     .seo { margin-top: 28px; }
+    .aq { display: flex; gap: 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+    .aq:first-child { border-top: 0; }
+    .aq i { font-style: normal; flex: none; width: 16px; text-align: center; }
+    .aq .yes { color: var(--up); } .aq .no { color: var(--down); }
+    .aq small { display: block; color: var(--faint); font-size: 12px; }
+    .sc { font-variant-numeric: tabular-nums; font-weight: 500; padding: 0 14px 0 8px; }
     .seo h2 { font-size: 18px; font-weight: 500; margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
     .seo h2 small { font-size: 13px; color: var(--mut); font-weight: 400; }
     .kpis.k4 { grid-template-columns: repeat(4, 1fr); margin-top: 12px; }
@@ -203,6 +209,25 @@
       <div class="card gsc"><p><b style="color:var(--ink);font-weight:500">Keywords and Google rankings</b> are only in Google Search Console: what people searched, how often fackt.io showed up, its average position and the click rate per page.</p><a class="b" href="https://search.google.com/search-console?resource_id=sc-domain:fackt.io" target="_blank" rel="noopener">Open Search Console &#8599;</a></div>
     </section>
 
+    <section class="seo" aria-label="AI crawlers">
+      <h2>AI crawlers <small>Bots from ChatGPT, Claude, Perplexity, Google and others reading fackt.io. AI assistants can only recommend pages their crawlers have read.</small></h2>
+      <div class="kpis k4" data-cr-kpis></div>
+      <div class="g2">
+        <section class="card"><p class="eb">Pages AI bots read most</p><div class="rows" data-cr-pages></div></section>
+        <section class="card"><p class="eb">Bots</p><div class="rows" data-cr-bots></div></section>
+      </div>
+      <section class="card" style="margin-top:12px" data-cr-err-w hidden><p class="eb">Pages bots could not open</p><div class="rows" data-cr-err></div></section>
+    </section>
+
+    <section class="seo" aria-label="AI SEO">
+      <h2>AI SEO <small>How well each page can be read and quoted by AI assistants and search engines. Checked on every deploy.</small></h2>
+      <div class="kpis k4" data-ai-kpis></div>
+      <div class="g2">
+        <section class="card"><p class="eb">Pages to improve first</p><table><thead><tr><th>Page</th><th class="r">Score</th><th>Fix first</th></tr></thead><tbody data-ai-pages></tbody></table></section>
+        <section class="card"><p class="eb">Questions people ask AI before hiring a studio</p><div data-ai-q></div></section>
+      </div>
+    </section>
+
     <section class="card" style="margin-top:12px"><p class="eb">Recent visits</p><div class="feed" data-feed></div></section>
 
     <div class="foot">
@@ -269,12 +294,51 @@
       .then(function (d) {
         $('[data-gate]').hidden = true; $('[data-app]').hidden = false;
         render(d);
+        extras();
         if (!timer) timer = setInterval(function () { if (document.visibilityState === 'visible') load(); }, 15000);
       })
       .catch(function (err) {
         if (err.message === 'key') { try { localStorage.removeItem(KEY); } catch (e) {} key = null; clearInterval(timer); timer = null; gate(first ? 'That key did not work.' : 'Your key no longer works. Enter it again.'); }
         else $('[data-upd]').textContent = 'Could not refresh, retrying';
       });
+  }
+
+  // AI crawlers (Supabase "crawlstats") and the AI SEO check (built with the site, /admin/aiseo.json).
+  var seoLoaded = false;
+  function extras() {
+    fetch(API.replace('/stats', '/crawlstats') + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (c) { if (c) renderCrawl(c); }).catch(function () {});
+    if (!seoLoaded) fetch('/admin/aiseo.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (a) { if (a) { seoLoaded = true; renderAiSeo(a); } }).catch(function () {});
+  }
+  function kp(l, v, sub) { return '<div class="card kpi"><div class="l">' + l + '</div><div class="v">' + v + '</div>' + (sub || '<div class="d">&nbsp;</div>') + '</div>'; }
+  function renderCrawl(c) {
+    var kd = c.kinds || {};
+    $('[data-cr-kpis]').innerHTML =
+      kp('AI bot visits', num(c.ai), '<div class="d">pages read by AI crawlers</div>') +
+      kp('Asked by a person', num(c.users), '<div class="d">an assistant opened a page for someone</div>') +
+      kp('AI search bots', num(kd.ai_search || 0), '<div class="d">ChatGPT search, Perplexity, Claude search</div>') +
+      kp('Search engine bots', num(kd.search || 0), '<div class="d">Google, Bing and others</div>');
+    $('[data-cr-pages]').innerHTML = rows(c.aiPages || []);
+    $('[data-cr-bots]').innerHTML = rows((c.bots || []).map(function (b) { return { k: b.k, v: b.v }; }));
+    $('[data-cr-err-w]').hidden = !(c.errors && c.errors.length);
+    $('[data-cr-err]').innerHTML = rows(c.errors || []);
+  }
+  function renderAiSeo(a) {
+    var answered = a.questions.filter(function (q) { return q.page; }).length;
+    var low = a.pages.filter(function (p) { return p.score < 70; }).length;
+    $('[data-ai-kpis]').innerHTML =
+      kp('Average score', a.average + ' / 100', '<div class="d">' + a.pages.length + ' pages checked</div>') +
+      kp('Pages under 70', num(low), '<div class="d">' + (low ? 'start with the list below' : 'all pages in good shape') + '</div>') +
+      kp('Questions answered', answered + ' / ' + a.questions.length, '<div class="d">common questions with an answer on the site</div>') +
+      kp('AI files', (a.site.llms ? 1 : 0) + (a.site.sitemap ? 1 : 0) + (a.site.robotsAllowsAI ? 1 : 0) + ' / 3', '<div class="d">llms.txt, sitemap, robots.txt open to AI</div>');
+    $('[data-ai-pages]').innerHTML = a.pages.filter(function (p) { return p.fixes.length; }).slice(0, 10).map(function (p) {
+      var f = p.fixes[0];
+      return '<tr><td><a href="' + esc(p.path) + '" target="_blank" rel="noopener">' + esc(p.path) + '</a></td><td class="r sc">' + p.score + '</td><td title="' + esc(f.why) + '">' + esc(f.name) + '<br><span style="color:var(--faint);font-size:12px">' + esc(f.why) + '</span></td></tr>';
+    }).join('') || '<tr><td colspan="3" class="none">Nothing to fix.</td></tr>';
+    $('[data-ai-q]').innerHTML = a.questions.map(function (q) {
+      return '<div class="aq"><i class="' + (q.page ? 'yes">&#10003;' : 'no">&#10007;') + '</i><span>' + esc(q.q) + '<small>' + (q.page ? 'Answered on <a href="' + esc(q.page) + '" target="_blank" rel="noopener">' + esc(q.page) + '</a>' : 'Not answered yet: a blog note on this would help') + '</small></span></div>';
+    }).join('');
   }
 
   function render(d) {

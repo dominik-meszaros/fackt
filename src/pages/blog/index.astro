@@ -9,8 +9,10 @@ import { publishedPosts, readTime } from '../../data/blog';
 const posts = (await publishedPosts()).map((p) => ({ slug: p.id, ...p.data, time: readTime(p.body, p.data.readTime) }));
 const [first, ...rest] = posts;
 const cats = [...new Set(posts.map((p) => p.category))];
+const blogLd = [{ '@context': 'https://schema.org', '@type': 'Blog', name: 'Fackt notes', url: 'https://fackt.io/blog',
+  blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, description: p.description, url: `https://fackt.io/blog/${p.slug}`, datePublished: new Date(p.date).toISOString() })) }];
 ---
-<Base image="/og/blog.jpg" title="Fackt notes: SaaS product design, in practice" description="Short, practical notes on designing SaaS products people pay for. Written by Dom from real client work." noindex={posts.length === 0}>
+<Base image="/og/blog.jpg" title="Fackt notes: SaaS product design, in practice" description="Short, practical notes on designing SaaS products people pay for. Written by Dom from real client work." noindex={posts.length === 0} schema={blogLd}>
   <div class="m-page">
     <Nav />
     <main class="bl">

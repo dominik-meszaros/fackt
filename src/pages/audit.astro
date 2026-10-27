@@ -21,6 +21,12 @@ const r = homeSettings.rating;
 const ticks = audit.ticks ?? [];
 const how = audit.how ?? audit.steps.map((s) => ({ title: s, text: '' }));
 const faq = audit.faq ?? [];
+// Structured data for search engines and AI assistants: the audit as a free service, plus its FAQ.
+const auditLd = [
+  { '@context': 'https://schema.org', '@type': 'Service', name: 'Free product audit', serviceType: 'UX audit', provider: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' },
+    description: audit.text, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  ...(faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
+];
 const video = audit.deliverables.find((d) => d.icon === 'video') ?? audit.deliverables[0];
 const doc = audit.deliverables.find((d) => d.icon === 'doc') ?? audit.deliverables[1];
 const strip = (t: string) => t.replace(/^an?\s+/i, '').replace(/^./, (c) => c.toUpperCase());
@@ -36,7 +42,7 @@ const finds = [
 const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 import '../styles/faq.css';
 ---
-<Base image="/og/audit.jpg" title="Free product audit | Fackt" description={audit.text}>
+<Base image="/og/audit.jpg" title="Free product audit | Fackt" description="A free audit of your SaaS product or website: a video walkthrough and a written list of fixes, ordered by impact, within 2 days." schema={auditLd}>
   <div class="m-page">
     <SketchDefs />
     <Nav />

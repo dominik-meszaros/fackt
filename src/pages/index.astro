@@ -31,8 +31,12 @@ const featured = all.filter((p) => p.featured).slice(0, 6);
 const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
 const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
 const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
+// Structured answers for search engines and AI assistants: the "ask anything" answers on the homepage as a FAQ.
+import { homeSettings } from '../data/settings';
+const faqLd = (homeSettings.ask as any[]).filter((a) => a.type === 'answer' && a.answer);
+const schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqLd.map((a) => ({ '@type': 'Question', name: a.question, acceptedAnswer: { '@type': 'Answer', text: a.answer } })) }] : [];
 ---
-<Base lcp={stage[0]?.stageImage ?? stage[0]?.image}>
+<Base lcp={stage[0]?.stageImage ?? stage[0]?.image} schema={schema}>
   <div class="m-page">
     <SketchDefs />
     <Nav />
