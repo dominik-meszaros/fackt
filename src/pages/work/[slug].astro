@@ -6,6 +6,7 @@ import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import WorkCta from '../../components/pages/work/WorkCta.astro';
+import NoteFromDom from '../../components/NoteFromDom.astro';
 import { site } from '../../data/site';
 import { publishedPosts } from '../../data/blog';
 
@@ -127,7 +128,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               </div>
             </figure>
           )}
-
+          <NoteFromDom from="Case study" id={p.slug} line={`Building something like ${p.name}? <i>Two easy next steps:</i>`} />
         </div>
       </section>
       {boards.length > 0 && (

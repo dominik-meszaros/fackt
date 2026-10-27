@@ -7,7 +7,7 @@ const { title = 'Ready to start?', text = 'Book a free 30 minute strategy call w
 <section class="wcta-w">
   <div class="wcta">
     <div><h2>{title}</h2><p>{text}</p></div>
-    <div class="bs"><a class="m-btn dk" href={site.bookPage}>Book a free call</a><a class="m-btn lt" href="/audit">Get a free audit</a></div>
+    <div class="bs"><a class="m-btn dk" href={site.bookPage} data-journey={`Work band: book a call (${Astro.url.pathname})`}>Book a free call</a><a class="m-btn lt" href="/audit" data-journey={`Work band: free audit (${Astro.url.pathname})`}>Get a free audit</a></div>
   </div>
 </section>
 <style>

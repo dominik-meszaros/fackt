@@ -1,0 +1,22 @@
+---
+// One quiet line between the logos and the work: the lightest next step for people who are not ready to book.
+---
+<a class="sl" href="/audit" data-journey="Home: not sure where to start (audit)">
+  <span class="q">Not sure where to start?</span>
+  <span class="t">Get a free audit of your product: a video and a written list of fixes, within 2 days.</span>
+  <span class="go">Get a free audit <i aria-hidden="true">&#8594;</i></span>
+</a>
+<style>
+  .sl { display: flex; align-items: center; gap: 14px; width: min(960px, 100% - 32px); margin: 40px auto 20px; padding: 14px 16px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; color: #111; text-decoration: none; font-size: 14px; transition: box-shadow .2s; }
+  .sl:hover { box-shadow: inset 0 0 0 1px #111, 3px 3px 0 #111; }
+  .q { font-weight: 500; white-space: nowrap; }
+  .t { color: #6a6a66; flex: 1; }
+  .go { margin-left: auto; font-weight: 500; white-space: nowrap; border-bottom: 1px solid #111; }
+  .go i { font-style: normal; display: inline-block; transition: transform .2s; }
+  .sl:hover .go i { transform: translateX(3px); }
+  @media (max-width: 720px) {
+    .sl { flex-wrap: wrap; gap: 4px 10px; padding: 14px; }
+    .t { flex-basis: 100%; order: 2; font-size: 13.5px; }
+    .go { order: 3; margin: 6px 0 0; }
+  }
+</style>

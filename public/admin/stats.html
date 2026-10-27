@@ -209,6 +209,7 @@
       <a href="https://analytics.google.com/analytics/web/#/realtime" rel="noopener" target="_blank">Google Analytics realtime &#8599;</a>
       <a href="/admin/">Content (CMS)</a>
       <a href="#" data-forget>Forget key on this browser</a>
+      <a href="#" data-me title="Your own visits are left out of these numbers. On your phone or another browser, open fackt.io/?me=1 once.">This is me: not counted</a>
       <span>Counts people tracked by fackt.io's own visit measurement. Updates every 15 seconds.</span>
     </div>
   </div>
@@ -241,8 +242,16 @@
   $('[data-gate-form]').addEventListener('submit', function (e) {
     e.preventDefault(); key = e.target.key.value.trim();
     try { localStorage.setItem(KEY, key); } catch (err) {}
+    setMe(true);
     load(true);
   });
+  // Whoever has the stats key is Dom: this browser stops counting its own visits on fackt.io (see journey.js).
+  var meLink = $('[data-me]');
+  var isMe = function () { try { return localStorage.getItem('fackt_me') === '1'; } catch (e) { return false; } };
+  var setMe = function (on) { try { localStorage.setItem('fackt_me', on ? '1' : '0'); } catch (e) {} meLink.textContent = on ? 'This is me: not counted' : 'This browser is counted (click to stop)'; };
+  var decided = null; try { decided = localStorage.getItem('fackt_me'); } catch (e) {}
+  setMe(decided === null ? !!key : decided === '1');
+  meLink.addEventListener('click', function (e) { e.preventDefault(); setMe(!isMe()); });
   $('[data-forget]').addEventListener('click', function (e) { e.preventDefault(); try { localStorage.removeItem(KEY); } catch (err) {} key = null; clearInterval(timer); gate(); });
   document.querySelectorAll('[data-days]').forEach(function (b) {
     b.classList.toggle('on', Number(b.dataset.days) === days);

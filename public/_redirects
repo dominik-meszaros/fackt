@@ -1,0 +1,14 @@
+# Old Framer site URLs that Google and old links still send people to. 301 = moved for good.
+/case-studies/ecom-space-product-strategy-ui-ux /work 301
+/case-studies/acme-studio-ui-ux-design /work 301
+/case-studies/* /work 301
+/case-studies /work 301
+/blog/the-ultimate-guide-to-building-a-brand-style-guide-that-scales /blog 301
+/terms-of-service /privacy 301
+/terms /privacy 301
+/privacy-policy /privacy 301
+/contact /book 301
+/about /who-we-work-with 301
+/pricing /#pricing 301
+/projects /work 301
+/portfolio /work 301

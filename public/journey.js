@@ -1,6 +1,14 @@
 // Visitor journey tracker, ported from the old Framer site. Sends visits, forms and bookings to Supabase (daily visitor email).
 (function () {
   if (window.facktJourney || window.facktJourneyDisabled) return;
+  // Your own visits: open any page with ?me=1 once (or press "This is me" in the stats) and this browser stops being counted.
+  // ?me=0 counts it again. Admin pages are never counted.
+  try {
+    var mq = new URLSearchParams(location.search).get("me");
+    if (mq === "1") localStorage.setItem("fackt_me", "1");
+    if (mq === "0") localStorage.removeItem("fackt_me");
+    if (localStorage.getItem("fackt_me") === "1" || location.pathname.indexOf("/admin") === 0) return;
+  } catch (e) {}
 
   var ENDPOINT = "https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/journey";
   var CAL_HOSTS = ["cal.com", "app.cal.com"];

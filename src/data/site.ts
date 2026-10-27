@@ -4,9 +4,9 @@
 export const site = {
   name: 'Fackt',
   url: 'https://fackt.io',
-  title: 'Fackt: SaaS UI/UX and product design agency',
+  title: 'Fackt: SaaS product design and UI/UX studio',
   description:
-    'Fackt is an independent UI/UX and product design studio for SaaS and tech companies. We design SaaS products, dashboards, mobile apps and landing pages that turn users into customers.',
+    'Independent SaaS product design studio. We design products, dashboards and mobile apps, and build Framer, Webflow and code websites. Start with a free audit.',
   email: 'dominik@fackt.io',
   booking: 'https://cal.com/fackt/30min',
   // Expert badges in the footer. Add each profile link once you have it (empty = badge shows without a link).
@@ -22,6 +22,7 @@ export const site = {
     { label: 'X', href: 'https://x.com/kcinimoDM' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/dominik-meszaros/' },
     { label: 'Behance', href: 'https://www.behance.net/dominikmeszaros' },
+    { label: 'YouTube', href: 'https://www.youtube.com/@kcinimoDM' },
     { label: 'Contra', href: 'https://contra.com/dominik_meszaros_bpbjfgt0?referralExperimentNid=DEFAULT_REFERRAL_PROGRAM&referrerUsername=dominik_meszaros_bpbjfgt0' },
   ],
 };

@@ -1,0 +1,43 @@
+---
+// "A note from Dom": the signed end-of-page box with two choices (free audit, call). Design: canvas board PBlogCta3 (C3).
+// Used at the end of blog notes and after the text on case studies. `from` tags the clicks in the stats ("Blog note", "Case study").
+import Mark from './home/Mark.astro';
+import { site } from '../data/site';
+interface Props { from: string; id: string; line?: string }
+const { from, id, line } = Astro.props;
+---
+<aside class="note" aria-label="Next steps">
+  <div class="nh"><span class="na"><Mark size={16} color="#fff" /></span><div><b>A note from Dom</b><span>Founder, Fackt</span></div></div>
+  <p class="nt">{line ? <Fragment set:html={line} /> : <>If any of this sounded <i>a little too familiar</i>, two easy next steps:</>}</p>
+  <div class="nc">
+    <a class="o pri" href="/audit" data-journey={`${from}: free audit (${id})`}><span class="k"><i>01</i><em aria-hidden="true">&#8599;</em></span><b>Get a free audit</b><span>Send your product. A video and a written audit within 2 days.</span></a>
+    <a class="o" href={site.bookPage} data-journey={`${from}: book a call (${id})`}><span class="k"><i>02</i><em aria-hidden="true">&#8599;</em></span><b>Book a 30 minute call</b><span>Talk it through with me, with clear next steps either way.</span></a>
+  </div>
+  <span class="ns" aria-hidden="true">Dom</span>
+</aside>
+
+<style>
+  .note { margin: 40px 0 0; padding-top: 28px; border-top: 1.5px solid #111; }
+  .nh { display: flex; align-items: center; gap: 12px; }
+  .na { width: 40px; height: 40px; border-radius: 3px; background: #111; display: grid; place-items: center; flex: none; }
+  .nh b { display: block; font-weight: 500; font-size: 14.5px; color: #111; line-height: 1.3; }
+  .nh div span { display: block; font-size: 13px; color: #767672; line-height: 1.4; }
+  .note .nt { margin: 18px 0 0; font-family: var(--m-serif); font-size: 30px; line-height: 1.15; letter-spacing: -.01em; color: #111; }
+  .nc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .note .o { display: block; padding: 18px 18px 16px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; color: #111; text-decoration: none; transition: box-shadow .2s, transform .2s; }
+  .o .k { display: flex; justify-content: space-between; align-items: center; }
+  .o .k i { font: 500 11px 'Geist Mono', ui-monospace, monospace; font-style: normal; color: #8a8a86; }
+  .o .k em { font-style: normal; font-size: 16px; color: #8a8a86; transition: transform .2s, color .2s; }
+  .o b { display: block; margin-top: 14px; font-weight: 500; font-size: 16px; }
+  .o > span:last-child { display: block; margin-top: 4px; font-size: 14px; line-height: 1.5; color: #6a6a66; }
+  .note .o.pri { background: #111; color: #fff; box-shadow: 3px 3px 0 #c8c8c4; }
+  .o.pri > span:last-child { color: #b2b2ae; }
+  .note .o:not(.pri):hover { box-shadow: inset 0 0 0 1px #111, 3px 3px 0 #111; transform: translate(-1px, -1px); }
+  .note .o.pri:hover { box-shadow: 4px 4px 0 #8a8a86; transform: translate(-1px, -1px); }
+  .o:hover .k em { transform: translate(3px, -3px); color: currentColor; }
+  .ns { display: block; margin-top: 18px; font-family: var(--m-serif); font-style: italic; font-size: 22px; color: #111; }
+  @media (max-width: 720px) {
+    .nc { grid-template-columns: 1fr; }
+    .note .nt { font-size: 26px; }
+  }
+</style>

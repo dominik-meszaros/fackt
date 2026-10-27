@@ -17,6 +17,8 @@ import Pricing from '../components/home/Pricing.astro';
 import Working from '../components/home/Working.astro';
 import Postcard from '../components/home/Postcard.astro';
 import Notes from '../components/home/Notes.astro';
+import StartLine from '../components/home/StartLine.astro';
+import PhoneBar from '../components/home/PhoneBar.astro';
 import { publishedPosts } from '../data/blog';
 const hasNotes = (await publishedPosts()).length > 0;
 
@@ -37,6 +39,7 @@ const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data
     <main>
       <Hero stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes} />
       <Logos />
+      <StartLine />
       <Step />
       <Work projects={featured} total={all.length} />
       <Step />
@@ -56,6 +59,7 @@ const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data
       <Postcard />
     </main>
     <Footer />
+    <PhoneBar />
     <EasterGame />
   </div>
 </Base>
