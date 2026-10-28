@@ -1,5 +1,6 @@
 ---
 title: "How much SaaS product design costs, and what you get at each price"
+seoTitle: "How much SaaS product design costs"
 description: "What budget you need, what changes the price, and why many teams start with a project and move to a retainer later."
 category: Pricing
 cover: /uploads/blog/cover-01.webp

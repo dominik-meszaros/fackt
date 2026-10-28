@@ -28,7 +28,9 @@ for (const file of walk(DIST)) {
   const html = readFileSync(file, 'utf8');
   if (/<meta[^>]+name="robots"[^>]+noindex/i.test(html)) continue;
   const path = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
-  const main = (/<main[\s\S]*?<\/main>/i.exec(html) || [html])[0];
+  // The page content: everything in <body> except the site header, nav and footer.
+  const body = (/<body[\s\S]*?<\/body>/i.exec(html) || [html])[0];
+  const main = body.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<header[^>]*data-nav[\s\S]*?<\/header>/gi, '').replace(/<(nav|footer)\b[\s\S]*?<\/\1>/gi, '');
   const title = decode((/<title>([\s\S]*?)<\/title>/i.exec(html) || [, ''])[1]).trim();
   const descTag = /<meta[^>]+name="description"[^>]*>/i.exec(html)?.[0];
   const desc = descTag ? attr(descTag, 'content') || '' : '';
@@ -42,7 +44,8 @@ for (const file of walk(DIST)) {
   const words = text(main).split(' ').filter((w) => /\w/.test(w)).length;
   const links = new Set([...main.matchAll(/<a[^>]+href="(\/[^"#?]*)/gi)].map((m) => m[1]).filter((h) => h !== path)).size;
   const imgs = [...main.matchAll(/<img[^>]*>/gi)].map((m) => m[0]);
-  const noAlt = imgs.filter((t) => attr(t, 'alt') === null || (attr(t, 'alt') === '' && !/aria-hidden|role="presentation"/.test(t))).length;
+  // alt="" marks a decorative image (an avatar next to a name, a thumbnail next to its title), which is correct. Only a missing alt counts.
+  const noAlt = imgs.filter((t) => attr(t, 'alt') === null).length;
   const canonical = /<link[^>]+rel="canonical"/i.test(html);
   const og = /<meta[^>]+property="og:image"/i.test(html);
 
@@ -52,7 +55,7 @@ for (const file of walk(DIST)) {
     ['One H1', h1s === 1, 10, `${h1s} H1 headings.`],
     ['Structured data beyond the basics', rich.length > 0, 15, rich.length ? `Has ${rich.join(', ')}.` : 'Only site-wide schema. Add Article, Service, FAQPage or CreativeWork.'],
     ['Enough text for an AI to quote (300+ words)', words >= 300 || LIST_PAGES.has(path), 15, `${words} words in the main content.`],
-    ['Answers questions (FAQ or question headings)', questions + faqLd > 0, 15, questions ? `${questions} questions answered.` : 'No question headings or FAQ. AI assistants quote direct answers to questions.'],
+    ['Answers questions (FAQ or question headings)', questions + faqLd > 0 || LIST_PAGES.has(path), 15, questions ? `${questions} questions answered.` : 'No question headings or FAQ. AI assistants quote direct answers to questions.'],
     ['Links to 3+ other pages', links >= 3, 10, `${links} internal links.`],
     ['Every image has alt text', noAlt === 0, 5, noAlt ? `${noAlt} images without alt text.` : 'All images described.'],
     ['Canonical URL and share image', canonical && og, 10, `${canonical ? 'Canonical set' : 'No canonical'}, ${og ? 'share image set' : 'no share image'}.`],

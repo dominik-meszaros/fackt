@@ -36,7 +36,7 @@ const schema = [...faqLd,
   ] },
 ];
 ---
-<Base title={`${p.title} | Fackt`} description={p.description} image={og} type="article" schema={schema} noindex={p.draft} lcp={p.cover}>
+<Base title={`${p.seoTitle ?? p.title} | Fackt`} description={p.description} image={og} type="article" schema={schema} noindex={p.draft} lcp={p.cover}>
   <div class="m-page">
     {p.draft && <div class="draft">Draft preview. Only people with this link can see it; switch off "Draft" in the CMS to publish.</div>}
     <Nav />

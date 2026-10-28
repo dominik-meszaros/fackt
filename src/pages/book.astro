@@ -51,6 +51,17 @@ const agenda = [
         </div>
         <div class="ft2"><span>Times in your time zone</span><span>Not loading? <a href={site.booking} target="_blank" rel="noopener">Open it on Cal.com</a></span></div>
       </div>
+
+      <section class="qf" aria-labelledby="book-q">
+        <h2 id="book-q">Before you book</h2>
+        <div>
+          <details open><summary>What happens on the call?</summary><p>You walk Dom through your product, your website or your brand and what you want it to do. He asks a few questions about your users and goals, points out what he would change first, and you leave with clear next steps, whether you work together or not.</p></details>
+          <details><summary>Do I need to prepare anything?</summary><p>A link to your product or website is enough. If the product sits behind a login, a quick screen share works too. No pitch deck needed.</p></details>
+          <details><summary>Is the call really free?</summary><p>Yes. It is 30 minutes, free and without any commitment. If you would like to see how we work first, browse <a href="/work">the case studies</a>.</p></details>
+          <details><summary>What does working with Fackt cost?</summary><p>Fixed-scope projects start from $5,000 and a monthly retainer is $6,900. The full breakdown is in <a href="/blog/saas-product-design-cost">how much SaaS product design costs</a>.</p></details>
+          <details><summary>Not ready for a call?</summary><p>Send your product for a <a href="/audit">free audit</a> instead: a video walkthrough and a written list of fixes within 2 days, no call needed.</p></details>
+        </div>
+      </section>
     </main>
     <Footer />
   </div>
@@ -61,6 +72,19 @@ const agenda = [
   /* headline and agenda side by side on top, the calendar full width below so Cal.com shows the month and times next to each other */
   .left { display: contents; }
   .crumb, h1, .lede, .from, .xp, .alt { grid-column: 1; }
+  .bk > .qf { grid-column: 1 / -1; }
+  .qf { margin-top: 48px; padding-top: 28px; border-top: 1px solid #dcdcd8; display: grid; grid-template-columns: 260px 1fr; gap: 40px; }
+  .qf h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 26px; line-height: 1.15; }
+  .qf details { border-bottom: 1px solid #ececea; padding: 16px 0; }
+  .qf details:first-child { padding-top: 0; }
+  .qf summary { list-style: none; cursor: pointer; font-weight: 500; font-size: 15px; display: flex; justify-content: space-between; gap: 16px; }
+  .qf summary::-webkit-details-marker { display: none; }
+  .qf summary::after { content: '+'; color: #8a8a86; font-weight: 400; }
+  .qf details[open] summary::after { content: '\2212'; }
+  .qf p { margin: 8px 0 0; color: #6a6a66; font-size: 14.5px; line-height: 1.6; max-width: 620px; }
+  .qf a { color: #111; }
+  @media (max-width: 720px) { .qf { grid-template-columns: 1fr; gap: 16px; } }
+
   ol { grid-column: 2; grid-row: 1 / span 6; align-self: start; margin-top: 0 !important; }
   .cal { grid-column: 1 / -1; margin-top: 36px; }
   .crumb { font-size: 12.5px; color: #8a8a86; display: flex; gap: 8px; align-items: center; }

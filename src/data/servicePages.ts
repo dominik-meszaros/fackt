@@ -25,7 +25,7 @@ const pricingAnswer =
 export const servicePages: ServicePage[] = [
   {
     slug: 'product-design',
-    seoTitle: 'SaaS Product Design Agency | UI/UX for dashboards and apps | Fackt',
+    seoTitle: 'SaaS Product Design Agency: UI/UX for dashboards | Fackt',
     seoDescription:
       'Product design for SaaS and tech companies: UX audits, user flows, high fidelity UI, design systems, prototypes and mobile apps, handed off ready for development.',
     headline: 'SaaS product design that users understand and pay for.',
@@ -57,7 +57,7 @@ export const servicePages: ServicePage[] = [
   },
   {
     slug: 'web-design-development',
-    seoTitle: 'SaaS Website Design and Development | Framer, Webflow and Code | Fackt',
+    seoTitle: 'SaaS Website Design: Framer, Webflow and code | Fackt',
     seoDescription:
       'Website design and development for SaaS and tech: landing pages, marketing sites and redesigns that turn visitors into signups, built in Framer, Webflow or custom code.',
     headline: 'Websites for SaaS and tech that turn visitors into signups.',

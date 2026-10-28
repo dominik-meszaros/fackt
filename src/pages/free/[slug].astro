@@ -58,6 +58,13 @@ const inside = r.inside.filter((x) => !x.startsWith('[Dom'));
           <ul>{inside.map((x) => <li>{x}</li>)}</ul>
         </div>
       )}
+      <div class="qf qf-free">
+        <span class="k">Questions</span>
+        <details open><summary>How do I get the file?</summary><p>Enter your email above. The first email comes from notes@fackt.io within a minute, with a button that opens the Figma file and confirms your address.</p></details>
+        <details><summary>Is it really free?</summary><p>Yes, the file is free. You also get Fackt notes, short emails from Dom about designing SaaS products, and you can unsubscribe any time.</p></details>
+        <details><summary>Who is the file for?</summary><p>Founders, product teams and designers working on a SaaS product who want a proven starting point instead of a blank canvas. Duplicate it into your own Figma account and adapt it to your product.</p></details>
+        <details><summary>Where can I see more of this kind of work?</summary><p>The <a href="/work">case studies</a> show complete projects, and the <a href="/blog">Fackt notes</a> break down onboarding, landing pages and pricing.</p></details>
+      </div>
       <div class="me">
         <span class="k">From Dom</span>
         <p>I run Fackt, a product design studio for SaaS teams. On the channel I take real products apart: what makes people stay, what makes them leave. Want me to look at yours? <a href="/audit">Get a free audit</a>.</p>
@@ -67,6 +74,18 @@ const inside = r.inside.filter((x) => !x.startsWith('[Dom'));
   </div>
 </Base>
 <style>
+  .qf details { border-bottom: 1px solid #ececea; padding: 16px 0; }
+  .qf details:first-child { padding-top: 0; }
+  .qf summary { list-style: none; cursor: pointer; font-weight: 500; font-size: 15px; display: flex; justify-content: space-between; gap: 16px; }
+  .qf summary::-webkit-details-marker { display: none; }
+  .qf summary::after { content: '+'; color: #8a8a86; font-weight: 400; }
+  .qf details[open] summary::after { content: '\2212'; }
+  .qf p { margin: 8px 0 0; color: #6a6a66; font-size: 14.5px; line-height: 1.6; max-width: 620px; }
+  .qf a { color: #111; }
+  @media (max-width: 720px) { .qf-old { grid-template-columns: 1fr; gap: 16px; } }
+  .qf.qf-free { display: block; margin: 0; padding: 0; border: 0; }
+  .qf-free .k { display: block; margin-bottom: 10px; }
+
   .fp { min-height: 100vh; display: flex; flex-direction: column; }
   .top { width: min(1120px, 100% - 32px); margin: 0 auto; height: 68px; display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 8px; color: #111; text-decoration: none; font-size: 15px; }
@@ -102,7 +121,7 @@ const inside = r.inside.filter((x) => !x.startsWith('[Dom'));
   .back { margin: 22px 0 0; font-size: 13.5px; color: #77776f; } .back a { color: #111; }
   .pv { margin: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px #dcdcd8, 0 30px 60px -30px rgba(17,17,17,.25); background: #f2f2f0; }
   .pv img { display: block; width: 100%; height: auto; }
-  .more { width: min(1120px, 100% - 32px); margin: 0 auto; padding: 44px 0 64px; border-top: 1px solid #ececea; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .more { width: min(1120px, 100% - 32px); margin: 0 auto; padding: 44px 0 64px; border-top: 1px solid #ececea; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 56px; }
   .more ul { margin: 12px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.7; }
   .me p { margin: 12px 0 0; font-size: 15.5px; line-height: 1.6; color: #3a3a37; max-width: 480px; } .me a { color: #111; font-weight: 500; }
   .ft { margin-top: auto; width: min(1120px, 100% - 32px); margin-left: auto; margin-right: auto; padding: 22px 0 28px; border-top: 1px solid #ececea; display: flex; gap: 20px; font-size: 12.5px; color: #8a8a86; }
