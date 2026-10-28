@@ -135,7 +135,9 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
         <section class="boards" id="screens" aria-label={`${p.name} screens`}>
           {boards.map((g, i) => (
             <figure class="bd">
-              <img src={g.image} alt={g.caption || `${p.name} design`} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+              {g.video
+                ? <video class="bv" data-bv={g.video} poster={g.image} muted loop playsinline preload="none" aria-label={g.caption || `${p.name} animation`}></video>
+                : <img src={g.image} alt={g.caption || `${p.name} design`} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />}
               {g.caption && <figcaption><i>{String(i + 1).padStart(2, '0')}</i>{g.caption}</figcaption>}
             </figure>
           ))}
@@ -214,6 +216,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
 
   .boards { width: min(1120px, 100% - 32px); margin: 8px auto 0; display: flex; flex-direction: column; gap: 20px; scroll-margin-top: 96px; }
   .bd { margin: 0; }
+  .bd .bv { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px var(--m-line); background: var(--m-soft); }
   .bd img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 0 0 1px var(--m-line); background: var(--m-soft); }
   .bd figcaption { display: flex; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--m-mu-2); }
   .bd figcaption i { font-style: normal; color: var(--m-ink); font-variant-numeric: tabular-nums; }
@@ -274,6 +277,18 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
 </style>
 
 <script>
+  // Animated boards: load and play an mp4 only while it is on screen, pause it when it leaves.
+  // With reduced motion the poster image stays and nothing plays.
+  const bvs = Array.from(document.querySelectorAll<HTMLVideoElement>('video[data-bv]'));
+  if (bvs.length && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      const v = e.target as HTMLVideoElement;
+      if (e.isIntersecting) { if (!v.src) v.src = v.dataset.bv!; v.play().catch(() => {}); }
+      else v.pause();
+    }), { rootMargin: '200px 0px' });
+    bvs.forEach((v) => io.observe(v));
+  }
+
   // Highlight the section you are reading in the side contents.
   const toc = document.querySelector<HTMLElement>('[data-toc]');
   if (toc && 'IntersectionObserver' in window) {

@@ -36,7 +36,8 @@ const work = defineCollection({
     approach: z.string().optional(),
     resultsTitle: z.string().optional(),
     results: z.array(z.object({ value: z.string(), label: z.string() })).optional().default([]),
-    gallery: z.array(z.object({ image: z.string(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone', 'board']).default('desktop') })).optional().default([]),
+    // `video` (optional): an mp4 that plays in place of the image, muted and looping, once it scrolls into view. The image is its poster.
+    gallery: z.array(z.object({ image: z.string(), video: z.string().optional(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone', 'board']).default('desktop') })).optional().default([]),
     quote: z.string().optional(),
     quoteName: z.string().optional(),
     quoteRole: z.string().optional(),
