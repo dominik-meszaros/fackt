@@ -19,6 +19,8 @@ faq:
 
 Early founders usually ask "do we need a brand?" when they mean something more practical: will people trust us, remember us, and understand what we do? Before Series A, those three things matter more than a thick guidelines document. The goal is not a finished brand. It is a small, consistent core that makes the product look credible today and does not need to be thrown away tomorrow.
 
+**Before Series A, consistency beats creativity.** A simple brand used the same way everywhere builds more trust than a brilliant one that looks different on the site, the product and the pitch deck.
+
 ## What early teams actually need
 
 ### A name and a wordmark that work small
@@ -52,6 +54,19 @@ A few signals that it is time for a full identity:
 - **You are raising or selling upmarket.** Investors and larger customers judge credibility quickly, and a coherent brand removes doubt.
 - **Your look has drifted.** The product, website, deck and social posts no longer feel like one company.
 - **You are about to spend on marketing.** Ads, launches and events multiply whatever brand you have, so make it a good one first.
+
+## Stand out by leaving the category look behind
+
+When you do invest, the biggest lever is refusing to look like everyone else in your category. For Nation, an AI platform for launching an online store, we moved away from the usual SaaS visuals (gradients, glowing orbs and predictable layouts) toward a warm, textured, editorial identity inspired by screenprinted posters, built around an open doorway symbol. See it in the [Nation case study](/work/nation).
+
+## Two tests you can run today
+
+- **The 16 pixel test.** Shrink your logo to favicon size next to five competitors in a browser tab bar. Can you still tell which one is yours?
+- **The one sentence test.** Ask three people on your team to write what the company does in one sentence, without looking. If you get three different answers, your brand problem is words, not visuals.
+
+## What is hard to see from the inside
+
+Founders live with their brand every day, so they stop seeing it the way a first-time visitor does. An outside look often finds the gap in minutes: the logo that disappears at small sizes, the product that does not match the site, the sentence nobody agrees on.
 
 When we built the identity for Floxy, a proxy infrastructure platform, the goal was a mark and system that felt precise and technical without falling back on the usual cybersecurity cliches, and that carried across web, mobile and print. You can see it in the [Floxy brand case study](/work/floxy-brand).
 

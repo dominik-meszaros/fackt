@@ -14,6 +14,10 @@ faq:
   - q: "How do I test my landing page's first screen?"
     a: "Show it to someone for five seconds, then ask what the product does, who it is for and what they would click. If they cannot answer all three, start there."
 ---
+You can have a great product and still lose most visitors on the first screen. Not because they read it and said no, but because they never understood what it was.
+
+**A landing page is not judged on what it says, but on what a stranger understands in five seconds.** You read your own page with all the context in your head. Your visitors arrive with none of it.
+
 
 ## The job of the first screen
 
@@ -43,6 +47,18 @@ Show real product UI, not an abstract illustration. A clear screenshot or a shor
 
 A row of customer logos, a short quote from a real customer, a rating, or a number you can stand behind. One strong signal near the action is enough. It answers "why should I believe this?" before the visitor has to ask.
 
+## Before and after: three rewrites
+
+The difference is rarely design polish. It is clarity. A few typical rewrites:
+
+- **Headline.** Before: "The future of work, reimagined." After: "Turn every customer call into a follow-up email, automatically." The first could be any company. The second tells you exactly what you get.
+- **Subheading.** Before: "An all-in-one platform for modern teams." After: "For sales teams who spend their evenings writing call notes." Now the right visitor recognizes themselves.
+- **Buttons.** Before: five links in a row (Features, Pricing, Learn more, Sign up, Book a demo). After: one "Start free trial" button and a quiet "See how it works" link. One clear next step beats five equal ones.
+
+## Show the result, not the empty product
+
+Some products do their best work out of sight, and a screenshot shows an empty screen. Polar, an AI browser, has exactly this problem: it pulls leads, sorts the inbox and writes the report in the background. So the campaign we designed shows the finished result instead: "your leads pulled. your inbox sorted. your report written." The same works for a hero: show the moment right after your product did its job. See it in the [Polar case study](/work/polar).
+
 ## What can wait
 
 Founders often try to fit the whole pitch into the first screen. These usually work better further down:
@@ -60,6 +76,10 @@ Most first visits from social media happen on a phone, where "above the fold" is
 ## A five second test you can run today
 
 Show your first screen to someone who has never seen the product for five seconds, then close it and ask: what does it do, who is it for, and what would you click? If they cannot answer all three, the first screen needs work, and no amount of content further down will fix it.
+
+## Why your own page is the hardest one to judge
+
+Every founder can recite what their product does, so their own headline always seems clear. The five second test feels obvious until you watch a stranger fail it. That gap between what you know and what a visitor sees is exactly where most landing pages lose people.
 
 When we designed the landing page for Story-Story, an influencer marketing platform, we put real product UI at the center of the story and gave each of its four jobs its own color, so visitors understand what the platform does before they read the details. You can see it in the [Story-Story case study](/work/story-story).
 

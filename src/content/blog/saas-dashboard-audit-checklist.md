@@ -21,6 +21,10 @@ Most teams come to us with a solution in mind: a new dashboard, a fresh look, a 
 
 An audit finds those problems before anyone designs anything. It turns "the product feels clunky" into a short list of concrete issues, ordered by how much they cost you. Then the redesign, if you still need one, has a clear goal.
 
+**Most dashboards do not have a design problem, they have a priority problem.** Everything is shown with the same weight, so nothing stands out, and users have to read the whole screen to find the one thing they came for.
+
+FireCut is a good example. Its panel had grown into one flat grid of 12 tools with no hierarchy, so every tool looked equally important and new users did not know where to begin. The fix was not new features: it was grouping the tools, giving the home a clear starting point, and putting presets before settings. See how in the [FireCut case study](/work/firecut).
+
 Here are the 12 things we look at first. You can run most of them yourself in an afternoon.
 
 ## Before you start
@@ -72,5 +76,7 @@ A long list of issues does not help much on its own. What helps is the order. Ea
 Then fix from the top. Some findings are a copy change or a reordered table and can ship this week. Others point to a bigger design project, and now that project has a clear reason to exist.
 
 ## Want us to run it for you?
+
+Running the checklist yourself is a great start. The hard part is ranking what you find: knowing which of the twenty small issues is the one quietly costing you signups. That judgment comes from having seen the same patterns across many products.
 
 If you would rather have fresh eyes on it, send us your product for a [free audit](/audit). Within 2 days you get a video walkthrough of the product and a written audit ordered by impact, with screenshots your team can act on. No call needed.

@@ -14,6 +14,10 @@ faq:
   - q: "Should I start with a project or a retainer?"
     a: "Start with a project when you have one clear goal and want a fixed price. Move to a retainer when design work never really stops and needs to keep pace with your releases."
 ---
+Most founders ask "how much does design cost?" and get one of two answers: a vague "it depends", or a price list that says nothing about what the money changes.
+
+**The cheapest design project is the one aimed at a single, measurable goal.** A clear goal decides the scope, makes the price easy to judge, and tells you afterwards whether it worked.
+
 
 ## The short answer
 
@@ -34,6 +38,12 @@ The best way to set a budget is to name what the design has to change. More tria
 A clear goal does three things. It decides the scope, because only the screens that move the goal are in. It gives everyone the same way to judge the work. And it makes the price easy to reason about, because you can weigh it against what reaching the goal is worth to you.
 
 That is why every engagement starts with a written brief: we agree on the goal first, then design toward it.
+
+## A quick way to judge if it is worth it
+
+Take one number you care about and do the math with your own figures. Say 200 people start a trial each month and 20 of them become paying customers. If a clearer onboarding helps 10 more of them reach the first win and stay, multiply those 10 by what a customer is worth to you over a year. That is the value of the project, and it is usually far easier to compare with the price than any list of deliverables.
+
+You do not need perfect numbers. Rough ones are enough to see whether a project pays for itself.
 
 ## What changes the price
 
@@ -63,5 +73,11 @@ Every engagement follows the same four steps:
 2. Exploration of flows and directions.
 3. The first page designed, so you can react to something real early.
 4. The full delivered file with specs, ready for your developers.
+
+## Do this before you ask anyone for a quote
+
+Write one sentence: "We want design to change ___ from ___ to ___." For example: "We want more trial users to connect their first data source." With that sentence, any studio can give you a real answer, and you can compare answers properly.
+
+Not sure what the sentence should be? That is exactly what the first call is for.
 
 And before any of it, a free 30 minute strategy call with Dom, with clear next steps whether we work together or not.
