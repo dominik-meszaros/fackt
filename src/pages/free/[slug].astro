@@ -14,7 +14,10 @@ const r = entry.data;
 const LIST = 'https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/list';
 const inside = r.inside.filter((x) => !x.startsWith('[Dom'));
 ---
-<Base title={`${r.headline} | Fackt`} description={r.description} image={r.preview} noindex={r.draft} lcp={r.preview}>
+<Base title={`${r.headline} | Fackt`} description={r.description} image={r.preview} noindex={r.draft} lcp={r.preview}
+  schema={[{ '@context': 'https://schema.org', '@type': 'DigitalDocument', name: r.headline, description: r.description, url: `https://fackt.io/free/${entry.id}`,
+    image: new URL(r.preview, 'https://fackt.io').toString(), author: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' }, isAccessibleForFree: true,
+    encodingFormat: 'application/figma', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }]}>
   <div class="fp">
     <header class="top">
       <a href="/" class="brand"><Mark size={16} /><b>Fackt</b> <span>notes</span></a>

@@ -6,6 +6,13 @@ cover: /uploads/blog/cover-06.webp
 date: 2026-10-28
 draft: false
 related: story-story
+faq:
+  - q: "What should a SaaS landing page have above the fold?"
+    a: "A headline that says what the product does, a line on who it is for, one primary action, real product UI and one piece of proof near the button."
+  - q: "What can go below the fold on a SaaS landing page?"
+    a: "Feature lists, the full pricing table, the company story, every integration logo and long intro animations."
+  - q: "How do I test my landing page's first screen?"
+    a: "Show it to someone for five seconds, then ask what the product does, who it is for and what they would click. If they cannot answer all three, start there."
 ---
 
 ## The job of the first screen

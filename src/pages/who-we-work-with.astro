@@ -25,8 +25,11 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 <Base
-  title="Who we work with: SaaS founders, product teams, mobile apps and agencies | Fackt"
+  title="Who we work with: SaaS founders, teams and agencies | Fackt"
   description="Fackt works with early-stage SaaS founders, funded SaaS teams, mobile app startups and agencies, across creator tools, AI, infrastructure, fintech and education."
+  schema={[{ '@context': 'https://schema.org', '@type': 'Service', name: 'Product design for SaaS and tech teams', provider: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' },
+    audience: teams.map((t) => ({ '@type': 'BusinessAudience', name: t.title })), areaServed: 'Worldwide',
+    serviceType: 'SaaS product design, web design, branding', description: 'Design for early-stage SaaS founders, funded SaaS teams, mobile app startups and agencies.' }]}
 >
   <div class="m-page">
     <SketchDefs />

@@ -5,7 +5,9 @@ import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSy
 import { join, relative } from 'node:path';
 
 const DIST = 'dist';
-const SKIP = /^(admin|who-a\d|who-b|who-c|404)(\/|\.html$)|^free\/.*\/thanks/;
+const SKIP = /^(admin|who-a\d|who-b|who-c|404|privacy)(\/|\.html$)|^free\/.*\/thanks/;
+// List pages link out to the content; they are not meant to carry 300 words of their own.
+const LIST_PAGES = new Set(['/blog', '/work']);
 
 function walk(dir, out = []) {
   for (const f of readdirSync(dir)) {
@@ -49,7 +51,7 @@ for (const file of walk(DIST)) {
     ['Description between 70 and 170 characters', desc.length >= 70 && desc.length <= 170, 10, desc ? `Description is ${desc.length} characters.` : 'No meta description.'],
     ['One H1', h1s === 1, 10, `${h1s} H1 headings.`],
     ['Structured data beyond the basics', rich.length > 0, 15, rich.length ? `Has ${rich.join(', ')}.` : 'Only site-wide schema. Add Article, Service, FAQPage or CreativeWork.'],
-    ['Enough text for an AI to quote (300+ words)', words >= 300, 15, `${words} words in the main content.`],
+    ['Enough text for an AI to quote (300+ words)', words >= 300 || LIST_PAGES.has(path), 15, `${words} words in the main content.`],
     ['Answers questions (FAQ or question headings)', questions + faqLd > 0, 15, questions ? `${questions} questions answered.` : 'No question headings or FAQ. AI assistants quote direct answers to questions.'],
     ['Links to 3+ other pages', links >= 3, 10, `${links} internal links.`],
     ['Every image has alt text', noAlt === 0, 5, noAlt ? `${noAlt} images without alt text.` : 'All images described.'],

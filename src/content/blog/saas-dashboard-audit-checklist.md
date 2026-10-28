@@ -6,6 +6,13 @@ cover: /uploads/blog/cover-02.webp
 date: 2026-10-26
 draft: false
 related: floxy
+faq:
+  - q: "What does a SaaS dashboard audit check?"
+    a: "First impression, the empty state, the path to the first win, navigation, the most common task, search and filters, hierarchy, numbers with context, tables, loading and error states, destructive actions and consistency."
+  - q: "How long does a UX audit take?"
+    a: "You can run the 12 checks on your own product in an afternoon. Fackt's free audit comes back within 2 days as a video walkthrough and a written list of fixes."
+  - q: "How do you prioritise audit findings?"
+    a: "Rank each finding by how many users it affects and how close it is to signups, activation or revenue, then fix from the top."
 ---
 
 ## Why start with an audit

@@ -96,6 +96,8 @@ const blog = defineCollection({
     draft: z.boolean().default(true),
     // Case study this note links to (a work slug), shown inside the post and under that case study.
     related: z.string().optional(),
+    // Short questions and answers shown as "Quick answers" at the end of the note, and as FAQ structured data for search and AI.
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional().default([]),
   }),
 });
 

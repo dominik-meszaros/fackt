@@ -5,6 +5,13 @@ category: Pricing
 cover: /uploads/blog/cover-01.webp
 date: 2026-10-26
 draft: false
+faq:
+  - q: "How much does SaaS product design cost?"
+    a: "At Fackt, a product audit is free, fixed-scope projects start from $5,000 and usually take 2 to 6 weeks, and a monthly design retainer is $6,900."
+  - q: "How long does a SaaS product design project take?"
+    a: "Most fixed-scope projects take 2 to 6 weeks, depending on how many screens and flows are in scope and how fast feedback comes back."
+  - q: "Should I start with a project or a retainer?"
+    a: "Start with a project when you have one clear goal and want a fixed price. Move to a retainer when design work never really stops and needs to keep pace with your releases."
 ---
 
 ## The short answer

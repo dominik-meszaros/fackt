@@ -6,6 +6,13 @@ cover: /uploads/blog/cover-04.webp
 date: 2026-10-27
 draft: false
 related: communi
+faq:
+  - q: "What is the first win in SaaS onboarding?"
+    a: "The first moment a new user gets a real result from the product, like their first report, connected data source or published page. It is where people decide to stay."
+  - q: "How do I shorten SaaS onboarding?"
+    a: "Count every step between signup and the first win, then remove or delay anything not needed for it: extra signup questions, team invites, profile setup and long tours."
+  - q: "What should an empty state show?"
+    a: "What will appear there once there is data, the one action that makes it appear, and a short expectation of what happens next."
 ---
 
 ## What the first win is
