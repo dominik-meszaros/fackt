@@ -1,0 +1,59 @@
+---
+// HOMEPAGE TEST VERSION C (not linked, noindex). Same design as the live homepage, work first:
+// a short hero that names the pain, then the case studies straight away, then logos and real results.
+// One button everywhere with the audit as a quiet link. No ask bar, no stage, no quote switcher.
+
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import EasterGame from '../components/EasterGame.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import Step from '../components/home/Step.astro';
+import Hero from '../components/home/Hero.astro';
+import ProofRow from '../components/home/ProofRow.astro';
+import Work from '../components/home/Work.astro';
+import Services from '../components/home/Services.astro';
+import Process from '../components/home/Process.astro';
+import Proof from '../components/home/Proof.astro';
+import Pricing from '../components/home/Pricing.astro';
+import EndCta from '../components/home/EndCta.astro';
+import PhoneBar from '../components/home/PhoneBar.astro';
+
+const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
+const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id, ...e.data }));
+import { stageCategories } from '../data/stage';
+const bySlug = new Map(all.map((p) => [p.slug, p]));
+const stage = stageCategories.flatMap((c, ci) => c.slides.filter((s) => bySlug.has(s.slug)).map((s) => ({ ...bySlug.get(s.slug)!, stageImage: s.image, cat: ci, stageLabel: c.label })));
+const featured = all.filter((p) => p.featured).slice(0, 6);
+const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
+const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
+const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
+// Structured answers for search engines and AI assistants: the "ask anything" answers on the homepage as a FAQ.
+import { homeSettings } from '../data/settings';
+const faqLd = (homeSettings.ask as any[]).filter((a) => a.type === 'answer' && a.answer);
+const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqLd.map((a) => ({ '@type': 'Question', name: a.question, acceptedAnswer: { '@type': 'Answer', text: a.answer } })) }] : [];
+---
+<Base title="Fackt: product design for SaaS and AI startups" noindex lcp={featured[0]?.preview ?? featured[0]?.image}>
+  <div class="m-page">
+    <SketchDefs />
+    <Nav />
+    <main>
+      <Hero variant="c" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
+        title="Product design for SaaS and AI startups." text="For founders whose product is good but hard to explain. We design the product, the website and the brand, so people get it in seconds." />
+      <Work projects={featured} total={all.length} />
+      <ProofRow variant="c" />
+      <Step />
+      <Proof videos={videos} reviews={reviews} />
+      <Step />
+      <Services />
+      <Step />
+      <Pricing />
+      <Step />
+      <EndCta variant="c" />
+    </main>
+    <Footer />
+    <PhoneBar variant="c" />
+    <EasterGame />
+  </div>
+</Base>

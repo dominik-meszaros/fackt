@@ -1,0 +1,46 @@
+---
+// Logos and real results together, right under the hero (homepage test versions B and C).
+// Numbers come from src/data/results.ts.
+import { homeSettings } from '../../data/settings';
+import { results } from '../../data/results';
+interface Props { variant: string; logos?: number }
+const { variant, logos = 6 } = Astro.props;
+const shown = homeSettings.logos.slice(0, logos);
+---
+<section class="pr" aria-label="Clients and results">
+  <span class="t">{homeSettings.logosTitle}</span>
+  <ul class="lg">
+    {shown.map((l) => <li>{l.logo ? <img src={l.logo} alt={l.name} loading="lazy" /> : l.name}</li>)}
+  </ul>
+  <div class="res">
+    {results.map((r) => (
+      <a href={r.href} data-journey={`Home ${variant}: result ${r.value}`} {...(r.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>
+        <strong>{r.value}</strong>
+        <span class="l">{r.label}</span>
+        <span class="s">{r.source} <i aria-hidden="true">&#8594;</i></span>
+      </a>
+    ))}
+  </div>
+</section>
+<style>
+  .pr { display: flex; flex-direction: column; align-items: center; padding: 56px 16px 48px; text-align: center; }
+  .t { font-size: 12.5px; color: #8a8a86; }
+  .lg { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px 44px; width: min(900px, 100%); }
+  .lg li { font-size: 14px; font-weight: 500; color: #a3a3a3; display: flex; align-items: center; min-height: 24px; }
+  .lg img { display: block; height: 22px; width: auto; max-width: 128px; object-fit: contain; opacity: .38; }
+  .res { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: min(960px, 100%); margin-top: 40px; text-align: left; }
+  .res a { display: flex; flex-direction: column; padding: 20px 20px 18px; border-radius: 4px; background: #fff; color: #111; text-decoration: none; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
+  .res a:hover { box-shadow: inset 0 0 0 1px #111, 3px 3px 0 #111; }
+  strong { font-family: var(--m-serif); font-weight: 400; font-size: 40px; line-height: 1; letter-spacing: -.02em; }
+  .l { margin-top: 10px; font-size: 14px; line-height: 1.4; color: #3f3f3f; }
+  .s { margin-top: auto; padding-top: 14px; font-size: 12.5px; color: #8a8a86; }
+  .s i { font-style: normal; display: inline-block; transition: transform .2s; }
+  .res a:hover .s i { transform: translateX(3px); color: #111; }
+  @media (max-width: 720px) {
+    .pr { padding-top: 40px; }
+    .lg { gap: 16px 28px; } .lg img { height: 18px; max-width: 104px; }
+    .res { grid-template-columns: 1fr; gap: 10px; margin-top: 28px; }
+    .res a { padding: 16px; }
+    strong { font-size: 34px; }
+  }
+</style>

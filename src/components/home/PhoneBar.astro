@@ -1,10 +1,19 @@
 ---
 // Phones only: once the hero is out of view, a slim bar keeps the two next steps one tap away.
 // Hides again near the end of the page (the postcard and footer have their own buttons) and while the cookie bar is open.
+// variant b/c (homepage test versions): the main step is the call, the audit is second.
+import { site } from '../../data/site';
+interface Props { variant?: string }
+const { variant = 'a' } = Astro.props;
 ---
 <div class="pb" data-pb aria-hidden="true">
+  {variant === 'a' ? <>
   <a class="w" href="/work" tabindex="-1" data-journey="Phone bar: see work">See work</a>
   <a class="a" href="/audit" tabindex="-1" data-journey="Phone bar: free audit">Get a free audit</a>
+  </> : <>
+  <a class="w" href="/audit" tabindex="-1" data-journey={`Home ${variant}: free audit (phone bar)`}>Free audit</a>
+  <a class="a" href={site.bookPage} tabindex="-1" data-journey={`Home ${variant}: book call (phone bar)`}>Book a call</a>
+  </>}
 </div>
 <style>
   .pb { display: none; }

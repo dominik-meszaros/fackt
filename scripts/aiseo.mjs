@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSy
 import { join, relative } from 'node:path';
 
 const DIST = 'dist';
-const SKIP = /^(admin|who-a\d|who-b|who-c|404|privacy)(\/|\.html$)|^free\/.*\/thanks/;
+const SKIP = /^(admin|who-a\d|who-b|who-c|home-b|home-c|404|privacy)(\/|\.html$)|^free\/.*\/thanks/;
 // List pages link out to the content; they are not meant to carry 300 words of their own.
 const LIST_PAGES = new Set(['/blog', '/work']);
 

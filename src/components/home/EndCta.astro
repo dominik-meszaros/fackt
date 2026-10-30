@@ -1,0 +1,24 @@
+---
+// Closing call to action for the homepage test versions: one button, the audit as a quiet link.
+import { site } from '../../data/site';
+interface Props { variant: string }
+const { variant } = Astro.props;
+---
+<section class="m-sec end" aria-label="Book a call">
+  <h2 class="m-h2">Let's look at your product together.</h2>
+  <p class="m-lede">30 minutes with Dom. You leave with clear next steps, whether we work together or not.</p>
+  <div class="ctas">
+    <a class="m-btn dk" href={site.bookPage} data-journey={`Home ${variant}: book call (end)`}>Book a 30 minute call</a>
+    <a class="aud" href="/audit" data-journey={`Home ${variant}: free audit (end)`}>or get a free audit first</a>
+  </div>
+</section>
+<style>
+  .end { padding-bottom: 96px; }
+  .ctas { display: flex; align-items: center; gap: 18px; margin-top: 26px; }
+  .aud { font-size: 14px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  @media (max-width: 720px) {
+    .end { padding-bottom: 64px; }
+    .ctas { flex-direction: column; gap: 14px; width: 100%; max-width: 360px; }
+    .ctas .m-btn { width: 100%; justify-content: center; }
+  }
+</style>
