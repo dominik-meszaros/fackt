@@ -128,7 +128,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               </div>
             </figure>
           )}
-          <NoteFromDom from="Case study" id={p.slug} line={`Building something like ${p.name}? <i>Two easy next steps:</i>`} />
+          <NoteFromDom from="Case study" id={entry.id} line={`Building something like ${p.name}? <i>Two easy next steps:</i>`} />
         </div>
       </section>
       {boards.length > 0 && (
