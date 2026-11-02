@@ -1,7 +1,9 @@
 ---
-// HOMEPAGE TEST VERSION B (not linked, noindex). Same design as the live homepage, built from real feedback:
+// HOMEPAGE TEST VERSION B (noindex; the worker shows it at fackt.io/ to a third of visitors, see worker/index.js).
+// Same design as the live homepage, simplified from the feedback (Figma: Fackt LP Claude, "B v2 / simpler, from feedback"):
 // a plain "X for Y" headline, one button with the audit as a quiet link, logos and real results right under the hero,
-// no ask bar, no "work like yours" chips, and fewer sections (no start line, audience, working-with or notes).
+// fewer options (no Figma button, no stage chips) and much less text: 4 projects as image and name, one line per service,
+// no process section, 5 videos and 4 one line quotes, 3 features per plan.
 
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -14,7 +16,6 @@ import Hero from '../components/home/Hero.astro';
 import ProofRow from '../components/home/ProofRow.astro';
 import Work from '../components/home/Work.astro';
 import Services from '../components/home/Services.astro';
-import Process from '../components/home/Process.astro';
 import Proof from '../components/home/Proof.astro';
 import Pricing from '../components/home/Pricing.astro';
 import EndCta from '../components/home/EndCta.astro';
@@ -25,7 +26,8 @@ const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id
 import { stageCategories } from '../data/stage';
 const bySlug = new Map(all.map((p) => [p.slug, p]));
 const stage = stageCategories.flatMap((c, ci) => c.slides.filter((s) => bySlug.has(s.slug)).map((s) => ({ ...bySlug.get(s.slug)!, stageImage: s.image, cat: ci, stageLabel: c.label })));
-const featured = all.filter((p) => p.featured).slice(0, 6);
+// Four projects, chosen in Figma. Promote's app case study is the one the 2.5x result belongs to.
+const featured = ['firecut', 'communi', 'floxy', 'promote-app'].map((s) => all.find((p) => p.slug === s)).filter((p): p is (typeof all)[number] => !!p);
 const quotes = (await getCollection('quotes')).sort(byOrder).map((e) => e.data);
 const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
 const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
@@ -37,21 +39,20 @@ const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FA
 <Base title="Fackt: product design for SaaS and AI startups" noindex lcp={stage[0]?.stageImage ?? stage[0]?.image}>
   <div class="m-page">
     <SketchDefs />
-    <Nav />
+    <Nav figmaButton={false} />
     <main>
-      <Hero variant="b" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
+      <Hero variant="b" chips={false} stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
         title="Product design for SaaS and AI startups." text="We redesign confusing products, websites and brands, so new users understand what you built and stay." />
       <ProofRow variant="b" />
       <Step />
-      <Work projects={featured} total={all.length} />
+      <Work projects={featured} total={all.length} lean resultChips />
       <Step />
-      <Services />
+      <Services short lean />
       <Step />
-      <Process />
+      <Proof videos={videos} reviews={reviews} maxVideos={5} short
+        highlights={["Best product designer I've ever worked with.", 'Super reliable and easy to work with.', 'We would 100% work with Dominik again.', 'Communication was easy and he has strong visual craft.']} />
       <Step />
-      <Proof videos={videos} reviews={reviews} />
-      <Step />
-      <Pricing />
+      <Pricing variant="b" lean keep={['Weekly check-ins', 'Unlimited design requests', 'Dedicated Slack channel', 'Milestones, 2 to 6 weeks', 'Clearly defined scope', 'End-to-end project support']} />
       <Step />
       <EndCta variant="b" />
     </main>

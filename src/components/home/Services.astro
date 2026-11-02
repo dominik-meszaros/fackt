@@ -2,17 +2,20 @@
 import SectionHead from './SectionHead.astro';
 import sketch from '../../generated/sketch.json';
 import { services } from '../../data/site';
+// short: the one line version of each service, no tags. lean: also drops the intro line. Both for the homepage test versions.
+interface Props { short?: boolean; lean?: boolean }
+const { short = false, lean = false } = Astro.props;
 const icon = (slug: string) => ((sketch.services as Record<string, string>)[slug] ?? '').replace('class="sk"', 'class="si"');
 ---
 <section class="m-sec" id="services">
-  <SectionHead icon="design" title="What we design" lede="One studio from first flow to final pixel." />
+  <SectionHead icon="design" title="What we design" lede={lean ? undefined : "One studio from first flow to final pixel."} />
   <div class="svcs">
     {services.map((s) => (
       <a class="svc" href={`/services/${s.slug}`}>
         <Fragment set:html={icon(s.slug)} />
         <b>{s.title}</b>
-        <p>{s.text}</p>
-        <div class="tags">{s.tags.join(', ')}</div>
+        <p>{short ? s.short : s.text}</p>
+        {!short && <div class="tags">{s.tags.join(', ')}</div>}
       </a>
     ))}
   </div>

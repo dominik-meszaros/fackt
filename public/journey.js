@@ -1,6 +1,8 @@
 // Visitor journey tracker, ported from the old Framer site. Sends visits, forms and bookings to Supabase (daily visitor email).
 (function () {
   if (window.facktJourney || window.facktJourneyDisabled) return;
+  // Previews (fackt.io/?preview=b, or a page shown inside the admin stats) are never counted.
+  try { if (window.top !== window.self || /[?&]preview=/.test(location.search)) return; } catch (e) { return; }
   // Your own visits: open any page with ?me=1 once (or press "This is me" in the stats) and this browser stops being counted.
   // ?me=0 counts it again. Admin pages are never counted.
   try {
@@ -22,7 +24,13 @@
   }
   function load(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function path() { return location.pathname + (location.hash && location.hash.length < 40 ? location.hash : ""); }
+  // Homepage test: the worker serves version a, b or c at / and remembers it in the fackt_hv cookie.
+  // The homepage is recorded as "/?hv=b" so sessions (and leads) can be compared by version.
+  function hv() { var m = document.cookie.match(/(?:^|;\s*)fackt_hv=([a-z])\b/); return m ? m[1] : null; }
+  function path() {
+    var p = location.pathname, v = p === "/" ? hv() : null;
+    return p + (v ? "?hv=" + v : "") + (location.hash && location.hash.length < 40 ? location.hash : "");
+  }
 
   // ---------- visitor + session ----------
   var vid = load("fj_vid");
@@ -75,6 +83,11 @@
 
   function startPage() {
     cur = { p: path(), t: document.title.slice(0, 120), at: now(), d: 0, s: 0 };
+    // Once per session, so the lead email says which homepage version they saw.
+    var v = location.pathname === "/" ? hv() : null;
+    if (v && !s.events.some(function (e) { return /^Saw homepage version/.test(e.l); })) {
+      s.events.push({ l: "Saw homepage version " + v.toUpperCase(), at: now(), p: "/" });
+    }
     s.pages.push(cur);
     if (s.pages.length > MAX_PAGES) s.pages.shift();
     visibleSince = document.visibilityState === "visible" ? now() : null;

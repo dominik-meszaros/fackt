@@ -5,6 +5,12 @@ import { pricingSettings as P } from '../../data/settings';
 import { publishedPosts } from '../../data/blog';
 // Links the pricing note once it is published (Blog > How much SaaS product design costs).
 const note = (await publishedPosts()).find((p) => p.data.category === 'Pricing');
+// variant (homepage test versions): no "Senior designer", one button label everywhere (the call), no separate audit box.
+// keep: show only these features (in the plan's own order). lean: also no pricing note link.
+import { site } from '../../data/site';
+interface Props { variant?: string; keep?: string[]; lean?: boolean }
+const { variant, keep, lean = false } = Astro.props;
+const itemsOf = (items: string[]) => items.filter((it) => !(variant && /senior designer/i.test(it))).filter((it) => !keep || keep.includes(it));
 const ck = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 ---
 <section class="m-sec" id="pricing">
@@ -15,13 +21,13 @@ const ck = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
         <div class="top"><span>{p.name}</span>{p.badge && <span class="pill">{p.badge}</span>}</div>
         <div class="pr">{p.prefix && <small class="pre">{p.prefix}</small>}{p.price}{p.period && <small>{p.period}</small>}</div>
         <p>{p.text}</p>
-        <ul>{p.items.map((it) => <li><Fragment set:html={ck} />{it}</li>)}</ul>
-        <a class="m-btn dk" href={p.ctaHref}>{p.cta}</a>
+        <ul>{itemsOf(p.items).map((it) => <li><Fragment set:html={ck} />{it}</li>)}</ul>
+        {variant ? <a class="m-btn dk" href={site.bookPage} data-journey={`Home ${variant}: book call (pricing, ${p.name.toLowerCase()})`}>Book a 30 minute call</a> : <a class="m-btn dk" href={p.ctaHref}>{p.cta}</a>}
       </div>
     ))}
   </div>
-  <div class="pstrip"><span><b>Not sure yet?</b> Start with a free audit of your product, within 2 days.</span><a class="m-btn dk" href="/audit">Get a free audit</a></div>
-  {note && <a class="pnote" href={`/blog/${note.id}`}>What changes the price, and when a retainer beats a project &#8594;</a>}
+  {!variant && <div class="pstrip"><span><b>Not sure yet?</b> Start with a free audit of your product, within 2 days.</span><a class="m-btn dk" href="/audit">Get a free audit</a></div>}
+  {note && !lean && <a class="pnote" href={`/blog/${note.id}`}>What changes the price, and when a retainer beats a project &#8594;</a>}
 </section>
 <style>
   .pnote { display: inline-block; margin-top: 18px; font-size: 14px; color: #111; text-underline-offset: 3px; }

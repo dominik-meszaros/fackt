@@ -1,20 +1,24 @@
 ---
 import SectionHead from './SectionHead.astro';
 interface Project { slug: string; name: string; service: string; summary: string; image: string; imageKind: string }
-interface Props { projects: Project[]; total: number }
-const { projects, total } = Astro.props;
+import { results } from '../../data/results';
+// lean: image and name only (no intro line, summary or "View case study"). resultChips: a real result on the card of the
+// case study it belongs to (src/data/results.ts, `chip`). Both are for the homepage test versions; the live homepage uses neither.
+interface Props { projects: Project[]; total: number; lean?: boolean; resultChips?: boolean }
+const { projects, total, lean = false, resultChips = false } = Astro.props;
+const chipFor = (slug: string) => resultChips ? results.find((r) => r.chip && r.href === `/work/${slug}`) : undefined;
 ---
 <section class="m-sec" id="work">
-  <SectionHead icon="work" title="Selected work" lede="SaaS platforms, dashboards, mobile apps and sites. A few recent ones." />
+  <SectionHead icon="work" title="Selected work" lede={lean ? undefined : "SaaS platforms, dashboards, mobile apps and sites. A few recent ones."} />
   <div class="grid">
-    {projects.map((p) => (
+    {projects.map((p) => { const r = chipFor(p.slug); return (
       <a class="card" href={`/work/${p.slug}`}>
-        <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" /></div>
+        <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" />{r && <span class="rc"><b>{r.value}</b>{r.chip}</span>}</div>
         <div class="cap"><b>{p.name}</b> <span>&#183; {p.service}</span></div>
-        <p>{p.summary}</p>
-        <span class="more">View case study &#8594;</span>
+        {!lean && <p>{p.summary}</p>}
+        {!lean && <span class="more">View case study &#8594;</span>}
       </a>
-    ))}
+    ); })}
   </div>
   <a class="m-btn lt all" href="/work">All {total} projects &#8594;</a>
 </section>
@@ -29,6 +33,8 @@ const { projects, total } = Astro.props;
   .im.pv::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px #e2e2de; pointer-events: none; }
   .im.pv img, .card:hover .im.pv img { position: absolute; inset: 0; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transform: none; border-radius: 0; box-shadow: none; }
   .card:hover .im.pv img { transform: scale(1.03); }
+  .rc { position: absolute; left: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 10px 6px; background: #fff; color: #111; border-radius: 2px; box-shadow: inset 0 0 0 1px #111; font-size: 12px; font-weight: 500; line-height: 1.2; }
+  .rc b { font-family: var(--m-serif); font-size: 17px; font-weight: 400; letter-spacing: -.01em; }
   .cap { margin-top: 14px; font-size: 14px; }
   .cap b { font-weight: 500; } .cap span { color: #8a8a86; }
   p { margin: 4px 0 0; font-size: 14px; color: #6f6f6f; max-width: 400px; }

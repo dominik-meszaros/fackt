@@ -1,0 +1,35 @@
+{
+  "_help": "Homepage test. The worker shows one version at fackt.io/ per visitor (share = relative traffic, 0 = stopped). The admin stats page reads this too. To end the test: set every share but the winner to 0, or make the winner the real homepage.",
+  "name": "Homepage test",
+  "started": "2026-11-02",
+  "variants": [
+    {
+      "id": "a",
+      "name": "Current homepage",
+      "page": "/",
+      "share": 1,
+      "sees": "The live homepage: ask bar and quote switcher in the hero, logos, who we work with, services, process, proof, pricing, working with us, notes and the postcard form."
+    },
+    {
+      "id": "b",
+      "name": "Simpler",
+      "page": "/home-b",
+      "share": 1,
+      "sees": "Same design with much less on it: plain headline, results right under the hero, 4 projects as image and name, one line per service, no process, 5 videos and 4 one line quotes, one button everywhere."
+    },
+    {
+      "id": "c",
+      "name": "Work first",
+      "page": "/home-c",
+      "share": 1,
+      "sees": "Short hero that names the pain, then the case studies straight away, logos and results, proof, one line services, pricing and a closing call block."
+    },
+    {
+      "id": "d",
+      "name": "Dark, reel and calendar",
+      "page": "/home-d",
+      "share": 1,
+      "sees": "Dark page in the style of Intently: short hero with logos, a reel of the work, case studies as big images, short client quotes, the calendar right on the page, FAQs."
+    }
+  ]
+}

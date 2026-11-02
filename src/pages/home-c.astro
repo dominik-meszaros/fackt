@@ -41,14 +41,14 @@ const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FA
     <main>
       <Hero variant="c" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
         title="Product design for SaaS and AI startups." text="For founders whose product is good but hard to explain. We design the product, the website and the brand, so people get it in seconds." />
-      <Work projects={featured} total={all.length} />
+      <Work projects={featured} total={all.length} resultChips />
       <ProofRow variant="c" />
       <Step />
       <Proof videos={videos} reviews={reviews} />
       <Step />
-      <Services />
+      <Services short />
       <Step />
-      <Pricing />
+      <Pricing variant="c" />
       <Step />
       <EndCta variant="c" />
     </main>

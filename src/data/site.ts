@@ -42,6 +42,7 @@ export const clients = [
 export const services = [
   {
     title: 'Product Design',
+    short: 'Clear interfaces for complex SaaS and AI products.',
     slug: 'product-design',
     shape: 'a',
     text: 'We turn complex problems into simple, beautiful interfaces. From early concept to a product your users love.',
@@ -49,6 +50,7 @@ export const services = [
   },
   {
     title: 'Web Design & Development',
+    short: 'Sites that explain your product, built in Framer or Webflow.',
     slug: 'web-design-development',
     shape: 'b',
     text: 'From pre-launch landing pages to complete website redesigns, we create experiences that capture attention and inspire action, built in Framer, Webflow or custom code.',
@@ -56,6 +58,7 @@ export const services = [
   },
   {
     title: 'Motion Design',
+    short: 'Animation that shows how your product works.',
     slug: 'motion-design',
     shape: 'c',
     text: 'We use animation and interaction to guide attention, communicate state, and make every action feel satisfying.',
@@ -63,6 +66,7 @@ export const services = [
   },
   {
     title: 'Visual Branding',
+    short: 'A visual identity people remember.',
     slug: 'visual-branding',
     shape: 'd',
     text: 'We build the visual language, voice, and feeling that makes you immediately, unmistakably you.',

@@ -7,6 +7,9 @@ import { site } from '../data/site';
 import { homeSettings } from '../data/settings';
 // Raw work in Figma: CMS > Settings > Homepage > Figma link. The button only shows when a link is set.
 const figma = (homeSettings as any).figmaUrl as string | undefined;
+// figmaButton={false}: hides the icon button in the top bar (homepage test version B). The menu link stays.
+interface Props { figmaButton?: boolean }
+const { figmaButton = true } = Astro.props;
 const FIG = '<svg width="11" height="16" viewBox="0 0 38 57" aria-hidden="true"><path fill="currentColor" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0zM0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0zM19 0v19h9.5a9.5 9.5 0 1 0 0-19H19zM0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5zM0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>';
 import { publishedPosts } from '../data/blog';
 
@@ -36,7 +39,7 @@ const menu = [
     </div>
     <a class="brand" href="/" aria-label="Fackt home"><Mark size={18} />Fackt<span class="sx" data-sec-label></span></a>
     <div class="r">
-      {figma && <a class="fg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma" aria-label="Raw work in Figma (opens in a new tab)"><Fragment set:html={FIG} /><span class="tip" aria-hidden="true">Raw work in Figma</span></a>}
+      {figma && figmaButton && <a class="fg" href={figma} target="_blank" rel="noopener" data-journey="Opened the raw work in Figma" aria-label="Raw work in Figma (opens in a new tab)"><Fragment set:html={FIG} /><span class="tip" aria-hidden="true">Raw work in Figma</span></a>}
       <a href="/audit" class="rv aud"><i aria-hidden="true"></i>Free audit</a>
       <a class="m-btn dk cta" href={site.bookPage}>Book a call</a>
       <button class="mbtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-menu-open>

@@ -4,11 +4,15 @@ import SectionHead from './SectionHead.astro';
 import { homeSettings } from '../../data/settings';
 interface Video { name: string; role: string; company: string; duration: string; thumbnail: string; video: string }
 interface Review { name: string; role: string; highlight: string; text: string; link?: string }
-interface Props { videos: Video[]; reviews: Review[] }
-const { videos, reviews } = Astro.props;
+// maxVideos: show only the first N videos. highlights: show only these reviews, in this order. short: the one line quote and the name, no paragraph.
+// All three are for the homepage test versions; the live homepage uses none of them.
+interface Props { videos: Video[]; reviews: Review[]; maxVideos?: number; highlights?: string[]; short?: boolean }
+const { videos: allVideos, reviews: allReviews, maxVideos, highlights, short = false } = Astro.props;
+const videos = maxVideos ? allVideos.slice(0, maxVideos) : allVideos;
+const reviews = highlights ? highlights.map((h) => allReviews.find((x) => x.highlight === h)).filter((x): x is Review => !!x) : allReviews;
 const r = homeSettings.rating;
 const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
-const count = words[videos.length] ?? String(videos.length);
+const count = words[allVideos.length] ?? String(allVideos.length);
 ---
 <section class="m-sec" id="reviews">
   <SectionHead icon="quote" title="What founders say" lede={`Rated ${r.value} out of 5 on ${r.source}. ${count} of them said it on camera.`} />
@@ -32,7 +36,7 @@ const count = words[videos.length] ?? String(videos.length);
     {reviews.map((x) => (
       <figure class="rev">
         <p class="k">&#8220;{x.highlight}&#8221;</p>
-        <blockquote>{x.text}</blockquote>
+        {!short && <blockquote>{x.text}</blockquote>}
         <figcaption><b>{x.name}</b>, {x.role}{x.link && <a class="src" href={x.link} target="_blank" rel="noopener">{/x\.com|twitter\.com/.test(x.link) ? 'View on X' : /contra\./.test(x.link) ? 'View on Contra' : 'View source'} &#8599;</a>}</figcaption>
       </figure>
     ))}

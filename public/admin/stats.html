@@ -76,6 +76,28 @@
     .tag.hot { background: var(--ink); color: #fff; box-shadow: none; }
     .v .t { color: var(--mut); white-space: nowrap; font-variant-numeric: tabular-nums; }
     .ab-v { margin: 0 0 12px; font-size: 15px; color: var(--ink); }
+    /* homepage test */
+    .ht-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+    .ht { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+    .ht.win { box-shadow: inset 0 0 0 1.5px var(--ink); }
+    .ht .hh { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .ht .hh b { font-weight: 500; font-size: 14px; }
+    .ht .lt { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 3px; background: var(--ink); color: #fff; font: 500 12px 'Geist Mono', monospace; margin-right: 8px; }
+    .ht .st { font-size: 11px; padding: 2px 7px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--line); color: var(--mut); white-space: nowrap; }
+    .ht .st.on { background: #e9f6ee; color: #1b6b3a; box-shadow: none; }
+    .ht .st.on::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #23a35a; margin-right: 5px; vertical-align: 1px; }
+    .ht .big { font-size: 30px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+    .ht .big small { font-size: 12px; font-weight: 400; color: var(--mut); letter-spacing: 0; margin-left: 6px; }
+    .ht dl { display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; margin: 0; font-size: 12.5px; }
+    .ht dt { color: var(--mut); } .ht dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+    .ht .vs { font-size: 12.5px; color: var(--mut); }
+    .ht .vs b { color: var(--ink); font-weight: 500; }
+    .ht .sees { font-size: 12.5px; color: var(--mut); line-height: 1.5; margin: 0; }
+    .ht .frame { position: relative; height: 210px; overflow: hidden; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--line); background: #f4f4f2; }
+    .ht .frame iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 1600px; border: 0; transform-origin: 0 0; pointer-events: none; }
+    .ht .frame a { position: absolute; inset: 0; z-index: 2; }
+    .ht .links { display: flex; gap: 12px; font-size: 12.5px; flex-wrap: wrap; }
+    .ht .links a { color: var(--ink); }
     tr.win td { background: rgba(0,0,0,.03); }
     td .n { color: var(--faint); font-size: 12px; margin-left: 4px; }
     .none { color: var(--faint); font-size: 13.5px; padding: 6px 0; }
@@ -184,6 +206,13 @@
         <p class="none" data-ab-note></p>
         <p class="none">Check a version yourself (not counted): <a href="/who-we-work-with?v=a2" target="_blank" rel="noopener">A2</a> &#183; <a href="/who-we-work-with?v=a4" target="_blank" rel="noopener">A4</a></p>
       </div>
+    </section>
+
+    <section class="seo" aria-label="Homepage test" data-ht-wrap hidden>
+      <h2>Homepage test <small>Visitors to fackt.io get one homepage version and keep it. Counted since the test started, whatever range is picked above. Main measure: took a next step (opened a case study, the audit or a call).</small></h2>
+      <div class="card" style="margin-top:12px"><p class="ab-v" data-ht-verdict>Loading&#8230;</p><p class="none" data-ht-note></p></div>
+      <div class="ht-grid" data-ht></div>
+      <p class="none" style="margin-top:10px">The previews are the live pages, not counted. Change versions or traffic shares in <code>src/data/homeTest.json</code>.</p>
     </section>
 
     <section class="seo" aria-label="Email list">
@@ -306,11 +335,62 @@
   // AI crawlers (Supabase "crawlstats") and the AI SEO check (built with the site, /admin/aiseo.json).
   var seoLoaded = false;
   function extras() {
+    homeTest();
     fetch(API.replace('/stats', '/crawlstats') + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (c) { if (c) renderCrawl(c); }).catch(function () {});
     if (!seoLoaded) fetch('/admin/aiseo.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (a) { if (a) { seoLoaded = true; renderAiSeo(a); } }).catch(function () {});
   }
+  // Homepage test: setup from /home-test.json (versions, shares, what they show), numbers from the Supabase "hometest" function.
+  var htCfg = null;
+  function homeTest() {
+    var cfgP = htCfg ? Promise.resolve(htCfg) : fetch('/home-test.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) { htCfg = c; return c; });
+    var dataP = fetch(API.replace('/stats', '/hometest'), { headers: { 'x-stats-key': key }, cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    Promise.all([cfgP, dataP]).then(function (x) { if (x[0]) renderHomeTest(x[0], x[1]); }).catch(function () {});
+  }
+  function renderHomeTest(cfg, d) {
+    $('[data-ht-wrap]').hidden = false;
+    var V = (d && d.variants) || {}, cmp = {};
+    ((d && d.compare) || []).forEach(function (c) { cmp[c.v] = c; });
+    var active = cfg.variants.filter(function (v) { return v.share > 0; });
+    var totalShare = active.reduce(function (a, v) { return a + v.share; }, 0) || 1;
+    var pct = function (n, v) { return v ? Math.round(n / v * 100) + '%' : '0%'; };
+    $('[data-ht-verdict]').textContent = d ? d.verdict : 'Numbers not available yet: the "hometest" function is not deployed in Supabase.';
+    $('[data-ht-note]').textContent = d && d.started ? 'Running since ' + new Date(d.started).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + ', ' + num(d.total) + ' visitors so far. A version is called better or worse than A at ' + d.min + '+ visitors each and a clear gap.' : 'Started ' + cfg.started + '. Numbers appear after the first visitors.';
+    var best = null; cfg.variants.forEach(function (v) { if (cmp[v.id] && cmp[v.id].result === 'better than A' && (!best || cmp[v.id].z > cmp[best].z)) best = v.id; });
+    var host = $('[data-ht]'), firstRender = !host.children.length;
+    if (firstRender) host.innerHTML = cfg.variants.map(function (v) {
+      return '<div class="card ht" data-ht-v="' + v.id + '"><div class="hh"><span><span class="lt">' + esc(v.id.toUpperCase()) + '</span><b>' + esc(v.name) + '</b></span><span class="st" data-st></span></div>' +
+        '<div class="frame"><iframe src="/?preview=' + v.id + '" loading="lazy" title="Preview of version ' + esc(v.id.toUpperCase()) + '" tabindex="-1"></iframe><a href="/?preview=' + v.id + '" target="_blank" rel="noopener" aria-label="Open version ' + esc(v.id.toUpperCase()) + '"></a></div>' +
+        '<p class="sees">' + esc(v.sees) + '</p><div data-n></div>' +
+        '<div class="links"><a href="/?preview=' + v.id + '" target="_blank" rel="noopener">Open preview &#8599;</a><a href="/?hv=' + v.id + '" target="_blank" rel="noopener">Show me this version</a></div></div>';
+    }).join('');
+    // scale the previews to the card width
+    Array.prototype.forEach.call(host.querySelectorAll('.frame'), function (f) { var i = f.querySelector('iframe'); i.style.transform = 'scale(' + (f.clientWidth / 1440) + ')'; });
+    cfg.variants.forEach(function (v) {
+      var el = host.querySelector('[data-ht-v="' + v.id + '"]'); if (!el) return;
+      var g = V[v.id] || { visitors: 0, live: 0, step: 0, caseStudy: 0, audit: 0, call: 0, nextPage: 0, leads: 0, booked: 0, readToEnd: 0, avgHomeTime: 0 };
+      el.classList.toggle('win', best === v.id);
+      var st = el.querySelector('[data-st]');
+      st.className = 'st' + (v.share > 0 ? ' on' : '');
+      st.textContent = v.share > 0 ? 'Testing, ' + Math.round(v.share / totalShare * 100) + '% of visitors' : 'Stopped';
+      var c = cmp[v.id];
+      el.querySelector('[data-n]').innerHTML =
+        '<div class="big">' + pct(g.step, g.visitors) + '<small>took a next step</small></div>' +
+        '<dl style="margin-top:12px">' +
+        '<dt>Visitors</dt><dd>' + num(g.visitors) + (g.live ? ' <span class="tag hot">' + g.live + ' now</span>' : '') + '</dd>' +
+        '<dt>Leads</dt><dd>' + num(g.leads) + (g.booked ? ' <span class="n">' + g.booked + ' booked</span>' : '') + '</dd>' +
+        '<dt>Time on homepage</dt><dd>' + dur(g.avgHomeTime) + '</dd>' +
+        '<dt>Read to the end</dt><dd>' + pct(g.readToEnd, g.visitors) + '</dd>' +
+        '<dt>Opened a case study</dt><dd>' + pct(g.caseStudy, g.visitors) + '</dd>' +
+        '<dt>Audit</dt><dd>' + num(g.audit) + '</dd>' +
+        '<dt>Call</dt><dd>' + num(g.call) + '</dd>' +
+        '<dt>Read another page</dt><dd>' + pct(g.nextPage, g.visitors) + '</dd>' +
+        '</dl>' +
+        '<p class="vs" style="margin:10px 0 0">' + (v.id === 'a' ? 'The current homepage, the baseline.' : c ? 'Against A: <b>' + esc(c.result) + '</b>' : 'Against A: no visitors yet') + (best === v.id ? ' <span class="tag hot">leading</span>' : '') + '</p>';
+    });
+  }
+  window.addEventListener('resize', function () { var h = document.querySelector('[data-ht]'); if (h) Array.prototype.forEach.call(h.querySelectorAll('.frame'), function (f) { f.querySelector('iframe').style.transform = 'scale(' + (f.clientWidth / 1440) + ')'; }); });
   function kp(l, v, sub) { return '<div class="card kpi"><div class="l">' + l + '</div><div class="v">' + v + '</div>' + (sub || '<div class="d">&nbsp;</div>') + '</div>'; }
   function renderCrawl(c) {
     var kd = c.kinds || {};
