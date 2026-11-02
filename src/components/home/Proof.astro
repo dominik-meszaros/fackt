@@ -6,16 +6,48 @@ interface Video { name: string; role: string; company: string; duration: string;
 interface Review { name: string; role: string; highlight: string; text: string; link?: string }
 // maxVideos: show only the first N videos. highlights: show only these reviews, in this order. short: the one line quote and the name, no paragraph.
 // All three are for the homepage test versions; the live homepage uses none of them.
-interface Props { videos: Video[]; reviews: Review[]; maxVideos?: number; highlights?: string[]; short?: boolean }
-const { videos: allVideos, reviews: allReviews, maxVideos, highlights, short = false } = Astro.props;
+// wall: videos and written reviews mixed in one wall of three columns (homepage test version D). Videos open the same player.
+interface Props { videos: Video[]; reviews: Review[]; maxVideos?: number; highlights?: string[]; short?: boolean; wall?: boolean }
+const { videos: allVideos, reviews: allReviews, maxVideos, highlights, short = false, wall = false } = Astro.props;
 const videos = maxVideos ? allVideos.slice(0, maxVideos) : allVideos;
 const reviews = highlights ? highlights.map((h) => allReviews.find((x) => x.highlight === h)).filter((x): x is Review => !!x) : allReviews;
 const r = homeSettings.rating;
 const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
 const count = words[allVideos.length] ?? String(allVideos.length);
+// Wall order, column by column: video, quote, video | quote, video, video | video, quote, video.
+type Item = { k: 'v'; v: Video; i: number } | { k: 'q'; r: Review };
+const wallItems: Item[] = [];
+if (wall) {
+  let vi = 0, qi = 0;
+  for (const col of [['v', 'q', 'v'], ['q', 'v', 'v'], ['v', 'q', 'v']]) for (const k of col) {
+    if (k === 'v' && videos[vi]) { wallItems.push({ k: 'v', v: videos[vi], i: vi }); vi++; }
+    else if (k === 'q' && reviews[qi]) wallItems.push({ k: 'q', r: reviews[qi++] });
+  }
+}
 ---
 <section class="m-sec" id="reviews">
   <SectionHead icon="quote" title="What founders say" lede={`Rated ${r.value} out of 5 on ${r.source}. ${count} of them said it on camera.`} />
+  {wall ? (
+  <div class="wall">
+    {wallItems.map((it) => it.k === 'v' ? (
+      it.v.video ? (
+        <button type="button" class="vid" data-vi={it.i} data-journey={`Played video ${it.v.name}`}>
+          <img src={it.v.thumbnail} alt="" loading="lazy" decoding="async" />
+          <span class="pl" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M3 2L10 6L3 10Z" fill="currentColor"></path></svg><span class="pt">{it.v.duration || 'Play'}</span></span>
+          <span class="who"><span class="sr-only">Play video testimonial from </span><b>{it.v.name}</b> <span class="sr-only">{it.v.role} at </span>{it.v.company}</span>
+        </button>
+      ) : (
+        <div class="vid"><img src={it.v.thumbnail} alt={`${it.v.name}, ${it.v.role} at ${it.v.company}`} loading="lazy" decoding="async" /><span class="who"><b>{it.v.name}</b>{it.v.company}</span></div>
+      )
+    ) : (
+      <figure class="rev">
+        <p class="k">&#8220;{it.r.highlight}&#8221;</p>
+        {!short && <blockquote>{it.r.text}</blockquote>}
+        <figcaption><b>{it.r.name}</b>, {it.r.role}{it.r.link && <a class="src" href={it.r.link} target="_blank" rel="noopener">{/x\.com|twitter\.com/.test(it.r.link) ? 'View on X' : /contra\./.test(it.r.link) ? 'View on Contra' : 'View source'} &#8599;</a>}</figcaption>
+      </figure>
+    ))}
+  </div>
+  ) : <>
   <div class="vids">
     {videos.map((v, i) => (
       v.video ? (
@@ -41,6 +73,7 @@ const count = words[allVideos.length] ?? String(allVideos.length);
       </figure>
     ))}
   </div>
+  </>}
   <dialog class="vd" data-vd aria-label="Video testimonial">
     <div class="vbox">
       <div class="vplay"><video controls playsinline preload="metadata" data-vd-video></video></div>
@@ -117,7 +150,17 @@ const count = words[allVideos.length] ?? String(allVideos.length);
   .vlist button.on b { color: #fff; } .vlist button.on span, .vlist button.on small { color: #b2b2ae; }
   .vcta { margin-top: 12px; justify-content: center; }
   @media (max-width: 900px) and (min-width: 721px) { .vids { grid-template-columns: repeat(3, 1fr); } }
+  .wall { columns: 3; column-gap: 12px; width: min(960px, 100%); margin-top: 40px; text-align: left; }
+  .wall > * { break-inside: avoid; margin: 0 0 12px; }
+  .wall .vid { display: block; width: 100%; }
+  .wall .rev { padding: 26px 24px 22px; }
+  .wall .k { font-size: 22px; line-height: 1.25; }
+  .wall .rev figcaption { margin-top: 16px; }
   @media (max-width: 720px) {
+    .wall { columns: 2; column-gap: 8px; margin-top: 28px; }
+    .wall > * { margin-bottom: 8px; }
+    .wall .rev { padding: 16px 14px 14px; }
+    .wall .k { font-size: 16px; }
     .vids { display: flex; gap: 8px; width: calc(100% + 32px); margin: 28px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }
     .vid { flex: 0 0 140px; }
     .revs { display: flex; columns: auto; gap: 12px; width: calc(100% + 32px); margin: 12px -16px 0; padding: 0 16px 4px; overflow-x: auto; scrollbar-width: none; }

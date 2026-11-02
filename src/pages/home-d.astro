@@ -1,17 +1,25 @@
 ---
 // HOMEPAGE TEST VERSION D (noindex; the worker shows it at fackt.io/ to part of the visitors, see src/data/homeTest.json).
-// Layout modelled on the Intently homepage Dom shared, then reworked from his Figma comments (D v2, Fackt LP Claude):
-// stepped contour hero, presence and a multiplayer cursor instead of a clock, a "# reviews" chat with video messages
-// and a composer that opens /book prefilled, the calendar on the page, FAQs, and a pixel wordmark that is "selected" by
-// Dom's cursor when it scrolls into view. Same fonts as the rest of fackt.io (Geist, Geist Mono, Newsreader), no new claims:
-// every number and quote comes from src/data and the content collections.
+// Same white theme, fonts and global components as the rest of fackt.io (Nav, Work, Proof, Footer, PhoneBar).
+// What makes it D: a stepped contour pattern behind the hero, a reel of the work that plays like a video,
+// a wall of video and written reviews, the calendar right on the page, and FAQs. No new claims: every number
+// and quote comes from src/data and the content collections.
 
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Mark from '../components/home/Mark.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import EasterGame from '../components/EasterGame.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import SectionHead from '../components/home/SectionHead.astro';
+import Step from '../components/home/Step.astro';
+import Logos from '../components/home/Logos.astro';
+import Work from '../components/home/Work.astro';
+import Proof from '../components/home/Proof.astro';
+import PhoneBar from '../components/home/PhoneBar.astro';
 import { site } from '../data/site';
-import { homeSettings } from '../data/settings';
 import { stageCategories } from '../data/stage';
+import '../styles/faq.css';
 
 const V = 'd';
 const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
@@ -19,9 +27,8 @@ const all = (await getCollection('work')).sort(byOrder).map((e) => ({ slug: e.id
 const bySlug = new Map(all.map((p) => [p.slug, p]));
 const reel = stageCategories.flatMap((c) => c.slides.filter((s) => bySlug.has(s.slug)).map((s) => ({ ...bySlug.get(s.slug)!, img: s.image })));
 const featured = all.filter((p) => p.featured).slice(0, 6);
+const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
 const reviews = (await getCollection('reviews')).sort(byOrder).map((e) => e.data);
-const rating = homeSettings.rating;
-const logos = homeSettings.logos.slice(0, 6);
 
 const faqs = [
   { q: 'What do you design?', a: 'Products, websites and brands for SaaS and AI startups: dashboards, mobile apps, landing pages and the identity around them. Sites are built in Framer, Webflow or code.' },
@@ -31,504 +38,153 @@ const faqs = [
   { q: 'Can you audit my product for free?', a: 'Yes. Send your product and within 2 days you get a video walkthrough and a written audit of what to fix first.' },
 ];
 
-// Pixel wordmark, same 5x7 letters as the site footer, drawn as outlined squares.
-const FONT: Record<string, string[]> = {
-  F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
-  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
-  C: ['01111', '10000', '10000', '10000', '10000', '10000', '01111'],
-  K: ['10001', '10010', '10100', '11000', '10100', '10010', '10001'],
-  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
-};
-const px: [number, number][] = [];
-[...'FACKT'].forEach((ch, i) => FONT[ch].forEach((row, r) => [...row].forEach((v, c) => { if (v === '1') px.push([i * 6 + c, r]); })));
-const year = new Date().getFullYear();
-
-// Hero pattern (D v2): stepped contour lines, built from the same step geometry as the F mark and the section dividers.
-// Drawn here once; the script moves the steps by one notch every few seconds.
-const PW = 600, PH = 400;
-function contours(phase = 0) {
-  const out: string[] = [];
-  for (let i = 0; i * 17 < PH + 50; i++) {
-    const base = i * 17 - 20; let d = '';
-    for (let x = 0; x <= PW + 32; x += 32) {
-      const raw = base + 16 * Math.sin(x / 110 + i * 0.28 + phase) + 6 * Math.sin(x / 53 - i * 0.6 - phase * 0.7);
-      const y = Math.round(raw / 6) * 6;
-      d += d ? ` H${x} V${y}` : `M0 ${y}`;
-    }
-    out.push(d);
+// Hero pattern: stepped contour lines, the same step geometry as the F mark and the section dividers. Static.
+const PW = 960, PH = 420;
+const contours: string[] = [];
+for (let i = 0; i * 18 < PH + 50; i++) {
+  const base = i * 18 - 20; let d = '';
+  for (let x = 0; x <= PW + 40; x += 40) {
+    const raw = base + 18 * Math.sin(x / 140 + i * 0.28) + 7 * Math.sin(x / 66 - i * 0.6);
+    const y = Math.round(raw / 6) * 6;
+    d += d ? ` H${x} V${y}` : `M0 ${y}`;
   }
-  return out;
+  contours.push(d);
 }
-const contourPaths = contours(0);
-
-// Reviews channel (D v2): video messages and written reviews, interleaved. Real names, quotes and durations only.
-const videos = (await getCollection('videos')).sort(byOrder).map((e) => e.data);
-const written = ['Sam', 'Jasper', 'Eldar Tuvey'].map((n) => reviews.find((r) => r.name === n)).filter((r): r is (typeof reviews)[number] => !!r);
-type Msg = { kind: 'video'; v: (typeof videos)[number] } | { kind: 'text'; r: (typeof reviews)[number] };
-const thread: Msg[] = [];
-for (let i = 0; i < 3; i++) { if (videos[i]) thread.push({ kind: 'video', v: videos[i] }); if (written[i]) thread.push({ kind: 'text', r: written[i] }); }
-// a short review is shown in full; a long one by its one line highlight
-const said = (r: (typeof reviews)[number]) => (r.text.length <= 90 ? r.text : r.highlight);
-const initial = (n: string) => n.trim().charAt(0).toUpperCase();
-const contra = 'https://contra.com/dominik_meszaros_bpbjfgt0';
 ---
-<Base title="Fackt: product design for SaaS and AI startups" noindex lcp={featured[0]?.preview ?? featured[0]?.image}>
-  <div class="dk">
-    <header class="bar">
-      <a class="brand" href="/" aria-label="Fackt home"><Mark size={12} />Fackt</a>
-      <span class="pres" data-presence>
-        <span class="av" aria-hidden="true">D<i data-pres-dot></i></span>
-        <span class="mono pl" data-pres-label>Dom is in the file</span>
-      </span>
-    </header>
-
+<Base title="Fackt: product design for SaaS and AI startups" noindex lcp={reel[0]?.img}>
+  <div class="m-page">
+    <SketchDefs />
+    <Nav figmaButton={false} />
     <main>
-      <section class="hero cell">
-        <svg class="contours" viewBox={`0 0 ${PW} ${PH}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-contours>
-          {contourPaths.map((d) => <path d={d} />)}
+      <section class="dh">
+        <svg class="contours" viewBox={`0 0 ${PW} ${PH}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+          {contours.map((d) => <path d={d} />)}
         </svg>
-        <span class="cursor" data-cursor aria-hidden="true">
-          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M1 1L13 7.2L7.4 8.6L4.6 14.6Z" fill="#2A72D8" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"></path></svg>
-          <b>Dom</b>
-        </span>
-        <h1>Product Design<br />for SaaS and AI Teams</h1>
+        <h1>Product design for SaaS and AI teams.</h1>
         <p class="sub">Your dedicated design team for every product, website and launch.</p>
-        <div class="btns">
-          <a class="b w" href="#book" data-journey={`Home ${V}: book call (hero)`} data-cursor-spot>Get in touch</a>
-          <a class="b o" href="#work" data-journey={`Home ${V}: see work (hero)`} data-cursor-spot>See our work</a>
+        <div class="ctas">
+          <a class="m-btn dk" href="#book" data-journey={`Home ${V}: book call (hero)`}>Book a 30 minute call</a>
+          <a class="aud" href="/audit" data-journey={`Home ${V}: free audit (hero)`}>or get a free audit first</a>
         </div>
-        <div class="trust">
-          <span class="mono">Trusted by:</span>
-          <ul data-cursor-spot>{logos.map((l) => <li>{l.logo ? <img src={l.logo} alt={l.name} loading="eager" height="14" /> : l.name}</li>)}</ul>
-        </div>
-      </section>
 
-      <section class="reel-sec cell" aria-label="Reel">
-        <div class="rh">
-          <div>
-            <h2 class="serif">Reel <sup>({year})</sup></h2>
-            <p class="dim">{all.length} SaaS and AI projects. Rated {rating.value} out of 5 on {rating.source}.</p>
-          </div>
-          <a class="b w sm" href="#book" data-journey={`Home ${V}: book call (reel)`}>Get in touch</a>
-        </div>
         <div class="player" data-reel>
-          <div class="poster" aria-hidden="true"><Mark size={46} /></div>
           {reel.map((p, i) => (
-            <a class="slide" href={`/work/${p.slug}`} data-i={i} aria-hidden="true" tabindex="-1">
-              <img src={p.img} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" />
+            <a class:list={['slide', { on: i === 0 }]} href={`/work/${p.slug}`} data-i={i} aria-hidden={i === 0 ? undefined : 'true'} tabindex={i === 0 ? 0 : -1} data-journey={`Home ${V}: opened case study ${p.name} (reel)`}>
+              <img src={p.img} alt={`${p.name}, ${p.service.toLowerCase()}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
             </a>
           ))}
           <div class="ctrl">
-            <button type="button" class="ic" data-reel-toggle aria-label="Play the reel">
+            <button type="button" class="ic" data-reel-toggle aria-label="Pause the reel">
               <svg class="i-play" width="11" height="11" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"></path></svg>
               <svg class="i-pause" width="11" height="11" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1h2v8H2zM6 1h2v8H6z" fill="currentColor"></path></svg>
             </button>
             <span class="tm" data-reel-time>0:00 / 0:00</span>
-            <span class="now" data-reel-label></span>
+            <span class="now" data-reel-label>{reel[0]?.name}, {reel[0]?.service.toLowerCase()}</span>
             <button type="button" class="ic" data-reel-full aria-label="Full screen"><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" fill="none" stroke="currentColor" stroke-width="1.3"></path></svg></button>
             <span class="track" aria-hidden="true"><i data-reel-bar></i></span>
           </div>
         </div>
       </section>
-
-      <section class="work cell" id="work">
-        <span class="eyebrow">Featured work</span>
-        <h2 class="serif">Case Studies</h2>
-        <div class="grid">
-          {featured.map((p) => (
-            <a class="card" href={`/work/${p.slug}`} data-journey={`Home ${V}: opened case study ${p.name}`}>
-              <img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()}`} loading="lazy" decoding="async" />
-              <span class="nm">{p.name}</span>
-              <span class="ar" aria-hidden="true">&#8599;</span>
-            </a>
-          ))}
+      <Logos />
+      <Step />
+      <Work projects={featured} total={all.length} lean resultChips />
+      <Step />
+      <Proof videos={videos} reviews={reviews} maxVideos={6} short wall
+        highlights={["Best product designer I've ever worked with.", 'Super reliable and easy to work with.', 'We would 100% work with Dominik again.']} />
+      <Step />
+      <section class="m-sec" id="book" aria-label="Book a call">
+        <SectionHead icon="calendar" title="Let's look at your product together." lede="30 minutes with Dom. You leave with clear next steps, whether we work together or not." />
+        <div class="cal">
+          <div class="ch"><b>30 min strategy call</b><span>Free</span></div>
+          <div class="bd" id="cal-d" data-cal-link={site.calLink}><span class="loading">Loading the calendar&#8230;</span></div>
+          <div class="ft2"><span>Times in your time zone</span><span>Not loading? <a href={site.booking} target="_blank" rel="noopener">Open it on Cal.com</a></span></div>
         </div>
+        <a class="aud" href="/audit" data-journey={`Home ${V}: free audit (calendar)`}>or get a free audit first</a>
       </section>
-
-      <section class="quotes cell" aria-label="What founders say">
-        <h2 class="serif">Hear it directly from our clients.</h2>
-        <p class="dim">Founders we designed for, in their own words.</p>
-        <div class="chat">
-          <div class="cbar">
-            <span><b># reviews</b><span class="mono">{videos.length} videos &#183; {reviews.length} written</span></span>
-            <span class="mono">Rated {rating.value} / 5 on {rating.source}</span>
-          </div>
-          <ol class="msgs">
-            {thread.map((m) => m.kind === 'video' ? (
-              <li class="msg">
-                <span class="cav"><img src={m.v.thumbnail} alt="" loading="lazy" /></span>
-                <div class="mc">
-                  <span class="mh"><b>{m.v.name}</b><span>{m.v.role}, {m.v.company}</span></span>
-                  <button type="button" class="vmsg" data-vsrc={m.v.video} data-journey={`Home ${V}: played video ${m.v.name}`} aria-label={`Play video from ${m.v.name}, ${m.v.duration}`}>
-                    <img src={m.v.thumbnail} alt="" loading="lazy" />
-                    <span class="vp"><svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"></path></svg>{m.v.duration}</span>
-                  </button>
-                </div>
-              </li>
-            ) : (
-              <li class="msg">
-                <span class="cav ini" aria-hidden="true">{initial(m.r.name)}</span>
-                <div class="mc">
-                  <span class="mh"><b>{m.r.name}</b><span>{m.r.role}</span></span>
-                  <p class="bub">&#8220;{said(m.r)}&#8221;</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <a class="more mono" href={contra} target="_blank" rel="noopener">See all reviews on Contra &#8599;</a>
-          <form class="composer" action="/book" method="get" data-no-lead data-composer>
-            <label class="sr" for="d-notes">Tell Dom what you are building</label>
-            <input id="d-notes" name="notes" type="text" maxlength="500" placeholder="Tell Dom what you’re building…" autocomplete="off" />
-            <button type="submit" aria-label="Send and pick a time"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="#fff" stroke-width="1.5"></path></svg></button>
-          </form>
-          <p class="hint mono">Sends you to a 30 minute call with Dom, your message already filled in.</p>
-        </div>
-      </section>
-
-      <section class="touch" id="book" aria-label="Book a call">
-        <h2>Get in touch</h2>
-        <p class="dim">Pick a time and talk to Dom. 30 minutes, free.</p>
-        <div class="calbox">
-          <div id="cal-d" data-cal-link={site.calLink}><span class="loading">Loading the calendar&#8230; <a href={site.booking} target="_blank" rel="noopener">Open it on Cal.com</a></span></div>
-        </div>
-        <a class="b blue" href="/audit" data-journey={`Home ${V}: free audit (calendar)`}><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 6.2L10.5 2 8.6 10.5 5.8 7.6 4.3 9.4 4.2 6.9 8.6 3.6 3.6 6.4z" fill="currentColor"></path></svg>Or get a free audit first</a>
-      </section>
-
-      <section class="faq" aria-label="Questions">
-        <h2 class="serif">FAQs</h2>
-        <div class="qs">
-          {faqs.map((f) => (
-            <details>
-              <summary>{f.q}<span aria-hidden="true">+</span></summary>
-              <p>{f.a}</p>
-            </details>
-          ))}
+      <Step />
+      <section class="faqw" aria-label="Questions">
+        <div><span class="eb">Questions</span><h2 class="m-h2">Before you book.</h2></div>
+        <div class="faq">
+          {faqs.map((f, i) => <details open={i === 0} data-faq={i}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         </div>
       </section>
     </main>
-
-    <footer class="foot">
-      <div class="fl cell">
-        <span>All rights reserved &#169; {year} Fackt Labs LLC</span>
-        <nav aria-label="Social">{site.socials.filter((s) => s.label === 'X' || s.label === 'LinkedIn').map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}</nav>
-      </div>
-      <div class="wordwrap" data-word>
-        <svg class="word" viewBox="-1 -1 31 9.6" aria-label="Fackt" role="img">
-          {px.map(([x, y]) => <rect x={x + 0.1} y={y + 0.1} width="0.8" height="0.8" data-x={x} data-y={y} />)}
-          <rect class="selbox" x="-0.4" y="-0.4" width="0" height="7.8" data-sel />
-        </svg>
-        <span class="wcur" data-wcur aria-hidden="true">
-          <svg width="14" height="16" viewBox="0 0 14 16"><path d="M1 1L13 7.2L7.4 8.6L4.6 14.6Z" fill="#2A72D8" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"></path></svg>
-          <b>Dom</b>
-        </span>
-        <span class="wsize mono" data-wsize aria-hidden="true">1440 × 420</span>
-      </div>
-    </footer>
+    <Footer />
+    <PhoneBar variant={V} />
+    <EasterGame />
   </div>
 </Base>
 
-<style is:global>
-  body:has(.dk) { background: #000; }
-  /* cookie banner, dark on this page */
-  body:has(.dk) .cs { background: #111 !important; color: #e8e8e6 !important; box-shadow: 0 0 0 1px #2a2a2a !important; }
-  body:has(.dk) .cs a { color: #e8e8e6 !important; }
-  body:has(.dk) .cs .m-btn.dk { background: #f2f2f0 !important; color: #000 !important; box-shadow: none !important; }
-  body:has(.dk) .cs .m-btn.lt { background: #1a1a1a !important; color: #e8e8e6 !important; box-shadow: inset 0 0 0 1px #333 !important; }
-</style>
 <style>
-  .dk { --fg: #f2f2f0; --dim: #7c7c78; --line: #1a1a1a; --line2: #2a2a2a; --card: #111; background: #000; color: var(--fg); font-family: Geist, system-ui, sans-serif; min-height: 100vh; overflow-x: clip; }
-  .serif { font-family: Newsreader, Georgia, serif; font-weight: 400; letter-spacing: -.02em; }
-  .dim { color: var(--dim); }
-  .mono, .b, .tm, .now { font-family: 'Geist Mono', ui-monospace, monospace; }
-  .cell { width: min(600px, calc(100% - 32px)); margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); position: relative; }
-  main > section { position: relative; border-bottom: 1px solid var(--line); }
-  main > section::after { content: ''; position: absolute; left: -100vw; right: -100vw; bottom: -1px; border-bottom: 1px solid var(--line); pointer-events: none; }
+  /* hero: same type and buttons as the live homepage, the contour lines behind it */
+  .dh { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 64px 16px 0; }
+  .contours { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 520px; pointer-events: none;
+    mask-image: radial-gradient(60% 75% at 50% 30%, rgba(0,0,0,.08) 0%, rgba(0,0,0,.2) 50%, #000 100%);
+    -webkit-mask-image: radial-gradient(60% 75% at 50% 30%, rgba(0,0,0,.08) 0%, rgba(0,0,0,.2) 50%, #000 100%); }
+  .contours path { fill: none; stroke: #e6e4df; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .dh > *:not(.contours) { position: relative; }
+  h1 { margin: 0; max-width: 960px; font-family: var(--m-serif); font-weight: 400; font-size: 54px; line-height: 1.08; letter-spacing: -.02em; }
+  .sub { margin: 14px auto 0; max-width: 520px; font-size: 17px; color: #6f6f6f; }
+  .ctas { display: flex; align-items: center; gap: 18px; margin-top: 26px; }
+  .aud { font-size: 14px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .aud:hover { border-bottom-width: 2px; }
 
-  .bar { width: min(600px, calc(100% - 32px)); margin: 0 auto; height: 40px; display: flex; align-items: center; justify-content: space-between; border-left: 1px solid var(--line); border-right: 1px solid var(--line); padding: 0 8px; }
-  .brand { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--fg); text-decoration: none; }
-  /* presence (replaces the clock): avatar with a status that follows Dom's working hours */
-  .pres { display: inline-flex; align-items: center; gap: 7px; }
-  .av { position: relative; width: 20px; height: 20px; border-radius: 50%; background: #2a72d8; color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 500; box-shadow: 0 0 0 1.5px #000; }
-  .av i { position: absolute; right: -1px; bottom: -1px; width: 6px; height: 6px; border-radius: 50%; background: #23a35a; box-shadow: 0 0 0 1.5px #000; }
-  .pres.away .av i { background: #6f6f6b; }
-  .pl { font-size: 10.5px; color: var(--dim); }
-
-  .b { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; flex: none; height: 22px; padding: 0 9px; border-radius: 2px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; transition: background .2s, color .2s; }
-  .b.w { background: var(--fg); color: #000; }
-  .b.w:hover { background: #fff; }
-  .b.o { color: var(--fg); background: #141414; box-shadow: inset 0 0 0 1px var(--line2); }
-  .b.o:hover { background: #1c1c1c; }
-  .b.blue { height: 26px; padding: 0 12px; background: #2a72d8; color: #fff; text-transform: none; letter-spacing: 0; font-family: Geist, system-ui, sans-serif; font-size: 11.5px; }
-  .b.blue:hover { background: #3b82f6; }
-
-  .hero { padding: 120px 20px 28px; text-align: center; overflow: hidden; }
-  .contours { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
-    mask-image: radial-gradient(closest-side, rgba(0,0,0,.06) 0%, rgba(0,0,0,.14) 45%, rgba(0,0,0,.9) 85%, #000 100%);
-    -webkit-mask-image: radial-gradient(closest-side, rgba(0,0,0,.06) 0%, rgba(0,0,0,.14) 45%, rgba(0,0,0,.9) 85%, #000 100%); }
-  .contours path { fill: none; stroke: #2a2a2a; stroke-width: 1; vector-effect: non-scaling-stroke; }
-  /* Dom's multiplayer cursor */
-  .cursor { position: absolute; left: 0; top: 0; z-index: 3; display: block; pointer-events: none; transform: translate(var(--cx, 300px), var(--cy, 280px)); transition: transform 1.1s cubic-bezier(.45,.05,.25,1), opacity .4s; }
-  .cursor svg { display: block; }
-  .cursor b, .wcur b { position: absolute; left: 11px; top: 13px; padding: 1px 6px 2px; border-radius: 3px; background: #2a72d8; color: #fff; font: 500 10px Geist, sans-serif; white-space: nowrap; }
-  .hero > *:not(.contours):not(.cursor) { position: relative; }
-  h1 { margin: 0; font-weight: 400; font-size: 34px; line-height: 1.12; letter-spacing: -.025em; }
-  .sub { margin: 14px auto 0; max-width: 300px; font-size: 11.5px; line-height: 1.5; color: var(--dim); }
-  .btns { display: flex; justify-content: center; gap: 6px; margin-top: 20px; }
-  .trust { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .trust .mono { font-size: 10.5px; color: var(--dim); letter-spacing: .03em; }
-  .trust ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; }
-  .trust li { display: flex; align-items: center; min-height: 16px; font-size: 11px; color: var(--fg); }
-  .trust img { height: 14px; width: auto; max-width: 84px; object-fit: contain; filter: brightness(0) invert(1); opacity: .9; }
-
-  .reel-sec { padding-top: 18px; }
-  .rh { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding: 0 6px 14px; }
-  .rh h2 { margin: 0; font-size: 22px; line-height: 1; }
-  .rh sup { font-family: 'Geist Mono', monospace; font-size: 8px; color: var(--dim); letter-spacing: 0; vertical-align: super; margin-left: 2px; }
-  .rh p { margin: 8px 0 0; font-size: 11px; }
-  .player { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; cursor: pointer; }
-  .poster { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; z-index: 1; transition: opacity .5s; }
-  .player.started .poster { opacity: 0; }
+  /* reel: plays through the work like a video, in the same frame as the live homepage's stage */
+  .player { position: relative; width: min(960px, 100%); aspect-ratio: 2 / 1; margin-top: 36px; border-radius: 4px; overflow: hidden; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; }
   .slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; z-index: 0; }
   .slide.on { opacity: 1; z-index: 1; }
   .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 8px; padding: 22px 8px 6px; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.6)); color: #fff; }
-  .ic { all: unset; cursor: pointer; width: 18px; height: 18px; display: grid; place-items: center; color: #fff; }
+  .ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 10px; padding: 34px 14px 10px; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.5)); color: #fff; font-size: 12px; font-weight: 500; text-align: left; }
+  .ic { all: unset; cursor: pointer; width: 22px; height: 22px; display: grid; place-items: center; color: #fff; border-radius: 2px; }
+  .ic:hover { background: rgba(255,255,255,.14); }
   .ic:focus-visible { outline: 1px solid #fff; }
-  .ic .i-pause { display: none; } .player.playing .ic .i-pause { display: block; } .player.playing .ic .i-play { display: none; }
-  .tm { font-size: 9.5px; font-variant-numeric: tabular-nums; }
-  .now { font-size: 9.5px; color: rgba(255,255,255,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
-  .track { grid-column: 1 / -1; height: 2px; background: rgba(255,255,255,.25); position: relative; margin-top: 2px; }
+  .ic .i-play { display: none; } .player.paused .ic .i-play { display: block; } .player.paused .ic .i-pause { display: none; }
+  .tm { font-variant-numeric: tabular-nums; }
+  .now { color: rgba(255,255,255,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; font-weight: 400; }
+  .track { grid-column: 1 / -1; height: 2px; background: rgba(255,255,255,.3); position: relative; margin-top: 2px; }
   .track i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #fff; }
 
-  .work { padding: 56px 0 0; text-align: center; }
-  .eyebrow { font-size: 10.5px; color: var(--dim); }
-  .work h2 { margin: 8px 0 24px; font-size: 24px; line-height: 1; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .card { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--card); color: #fff; text-decoration: none; text-align: left; }
-  .card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s cubic-bezier(.2,.8,.2,1); }
-  .card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.85)); }
-  .card:hover img { transform: scale(1.04); }
-  .nm, .ar { position: absolute; bottom: 7px; z-index: 2; font-size: 10.5px; }
-  .nm { left: 8px; } .ar { right: 8px; opacity: .6; }
+  /* calendar on the page, the same card as /book */
+  .cal { width: min(960px, 100%); margin-top: 36px; display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; border-radius: 3px; overflow: hidden; text-align: left; }
+  .cal .ch { padding: 18px 22px; border-bottom: 1px solid #ececea; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+  .cal .ch b { font-weight: 500; }
+  .cal .ch span { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 2px; background: #111; color: #fff; }
+  .cal .bd { min-height: 520px; }
+  .loading { display: grid; place-items: center; min-height: 520px; color: #8a8a86; font-size: 14px; }
+  .cal .ft2 { padding: 12px 22px; border-top: 1px solid #ececea; font-size: 12px; color: #8a8a86; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cal .ft2 a { color: #111; }
+  #book > .aud { margin-top: 22px; }
 
-  .quotes { padding: 36px 0 28px; text-align: center; }
-  .quotes h2 { margin: 0; font-size: 22px; line-height: 1.1; }
-  .quotes .dim { margin: 10px auto 16px; font-size: 11px; line-height: 1.5; }
-  .chat { text-align: left; background: #0d0d0d; border: 1px solid #222; border-radius: 6px; overflow: hidden; }
-  .cbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #1e1e1e; font-size: 12px; }
-  .cbar b { font-weight: 500; margin-right: 8px; }
-  .cbar .mono { font-size: 10.5px; color: #6f6f6b; }
-  .msgs { list-style: none; margin: 0; padding: 16px 14px 4px; display: flex; flex-direction: column; gap: 16px; }
-  .msg { display: flex; gap: 10px; }
-  .cav { flex: none; width: 26px; height: 26px; border-radius: 50%; overflow: hidden; background: #222; }
-  .cav img { width: 100%; height: 100%; object-fit: cover; }
-  .cav.ini { display: grid; place-items: center; font-size: 10.5px; font-weight: 500; color: #cfcfcb; }
-  .mc { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  .mh { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; font-size: 11.5px; }
-  .mh b { font-weight: 500; } .mh span { font-size: 10.5px; color: #6f6f6b; }
-  .bub { margin: 0; align-self: flex-start; padding: 8px 11px 9px; border-radius: 4px; background: #161616; font-family: Newsreader, Georgia, serif; font-size: 13px; line-height: 1.35; color: #e8e8e6; }
-  .vmsg { all: unset; cursor: pointer; position: relative; width: 104px; height: 130px; border-radius: 4px; overflow: hidden; background: #1a1a1a; }
-  .vmsg img, .vmsg video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .vmsg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.55)); pointer-events: none; }
-  .vmsg.playing { width: 208px; height: 260px; cursor: default; }
-  .vmsg.playing::after, .vmsg.playing .vp { display: none; }
-  .vmsg:focus-visible { outline: 1px solid #fff; outline-offset: 2px; }
-  .vp { position: absolute; left: 6px; bottom: 6px; z-index: 2; display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px 3px 7px; border-radius: 12px; background: rgba(255,255,255,.94); color: #111; font-size: 10px; font-weight: 500; }
-  .more { display: inline-block; margin: 14px 14px 0 50px; font-size: 10.5px; color: #8d8d88; text-decoration: none; }
-  .more:hover { color: var(--fg); }
-  .composer { display: flex; align-items: center; gap: 8px; margin: 14px 14px 6px; padding: 5px 5px 5px 12px; background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; }
-  .composer:focus-within { border-color: #3a3a3a; }
-  .composer input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--fg); font: 12px Geist, sans-serif; }
-  .composer input::placeholder { color: #6f6f6b; }
-  .composer button { flex: none; width: 26px; height: 26px; border: 0; border-radius: 4px; background: #2a72d8; display: grid; place-items: center; cursor: pointer; }
-  .composer button:hover { background: #3b82f6; }
-  .hint { margin: 0 14px 14px; font-size: 10px; color: #5e5e5a; }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  /* FAQ, the same accordion as the audit and service pages */
+  .faqw { width: min(960px, 100% - 32px); margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 56px; padding: 54px 0 72px; }
+  .eb { display: block; font-size: 12.5px; color: #8a8a86; margin-bottom: 8px; }
+  .faq { border-top: 1px solid #dcdcd8; }
+  .faq details { border-bottom: 1px solid #ececea; padding: 18px 0; }
+  .faq summary { list-style: none; display: flex; justify-content: space-between; gap: 20px; font-weight: 500; font-size: 15px; cursor: pointer; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq p { margin: 10px 0 0; color: #6a6a66; font-size: 14px; max-width: 640px; }
 
-  .touch { padding: 28px 16px 36px; text-align: center; }
-  .touch h2 { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: -.02em; }
-  .touch .dim { margin: 6px 0 0; font-size: 11px; }
-  .calbox { margin: 16px auto 0; width: min(820px, 100%); border-radius: 6px; background: #141414; box-shadow: 0 0 0 1px #262626; overflow: hidden; text-align: left; }
-  .calbox .loading { display: grid; place-items: center; height: 454px; color: var(--dim); font-size: 12px; }
-  .calbox .loading a { color: var(--fg); }
-  .touch .b.blue { margin-top: 16px; }
-
-  .faq { width: min(640px, calc(100% - 32px)); margin: 0 auto; padding: 40px 0 70px; display: grid; grid-template-columns: 180px 1fr; gap: 16px; }
-  .faq h2 { margin: 0; font-size: 22px; line-height: 1; }
-  .qs { display: flex; flex-direction: column; gap: 6px; }
-  details { background: #141414; border-radius: 2px; }
-  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; padding: 10px 10px; font-size: 11px; }
-  summary::-webkit-details-marker { display: none; }
-  summary span { transition: transform .2s; }
-  details[open] summary span { transform: rotate(45deg); }
-  details p { margin: 0; padding: 0 10px 12px; font-size: 11px; line-height: 1.55; color: var(--dim); }
-
-  .foot { padding-bottom: 20px; }
-  .fl { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 10px 8px; font-size: 9.5px; color: var(--dim); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .fl nav { display: flex; gap: 10px; }
-  .fl a { color: var(--dim); text-decoration: none; }
-  .fl a:hover { color: var(--fg); }
-  .wordwrap { position: relative; width: min(600px, calc(100% - 32px)); margin: 50px auto 0; }
-  .word { display: block; width: 100%; overflow: visible; }
-  .word rect { fill: transparent; stroke: #2a2a2a; stroke-width: .05; transition: fill .35s, stroke .35s; }
-  .word rect.on { fill: #f2f2f0; stroke: #f2f2f0; transition: none; }
-  .word rect.warm { fill: #6f6f6b; stroke: #6f6f6b; transition: none; }
-  .word .selbox { fill: rgba(42,114,216,.08); stroke: #2a72d8; stroke-width: .05; opacity: 0; transition: none; }
-  .wcur, .wsize { position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0; }
-  .wcur svg { display: block; }
-  .wsize { padding: 1px 5px 2px; border-radius: 2px; background: #2a72d8; color: #fff; font-size: 9px; transform: translateX(-50%); }
-
-  @media (min-width: 721px) {
-    /* Cal.com only shows its three panel layout (details, month, times) from about 820px wide.
-       Render it at that width and scale it to the card size of the reference. Clicks still land correctly. */
-    .calbox { width: 820px; zoom: .62; margin-top: 26px; }
-  }
   @media (max-width: 720px) {
-    .hero { padding: 80px 16px 28px; }
-    h1 { font-size: 30px; }
-    .sub { font-size: 13px; }
-    .b { height: 30px; font-size: 10.5px; padding: 0 12px; }
-    .trust img { height: 13px; }
-    .rh { padding: 0 8px 12px; }
-    .rh h2 { font-size: 22px; }
-    .rh p { font-size: 12px; }
-    .grid { grid-template-columns: 1fr; }
-    .nm, .ar { font-size: 12px; bottom: 9px; }
-    .quotes .dim { font-size: 12.5px; }
-    .bub { font-size: 14px; } .mh { font-size: 12.5px; } .mh span { font-size: 11px; }
-    .cbar > .mono { display: none; }
-    .cbar b { margin-right: 6px; }
-    .composer input { font-size: 16px; }
-    .pl { font-size: 10px; }
-    .cursor { display: none; }
-    .vmsg.playing { width: 180px; height: 225px; }
-    .calbox .loading { height: 600px; }
-    .faq { grid-template-columns: 1fr; padding: 32px 0 56px; }
-    summary, details p { font-size: 13px; padding-left: 12px; padding-right: 12px; }
-    .fl { font-size: 10.5px; }
+    .dh { padding-top: 40px; }
+    .contours { height: 380px; }
+    h1 { font-size: 38px; }
+    .sub { font-size: 15px; max-width: 340px; }
+    .ctas { flex-direction: column; gap: 14px; width: 100%; max-width: 360px; }
+    .ctas .m-btn { width: 100%; justify-content: center; }
+    .player { aspect-ratio: 4 / 3; margin-top: 24px; }
+    .ctrl { padding: 26px 10px 8px; font-size: 11px; }
+    .cal { margin-top: 24px; }
+    .cal .ch { padding: 14px 16px; } .cal .ft2 { padding: 10px 16px; }
+    .cal .bd, .loading { min-height: 560px; }
+    .faqw { grid-template-columns: 1fr; gap: 20px; padding: 40px 0 56px; }
   }
-  @media (prefers-reduced-motion: reduce) { .slide, .poster { transition: none; } .card img { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
 </style>
 
 <script>
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  import '../scripts/faq';
 
-  // Presence (replaces the clock): Dom's status follows his working hours in Bratislava, so it is never false.
-  const pres = document.querySelector<HTMLElement>('[data-presence]');
-  const presLabel = document.querySelector<HTMLElement>('[data-pres-label]');
-  if (pres && presLabel) {
-    const parts = () => Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Bratislava', weekday: 'short', hour: '2-digit', hour12: false }).formatToParts(new Date()).map((p) => [p.type, p.value]));
-    const update = () => {
-      const p = parts(); const h = Number(p.hour) % 24; const wk = p.weekday === 'Sat' || p.weekday === 'Sun';
-      const inFile = !wk && h >= 9 && h < 18;
-      pres.classList.toggle('away', !inFile);
-      presLabel.textContent = inFile ? 'Dom is in the file' : wk ? 'Back Monday at 9:00' : h < 9 ? 'Back at 9:00' : p.weekday === 'Fri' ? 'Back Monday at 9:00' : 'Back tomorrow at 9:00';
-    };
-    update(); setInterval(update, 60000);
-  }
-
-  // Hero contours: the steps shift by one notch every few seconds, like a slow topographic drift.
-  const contourSvg = document.querySelector<SVGSVGElement>('[data-contours]');
-  if (contourSvg && !reduce) {
-    const paths = Array.from(contourSvg.querySelectorAll('path'));
-    const draw = (phase: number) => paths.forEach((el, i) => {
-      const base = i * 17 - 20; let d = '';
-      for (let x = 0; x <= 632; x += 32) {
-        const raw = base + 16 * Math.sin(x / 110 + i * 0.28 + phase) + 6 * Math.sin(x / 53 - i * 0.6 - phase * 0.7);
-        const y = Math.round(raw / 6) * 6;
-        d += d ? ` H${x} V${y}` : `M0 ${y}`;
-      }
-      el.setAttribute('d', d);
-    });
-    let ph = 0;
-    setInterval(() => { if (document.visibilityState === 'visible') { ph += 0.09; draw(ph); } }, 3200);
-  }
-
-  // Dom's cursor: drifts between the buttons and the logos; steps aside while the visitor moves the mouse in the hero.
-  const hero = document.querySelector<HTMLElement>('.hero');
-  const cursor = document.querySelector<HTMLElement>('[data-cursor]');
-  if (hero && cursor) {
-    const spots = Array.from(hero.querySelectorAll<HTMLElement>('[data-cursor-spot]'));
-    const place = (x: number, y: number) => { cursor.style.setProperty('--cx', `${Math.round(x)}px`); cursor.style.setProperty('--cy', `${Math.round(y)}px`); };
-    const at = (el: HTMLElement, fx: number, fy: number) => { const h = hero.getBoundingClientRect(), r = el.getBoundingClientRect(); return [r.left - h.left + r.width * fx, r.top - h.top + r.height * fy]; };
-    const route: [number, number, number][] = [[0, 0.88, 0.85], [1, 0.25, 0.9], [2, 0.62, 0.4], [0, 0.4, 0.95]];
-    let step = 0, held = 0;
-    const go = () => { const [i, fx, fy] = route[step % route.length]; const el = spots[i]; if (el) { const [x, y] = at(el, fx, fy); place(x, y); } step++; };
-    go();
-    if (!reduce) setInterval(() => { if (Date.now() > held && document.visibilityState === 'visible') go(); }, 3600);
-    hero.addEventListener('mousemove', (e) => {
-      const h = hero.getBoundingClientRect(); const mx = e.clientX - h.left, my = e.clientY - h.top;
-      // keep a polite distance: move to the other side of the hero from the visitor's mouse
-      place(mx < h.width / 2 ? h.width * 0.78 : h.width * 0.18, my < h.height / 2 ? h.height * 0.72 : h.height * 0.2);
-      held = Date.now() + 2500;
-    });
-  }
-
-  // Video messages play inline, in place of their thumbnail.
-  document.querySelectorAll<HTMLButtonElement>('.vmsg').forEach((b) => b.addEventListener('click', () => {
-    const src = b.dataset.vsrc; if (!src || b.classList.contains('playing')) return;
-    document.querySelectorAll<HTMLButtonElement>('.vmsg.playing').forEach((o) => { o.querySelector('video')?.pause(); });
-    const v = document.createElement('video'); v.src = src; v.controls = true; v.playsInline = true; v.autoplay = true;
-    const img = b.querySelector('img'); if (img) v.poster = img.src;
-    b.classList.add('playing'); img?.replaceWith(v); v.play().catch(() => {});
-  }));
-  // a video someone started stops when they scroll it out of view
-  new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) e.target.querySelectorAll('video').forEach((v) => (v as HTMLVideoElement).pause()); })).observe(document.querySelector('.chat')!);
-
-  // Composer: opens the booking page with the message already filled in (the booking page reads ?notes=).
-  const composer = document.querySelector<HTMLFormElement>('[data-composer]');
-  composer?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = (composer.querySelector('input') as HTMLInputElement).value.trim().slice(0, 500);
-    (window as any).facktJourney?.track?.(`Home d: wrote in the composer`);
-    location.href = text ? `/book?notes=${encodeURIComponent(text)}` : '/book';
-  });
-
-  // Footer wordmark, built pixel by pixel: Dom's cursor drags a selection over FACKT, the pixels fill,
-  // the whole word gets a selection frame, then the pixels fall back to outline column by column.
-  // After that, pixels near the visitor's mouse light up.
-  const wrap = document.querySelector<HTMLElement>('[data-word]');
-  if (wrap) {
-    const svg = wrap.querySelector('svg')!;
-    const cells = Array.from(svg.querySelectorAll<SVGRectElement>('rect[data-x]')).map((r) => ({ r, x: Number(r.dataset.x), y: Number(r.dataset.y) }));
-    const sel = svg.querySelector<SVGRectElement>('[data-sel]')!;
-    const wcur = wrap.querySelector<HTMLElement>('[data-wcur]')!;
-    const wsize = wrap.querySelector<HTMLElement>('[data-wsize]')!;
-    const toPx = (ux: number, uy: number) => { const w = wrap.clientWidth, s = w / 31; return [(ux + 1) * s, (uy + 1) * s]; };
-    const hover = () => {
-      svg.addEventListener('mousemove', (e) => {
-        const b = svg.getBoundingClientRect(), s = b.width / 31; const ux = (e.clientX - b.left) / s - 1, uy = (e.clientY - b.top) / s - 1;
-        for (const c of cells) { const d = Math.hypot(c.x + 0.5 - ux, c.y + 0.5 - uy); c.r.classList.toggle('on', d < 1.6); c.r.classList.toggle('warm', d >= 1.6 && d < 2.9); }
-      });
-      svg.addEventListener('mouseleave', () => cells.forEach((c) => c.r.classList.remove('on', 'warm')));
-    };
-    const play = () => {
-      const T1 = 1400, HOLD = 600, T2 = 700; const t0 = performance.now();
-      wcur.style.opacity = '1'; sel.style.opacity = '1';
-      const frame = (now: number) => {
-        const t = now - t0;
-        if (t < T1) {
-          const k = t / T1, e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, col = e * 30.2;
-          sel.setAttribute('width', String(col + 0.4));
-          cells.forEach((c) => c.r.classList.toggle('on', c.x <= col - 0.4));
-          const [px, py] = toPx(col - 0.4, 7.4); wcur.style.transform = `translate(${px}px, ${py}px)`;
-        } else if (t < T1 + HOLD) {
-          cells.forEach((c) => c.r.classList.add('on')); sel.setAttribute('width', '30.2');
-          const [cx, cy] = toPx(14.7, 7.8); wsize.style.transform = `translate(${cx}px, ${cy + 6}px) translateX(-50%)`; wsize.style.opacity = '1';
-          wcur.style.transition = 'opacity .4s'; wcur.style.opacity = '0';
-        } else if (t < T1 + HOLD + T2) {
-          const col = ((t - T1 - HOLD) / T2) * 30; sel.style.opacity = '0'; wsize.style.opacity = '0';
-          cells.forEach((c) => { if (c.x <= col) c.r.classList.remove('on'); });
-        } else { cells.forEach((c) => c.r.classList.remove('on')); hover(); return; }
-        requestAnimationFrame(frame);
-      };
-      requestAnimationFrame(frame);
-    };
-    if (reduce) hover();
-    else new IntersectionObserver((es, o) => { if (es.some((e) => e.isIntersecting)) { o.disconnect(); setTimeout(play, 250); } }, { threshold: 0.6 }).observe(wrap);
-  }
-
-  // Reel: a video-style player. Dark poster with the mark, then it plays through the work (3.2 s per project) once it is on screen.
+  // Reel: crossfades through the work (3.2 s each) with time and progress, plays while on screen, pause and full screen.
   const player = document.querySelector<HTMLElement>('[data-reel]');
   if (player) {
     const slides = Array.from(player.querySelectorAll<HTMLAnchorElement>('.slide'));
@@ -538,29 +194,25 @@ const contra = 'https://contra.com/dominik_meszaros_bpbjfgt0';
     const btn = player.querySelector<HTMLButtonElement>('[data-reel-toggle]');
     const MS = 3200, TOTAL = MS * slides.length;
     const mmss = (ms: number) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
-    let pos = 0, playing = false, last = 0, cur = -1, userPaused = false;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let pos = 0, last = 0, cur = 0, userPaused = reduce, visible = false;
     const show = (i: number) => {
       if (i === cur) return; cur = i;
       slides.forEach((s, k) => { const on = k === i; s.classList.toggle('on', on); s.tabIndex = on ? 0 : -1; if (on) s.removeAttribute('aria-hidden'); else s.setAttribute('aria-hidden', 'true'); });
-      const img = slides[i]?.querySelector('img'); const next = slides[(i + 1) % slides.length]?.querySelector('img');
-      if (next) next.loading = 'eager';
-      if (label && img) { const n = img.alt; label.textContent = n.charAt(0).toUpperCase() + n.slice(1); }
+      const next = slides[(i + 1) % slides.length]?.querySelector('img'); if (next) next.loading = 'eager';
+      const img = slides[i]?.querySelector('img'); if (label && img) label.textContent = img.alt;
     };
     const paint = () => { if (time) time.textContent = `${mmss(pos)} / ${mmss(TOTAL)}`; if (bar) bar.style.width = `${(pos / TOTAL) * 100}%`; };
-    const set = (on: boolean) => {
-      playing = on; player.classList.toggle('playing', on);
-      if (on) { player.classList.add('started'); show(Math.floor(pos / MS) % slides.length); }
-      btn?.setAttribute('aria-label', on ? 'Pause the reel' : 'Play the reel');
-    };
+    const playing = () => visible && !userPaused && document.visibilityState === 'visible';
     const frame = (now: number) => {
-      if (playing && last) { pos = (pos + (now - last)) % TOTAL; show(Math.floor(pos / MS)); paint(); }
+      if (playing() && last) { pos = (pos + (now - last)) % TOTAL; show(Math.floor(pos / MS)); paint(); }
       last = now; requestAnimationFrame(frame);
     };
+    player.classList.toggle('paused', userPaused);
     paint(); requestAnimationFrame(frame);
-    btn?.addEventListener('click', (e) => { e.preventDefault(); userPaused = playing; set(!playing); });
-    player.querySelector('[data-reel-full]')?.addEventListener('click', (e) => { e.preventDefault(); if (document.fullscreenElement) document.exitFullscreen(); else player.requestFullscreen?.(); });
-    // plays when on screen (like a muted autoplay video), pauses when scrolled away
-    new IntersectionObserver(([e]) => { if (reduce || userPaused) return; set(e.isIntersecting); }, { threshold: 0.5 }).observe(player);
+    btn?.addEventListener('click', () => { userPaused = !userPaused; player.classList.toggle('paused', userPaused); btn.setAttribute('aria-label', userPaused ? 'Play the reel' : 'Pause the reel'); });
+    player.querySelector('[data-reel-full]')?.addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else player.requestFullscreen?.(); });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0.4 }).observe(player);
   }
 
   // Calendar on the page (same Cal.com event and namespace as /book, so bookings are tracked the same way).
@@ -586,11 +238,11 @@ const contra = 'https://contra.com/dominik_meszaros_bpbjfgt0';
     })(window, 'https://app.cal.com/embed/embed.js', 'init');
     const Cal = (window as any).Cal;
     Cal('init', 'fackt', { origin: 'https://cal.com' });
-    const config: Record<string, string> = { layout: 'month_view', theme: 'dark' };
+    const config: Record<string, string> = { layout: 'month_view', theme: 'light' };
     const vid = (() => { try { return JSON.parse(localStorage.getItem('fj_vid') || 'null'); } catch { return null; } })();
     if (vid) config['metadata[fackt_vid]'] = vid;
     Cal.ns.fackt('inline', { elementOrSelector: '#cal-d', calLink, config });
-    Cal.ns.fackt('ui', { theme: 'dark', hideEventTypeDetails: false, layout: 'month_view', cssVarsPerTheme: { dark: { 'cal-brand': '#f2f2f0' } } });
+    Cal.ns.fackt('ui', { theme: 'light', hideEventTypeDetails: true, layout: 'month_view', cssVarsPerTheme: { light: { 'cal-brand': '#111111' } }, styles: { branding: { brandColor: '#111111' } } });
     Cal.ns.fackt('on', { action: 'linkReady', callback: () => el.querySelector('.loading')?.remove() });
   };
   // Load the calendar only when it is close to the screen, so the top of the page stays fast.

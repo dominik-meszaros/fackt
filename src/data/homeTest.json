@@ -26,10 +26,10 @@
     },
     {
       "id": "d",
-      "name": "Dark, reel and calendar",
+      "name": "Reel, reviews wall and calendar",
       "page": "/home-d",
       "share": 1,
-      "sees": "Dark page in the style of Intently: short hero with logos, a reel of the work, case studies as big images, short client quotes, the calendar right on the page, FAQs."
+      "sees": "Same white theme and fonts as the site: a contour pattern behind the hero, a reel of the work that plays like a video, case studies, a wall of video and written reviews, the calendar right on the page, and FAQs."
     }
   ]
 }
