@@ -8,6 +8,7 @@ export async function GET() {
   const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
   const posts = await publishedPosts();
   const free = (await getCollection('free')).filter((f) => !f.data.draft);
+  const products = (await getCollection('products')).filter((p) => !p.data.draft);
   const today = new Date().toISOString().slice(0, 10);
   const pages: [string, string][] = [
     ['/', '1.0'], ['/work', '0.9'], ['/services', '0.9'], ['/who-we-work-with', '0.8'], ['/audit', '0.8'], ['/book', '0.8'], ['/privacy', '0.3'],
@@ -16,6 +17,7 @@ export async function GET() {
     ...(posts.length ? [['/blog', '0.8'] as [string, string]] : []),
     ...posts.map((b) => [`/blog/${b.id}`, '0.7'] as [string, string]),
     ...free.map((f) => [`/free/${f.id}`, '0.6'] as [string, string]),
+    ...products.map((p) => [`/p/${p.id}`, '0.7'] as [string, string]),
   ];
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

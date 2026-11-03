@@ -71,3 +71,21 @@ Cloudflare Pages settings: build command `npm run build`, output `dist`, and the
 GitHub OAuth app callback URL: `https://<your site>/api/callback`.
 
 Local editing: `npm run dev` and `npx decap-server`, then open `http://localhost:4321/admin/index.html`.
+
+## Paid files (fackt.io/p/<slug>)
+
+Figma files sold through Polar. Same idea as the free files, but the email goes out after payment.
+
+| What | Where |
+| --- | --- |
+| Page content (headline, price, screens, FAQ, checkout link) | `src/content/products/<slug>.md` |
+| Images | `public/uploads/products/<slug>/` |
+| Figma link and Polar product id | Supabase table `shop_products` (same slug) |
+| Orders | Supabase table `shop_orders` |
+| Webhook | Supabase edge function `shop` (`supabase/functions/shop/index.ts`) |
+
+How a sale works: Buy button → Polar checkout → Polar sends `order.paid` to the `shop` function → it records the order, emails the buyer the Figma link from `shop_products`, and emails you "New sale". Polar then shows `/p/<slug>/thanks`. Put the Figma link in the Polar product's Custom benefit too, so buyers have it on the receipt as a backup.
+
+Setup per product: in Polar create the product and a checkout link (success URL `https://fackt.io/p/<slug>/thanks`), paste the checkout link into the md file as `checkoutUrl`, set `figma_url` and `polar_product_id` on the `shop_products` row, switch `draft` off.
+
+One time: Polar webhook to `https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/shop`, event `order.paid`, and its secret as the Supabase secret `POLAR_WEBHOOK_SECRET`.

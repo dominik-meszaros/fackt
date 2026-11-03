@@ -121,4 +121,28 @@ const free = defineCollection({
   }),
 });
 
-export const collections = { work, quotes, videos, reviews, blog, free };
+// Paid Figma files (fackt.io/p/<slug>), sold through Polar. Page content lives here; the Figma link
+// and the Polar product id live in Supabase (table shop_products, same slug), and the "shop" edge
+// function emails the file to every buyer when Polar sends order.paid.
+const products = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/products' }),
+  schema: z.object({
+    title: z.string(),
+    headline: z.string(),
+    lede: z.string(),
+    description: z.string(),
+    price: z.number(),
+    currency: z.string().default('USD'),
+    checkoutUrl: z.string().default(''),
+    cover: z.string(),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string(), caption: z.string().default('') })).default([]),
+    inside: z.array(z.string()).default([]),
+    forWho: z.array(z.string()).default([]),
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
+    videoUrl: z.string().optional(),
+    freeSlug: z.string().optional(),
+    draft: z.boolean().default(true),
+  }),
+});
+
+export const collections = { work, quotes, videos, reviews, blog, free, products };
