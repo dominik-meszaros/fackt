@@ -79,4 +79,4 @@ Then fix from the top. Some findings are a copy change or a reordered table and 
 
 Running the checklist yourself is a great start. The hard part is ranking what you find: knowing which of the twenty small issues is the one quietly costing you signups. That judgment comes from having seen the same patterns across many products.
 
-If you would rather have fresh eyes on it, send us your product for a [free audit](/audit). Within 2 days you get a video walkthrough of the product and a written audit ordered by impact, with screenshots your team can act on. No call needed.
+If you would rather have fresh eyes on it, send us your product for a [free audit](/audit). Within 2 days you get a video walkthrough of the product and a written audit ordered by impact, with screenshots your team can act on. No call needed. And if the list points to a bigger project, here is how we approach [SaaS dashboard design](/saas-dashboard-design).

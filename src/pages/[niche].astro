@@ -1,0 +1,204 @@
+---
+// SEO niche pages (service x niche), one per entry in src/data/niches.ts, e.g. /saas-dashboard-design.
+// Same site design. One button (book a call) with the audit as a quiet link. Design: canvas boards PNiche / PNicheM.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import SketchDefs from '../components/home/SketchDefs.astro';
+import FixCard from '../components/niche/FixCard.astro';
+import { niches } from '../data/niches';
+import { site } from '../data/site';
+import { homeSettings } from '../data/settings';
+import '../styles/faq.css';
+
+export function getStaticPaths() {
+  return niches.map((n) => ({ params: { niche: n.slug }, props: { n } }));
+}
+const { n } = Astro.props;
+const work = new Map((await getCollection('work')).map((e) => [e.id, { slug: e.id, ...e.data }]));
+const hero = work.get(n.hero.work)!;
+const cases = n.cases.map((c) => ({ ...work.get(c.work)!, line: c.line })).filter((c) => c.slug);
+const logos = n.logos.map((name) => homeSettings.logos.find((l) => l.name.toLowerCase() === name.toLowerCase())).filter(Boolean) as { name: string; logo?: string }[];
+const url = new URL(`/${n.slug}`, site.url).toString();
+const ext = (h: string) => (h.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {});
+const tag = (what: string) => `${n.current}: ${what}`;
+const ld = [
+  { '@context': 'https://schema.org', '@type': 'Service', name: n.h1, serviceType: n.h1, description: n.seoDescription, provider: { '@type': 'ProfessionalService', name: site.name, url: site.url }, areaServed: 'Worldwide', url },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: n.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [...n.crumb, { label: n.current, href: `/${n.slug}` }].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: new URL(c.href, site.url).toString() })) },
+];
+---
+<Base title={n.seoTitle} description={n.seoDescription} lcp={hero.preview ?? hero.image}>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <div class="m-page">
+    <SketchDefs />
+    <Nav />
+    <main>
+      <section class="wrap">
+        <nav class="crumb" aria-label="Breadcrumb">{n.crumb.map((c) => <><a href={c.href}>{c.label}</a><span>/</span></>)}<b aria-current="page">{n.current}</b></nav>
+        <div class="hero">
+          <div>
+            <h1>{n.h1}</h1>
+            <p class="lede">{n.lede}</p>
+            <div class="ct">
+              <a class="m-btn dk" href={site.bookPage} data-journey={tag('book call (hero)')}>Book a 30 minute call</a>
+              <a class="aud" href="/audit" data-journey={tag('free audit (hero)')}>or get a free audit first</a>
+            </div>
+          </div>
+          <a class="shot" href={`/work/${hero.slug}`} data-journey={tag(`hero case study ${hero.slug}`)}>
+            <img src={hero.preview ?? hero.image} alt={`${hero.name}, ${hero.service.toLowerCase()} by Fackt`} width="1600" height="1000" loading="eager" fetchpriority="high" />
+            <span class="tag">{n.hero.caption}<b>View case study &#8594;</b></span>
+          </a>
+        </div>
+
+        <div class="proof">
+          <div class="lg"><span>Trusted by teams at</span>{logos.map((l) => l.logo ? <img src={l.logo} alt={l.name} loading="lazy" /> : <em>{l.name}</em>)}</div>
+          <div class="res">
+            {n.results.map((r) => (
+              <a href={r.href} {...ext(r.href)} data-journey={tag(`result ${r.value}`)}><strong>{r.value}</strong><span>{r.label}</span><em>{r.source} &#8594;</em></a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap sec">
+        <span class="eb">What we fix</span>
+        <h2>{n.fixTitle}</h2>
+        <p class="sl">{n.fixLede}</p>
+        <div class="fix">{n.fixes.map((f) => <FixCard {...f} />)}</div>
+      </section>
+
+      <section class="wrap sec">
+        <span class="eb">Work</span>
+        <h2>{n.casesTitle}</h2>
+        <div class="cases">
+          {cases.map((c) => (
+            <a href={`/work/${c.slug}`} data-journey={tag(`case study ${c.slug}`)}>
+              <div class="im"><img src={c.preview ?? c.image} alt={`${c.name}, ${c.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
+              <b>{c.name}</b><span>{c.line}</span><em>View case study &#8594;</em>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="wrap sec">
+        <span class="eb">How it runs</span>
+        <h2>{n.stepsTitle}</h2>
+        <ol class="steps">{n.steps.map((s) => <li><i>{s.when}</i><b>{s.title}</b><span>{s.text}</span></li>)}</ol>
+        <div class="pr">
+          <div><strong>{n.price.title}</strong><span>{n.price.text}</span></div>
+          <a class="m-btn" href={site.bookPage} data-journey={tag('book call (price)')}>Book a 30 minute call</a>
+        </div>
+      </section>
+
+      <section class="wrap sec">
+        <span class="eb">Questions</span>
+        <h2>{n.faqTitle}</h2>
+        <div class="faq">
+          {n.faq.map((f, i) => (<details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>))}
+        </div>
+        <a class="rel" href={`/blog/${n.note.slug}`} data-journey={tag('note')}>
+          <i>Note</i><div><b>{n.note.title}</b><span>{n.note.text}</span></div><em>Read the note</em>
+        </a>
+      </section>
+
+      <section class="wrap end">
+        <h2>{n.endTitle}</h2>
+        <p>30 minutes with Dom. You leave with clear next steps, whether we work together or not.</p>
+        <div class="ct">
+          <a class="m-btn dk" href={site.bookPage} data-journey={tag('book call (end)')}>Book a 30 minute call</a>
+          <a class="aud" href="/audit" data-journey={tag('free audit (end)')}>or get a free audit first</a>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  .wrap { width: min(960px, 100% - 32px); margin: 0 auto; }
+  .crumb { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 40px; font-size: 12.5px; color: #8a8a86; }
+  .crumb a { color: inherit; text-decoration: none; } .crumb a:hover { color: #111; }
+  .crumb b { color: #111; font-weight: 500; }
+  .hero { display: grid; grid-template-columns: 1fr 460px; gap: 48px; align-items: center; margin-top: 18px; }
+  h1 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.04; letter-spacing: -.02em; }
+  .lede { margin: 16px 0 0; font-size: 17px; color: #3f3f3f; max-width: 440px; }
+  .ct { display: flex; align-items: center; gap: 18px; margin-top: 26px; }
+  .ct .m-btn { height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .aud { font-size: 14px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .shot { position: relative; display: block; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px #111, 6px 6px 0 rgba(17, 17, 17, .08); }
+  .shot img { display: block; width: 100%; height: auto; aspect-ratio: 1.25; object-fit: cover; transition: transform .6s var(--m-ease); }
+  .shot:hover img { transform: scale(1.03); }
+  .tag { position: absolute; left: 12px; top: 12px; display: flex; gap: 8px; align-items: center; padding: 4px 9px; border-radius: 2px; background: #fff; color: #111; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 12px; font-weight: 500; }
+  .tag b { font-weight: 500; padding-left: 8px; border-left: 1px solid #dcdcd8; }
+  .proof { margin-top: 56px; padding-top: 26px; border-top: 1px solid #ececea; }
+  .lg { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px 40px; }
+  .lg span { font-size: 12.5px; color: #8a8a86; }
+  .lg img { display: block; height: 20px; width: auto; max-width: 120px; object-fit: contain; opacity: .4; }
+  .lg em { font-style: normal; font-size: 14px; font-weight: 500; color: #a3a3a3; }
+  .res { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+  .res a { display: flex; flex-direction: column; padding: 18px; border-radius: 4px; color: #111; text-decoration: none; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
+  .res a:hover { box-shadow: inset 0 0 0 1px #111, 3px 3px 0 #111; }
+  .res strong { font-family: var(--m-serif); font-weight: 400; font-size: 36px; line-height: 1; }
+  .res span { margin-top: 8px; font-size: 13.5px; color: #3f3f3f; }
+  .res em { margin-top: auto; padding-top: 12px; font-style: normal; font-size: 12px; color: #8a8a86; }
+  .sec { padding-top: 96px; text-align: center; }
+  .eb { display: block; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; }
+  h2 { margin: 10px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1.12; letter-spacing: -.01em; }
+  .sl { margin: 10px auto 0; max-width: 520px; color: #6a6a66; }
+  .fix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+  .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; text-align: left; }
+  .cases a { color: inherit; text-decoration: none; }
+  .cases .im { height: 180px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #e2e2de; background: #f2f2f0; }
+  .cases img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--m-ease); }
+  .cases a:hover img { transform: scale(1.04); }
+  .cases b { display: block; margin-top: 12px; font-weight: 500; font-size: 14.5px; }
+  .cases span { display: block; margin-top: 3px; font-size: 13.5px; color: #6f6f6f; }
+  .cases em { display: block; margin-top: 6px; font-style: normal; font-size: 13px; color: #a3a3a3; transition: color .2s; }
+  .cases a:hover em { color: #111; }
+  .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 32px 0 0; text-align: left; }
+  .steps li { padding-top: 14px; border-top: 1.5px solid #111; }
+  .steps i { font: 500 11.5px 'Geist Mono', ui-monospace, monospace; color: #8a8a86; font-style: normal; }
+  .steps b { display: block; margin-top: 6px; font-weight: 500; font-size: 15px; }
+  .steps span { display: block; margin-top: 4px; font-size: 13.5px; color: #6a6a66; }
+  .pr { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 28px; padding: 22px 24px; border-radius: 4px; background: #111; color: #fff; text-align: left; box-shadow: 4px 4px 0 #c8c8c4; }
+  .pr strong { font-family: var(--m-serif); font-weight: 400; font-size: 30px; }
+  .pr span { display: block; font-size: 13.5px; color: #b2b2ae; margin-top: 4px; }
+  .pr .m-btn { background: #fff; color: #111; height: 44px; padding: 0 18px; font-size: 14.5px; flex: none; }
+  .faq { max-width: 720px; margin: 28px auto 0; text-align: left; border-top: 1px solid #dcdcd8; }
+  details { border-bottom: 1px solid #ececea; padding: 18px 0; }
+  summary { list-style: none; display: flex; justify-content: space-between; gap: 20px; font-weight: 500; font-size: 15px; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  details p { margin: 10px 0 0; color: #6a6a66; font-size: 14px; }
+  .rel { display: flex; align-items: center; gap: 16px; max-width: 720px; margin: 28px auto 0; padding: 16px; border-radius: 4px; color: #111; text-decoration: none; text-align: left; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
+  .rel:hover { box-shadow: inset 0 0 0 1px #111, 3px 3px 0 #111; }
+  .rel i { flex: none; width: 44px; height: 44px; border-radius: 3px; background: #f2f2f0; display: grid; place-items: center; font: 500 10.5px 'Geist Mono', ui-monospace, monospace; font-style: normal; text-transform: uppercase; color: #8a8a86; }
+  .rel b { display: block; font-weight: 500; font-size: 14.5px; }
+  .rel span { font-size: 13px; color: #8a8a86; }
+  .rel em { margin-left: auto; font-style: normal; font-size: 13px; border-bottom: 1px solid #111; white-space: nowrap; }
+  .end { margin-top: 96px; padding: 56px 0 72px; border-top: 1px solid #ececea; text-align: center; }
+  .end p { margin: 10px 0 0; color: #6a6a66; }
+  .end .ct { justify-content: center; }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 28px; } .fix, .cases { grid-template-columns: 1fr; } .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 720px) {
+    .crumb { padding-top: 24px; }
+    h1 { font-size: 36px; } .lede { font-size: 15px; }
+    .ct { flex-direction: column; align-items: stretch; gap: 12px; } .ct .m-btn { justify-content: center; } .aud { align-self: center; }
+    .lg { gap: 14px 26px; } .lg span { width: 100%; text-align: center; } .lg img { height: 16px; }
+    .res { grid-template-columns: 1fr; }
+    .sec { padding-top: 64px; } h2 { font-size: 28px; }
+    .pr { flex-direction: column; align-items: flex-start; } .pr .m-btn { width: 100%; justify-content: center; }
+    .rel em { display: none; }
+    .end { margin-top: 64px; padding: 44px 0 56px; }
+  }
+</style>
+
+<script>
+  import '../scripts/faq';
+  // Touch screens have no hover: switch each "What we fix" card to its After state once it is well in view.
+  if (!matchMedia('(hover: hover)').matches) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('on'), 400); io.unobserve(e.target); } }), { threshold: 0.6 });
+    document.querySelectorAll('[data-fx]').forEach((el) => io.observe(el));
+  }
+</script>

@@ -1,0 +1,102 @@
+---
+// "What we fix" card for niche pages: a tiny live dashboard that fixes itself on hover or keyboard focus (Before -> After).
+// On touch screens it switches to After once it scrolls into view (script in the page). Design: canvas board PNiche.
+import type { FixArt } from '../../data/niches';
+interface Props { art: FixArt; title: string; text: string }
+const { art, title, text } = Astro.props;
+---
+<div class:list={['fx', `w-${art}`]} tabindex="0" data-fx>
+  <div class="st" aria-hidden="true">
+    <span class="lb"><i>Before</i><i>After</i></span><span class="hint">hover to fix</span>
+    <div class="pn">
+      {art === 'weight' && <>
+        <div class="tl a"><s></s><em>$4.2k</em></div><div class="tl b"><s></s><em>3.1%</em></div>
+        <div class="tl c"><s></s><em>2,340</em></div><div class="tl e"><s></s><em>18k</em></div>
+      </>}
+      {art === 'context' && <>
+        <span class="k">Active users</span>
+        <div class="num"><em>2,340</em><span class="ch">&#9650; 12% vs last week</span></div>
+        <svg viewBox="0 0 220 30" preserveAspectRatio="none"><path pathLength="1" d="M2 26 L28 23 L52 25 L78 18 L104 20 L130 13 L156 15 L182 7 L218 3" /></svg>
+        <div class="lim"><span>Plan limit</span><span>78% of 3,000</span></div><div class="bar"><i></i></div>
+      </>}
+      {art === 'empty' && <>
+        <div class="zs"><i>0</i><i>0</i><i>0</i><i>0</i><i>0</i><i>0</i></div>
+        <div class="es">
+          <span class="ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#111" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10" /></svg></span>
+          <b>Connect your first source</b><small>Your numbers show up here in a minute</small><span class="go">Connect source</span>
+        </div>
+        <span class="cur"><svg width="14" height="18" viewBox="0 0 14 18"><path d="M1 1l12 7.2-5.3 1.3L5 16z" fill="#111" stroke="#fff" stroke-width="1.2" /></svg></span>
+      </>}
+    </div>
+  </div>
+  <b class="t">{title}</b>
+  <span class="d">{text}</span>
+</div>
+
+<style>
+  .fx { --e: cubic-bezier(.2, .7, .2, 1); position: relative; border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; overflow: hidden; transition: box-shadow .25s var(--e), transform .25s var(--e); outline: none; text-align: left; }
+  .fx:hover, .fx:focus-visible { box-shadow: inset 0 0 0 1px #111, 4px 4px 0 #111; transform: translate(-2px, -2px); }
+  .st { position: relative; height: 210px; background: #f6f6f4 radial-gradient(#e2e2de 1px, transparent 1.2px) 0 0 / 14px 14px; border-bottom: 1px solid #e2e2de; overflow: hidden; }
+  .lb { position: absolute; left: 12px; top: 12px; z-index: 4; height: 22px; padding: 0 8px; display: flex; align-items: center; border-radius: 2px; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 11px; font-weight: 500; overflow: hidden; transition: background .3s; }
+  .lb i { font-style: normal; transition: transform .35s var(--e), opacity .35s; }
+  .lb i + i { position: absolute; left: 8px; transform: translateY(120%); opacity: 0; color: #fff; }
+  .hint { position: absolute; right: 12px; top: 16px; z-index: 4; font: 500 10.5px 'Geist Mono', ui-monospace, monospace; color: #a3a3a3; transition: opacity .25s; }
+  .pn { position: absolute; left: 20px; right: 20px; top: 46px; bottom: 16px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px #dcdcd8, 0 10px 24px -16px rgba(0, 0, 0, .25); }
+  .t { display: block; padding: 16px 16px 0; font-weight: 500; font-size: 15px; }
+  .d { display: block; padding: 6px 16px 18px; font-size: 13.5px; color: #6a6a66; }
+
+  /* after state: hover, keyboard focus, or .on (touch, once in view) */
+  .fx:is(:hover, :focus-visible, .on) .lb { background: #111; box-shadow: none; }
+  .fx:is(:hover, :focus-visible, .on) .lb i:first-child { transform: translateY(-120%); opacity: 0; }
+  .fx:is(:hover, :focus-visible, .on) .lb i + i { transform: none; opacity: 1; }
+  .fx:is(:hover, :focus-visible, .on) .hint { opacity: 0; }
+
+  /* 1. same weight -> one hero number */
+  .tl { position: absolute; border-radius: 3px; background: #f2f2f0; padding: 8px 9px; transition: all .5s var(--e); }
+  .tl s { display: block; width: 46px; height: 5px; border-radius: 2px; background: #d6d6d2; text-decoration: none; transition: all .5s var(--e); }
+  .tl em { display: block; margin-top: 7px; font: 400 20px var(--m-serif); font-style: normal; color: #8a8a86; line-height: 1; transition: all .5s var(--e); }
+  .a { left: 8px; top: 8px; width: calc(50% - 12px); height: calc(50% - 12px); }
+  .b { left: calc(50% + 4px); top: 8px; width: calc(50% - 12px); height: calc(50% - 12px); }
+  .c { left: 8px; top: calc(50% + 4px); width: calc(50% - 12px); height: calc(50% - 12px); }
+  .e { left: calc(50% + 4px); top: calc(50% + 4px); width: calc(50% - 12px); height: calc(50% - 12px); }
+  .fx:is(:hover, :focus-visible, .on) .c { left: 8px; top: 8px; width: calc(100% - 16px); height: calc(64% - 12px); background: #111; }
+  .fx:is(:hover, :focus-visible, .on) .c s { background: #6a6a66; width: 80px; }
+  .fx:is(:hover, :focus-visible, .on) .c em { font-size: 42px; color: #fff; margin-top: 10px; }
+  .fx:is(:hover, :focus-visible, .on) .a { left: 8px; top: calc(64% + 4px); width: calc(33.3% - 10px); height: calc(36% - 12px); opacity: .55; }
+  .fx:is(:hover, :focus-visible, .on) .b { left: calc(33.3% + 3px); top: calc(64% + 4px); width: calc(33.3% - 10px); height: calc(36% - 12px); opacity: .55; }
+  .fx:is(:hover, :focus-visible, .on) .e { left: calc(66.6% - 2px); top: calc(64% + 4px); width: calc(33.4% - 6px); height: calc(36% - 12px); opacity: .55; }
+  .fx:is(:hover, :focus-visible, .on) :is(.a, .b, .e) em { font-size: 14px; margin-top: 5px; }
+
+  /* 2. numbers without context -> change, trend, limit */
+  .w-context .pn { padding: 12px 16px; }
+  .k { font-size: 11px; color: #8a8a86; }
+  .num { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; }
+  .num em { font: 400 34px var(--m-serif); font-style: normal; line-height: 1; color: #111; }
+  .ch { padding: 3px 7px; border-radius: 2px; background: #e6f6ec; color: #16884a; font-size: 11.5px; font-weight: 500; opacity: 0; transform: translateY(8px); transition: all .45s var(--e) .1s; }
+  .w-context svg { display: block; width: 100%; height: 28px; margin-top: 6px; }
+  .w-context path { fill: none; stroke: #111; stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s var(--e) .15s; }
+  .lim { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: #8a8a86; opacity: 0; transition: opacity .4s .3s; }
+  .bar { height: 6px; margin-top: 5px; border-radius: 3px; background: #ececea; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: #111; transition: width .9s var(--e) .3s; }
+  .fx:is(:hover, :focus-visible, .on) .ch { opacity: 1; transform: none; }
+  .fx:is(:hover, :focus-visible, .on) path { stroke-dashoffset: 0; }
+  .fx:is(:hover, :focus-visible, .on) .lim { opacity: 1; }
+  .fx:is(:hover, :focus-visible, .on) .bar i { width: 78%; }
+
+  /* 3. empty first screen -> one first action */
+  .zs { position: absolute; inset: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; transition: all .45s var(--e); }
+  .zs i { border-radius: 3px; background: #f6f6f4; display: grid; place-items: center; font: 400 22px var(--m-serif); font-style: normal; color: #c8c8c4; }
+  .es { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transform: translateY(10px); transition: all .5s var(--e) .15s; }
+  .ic { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #111; display: grid; place-items: center; }
+  .es b { margin-top: 8px; font-size: 12.5px; font-weight: 500; }
+  .es small { font-size: 11px; color: #8a8a86; }
+  .go { margin-top: 10px; height: 28px; padding: 0 12px; border-radius: 3px; background: #111; color: #fff; font-size: 11.5px; font-weight: 500; display: flex; align-items: center; box-shadow: 2px 2px 0 #c8c8c4; transition: transform .15s .9s, box-shadow .15s .9s; }
+  .cur { position: absolute; right: 86px; bottom: 14px; opacity: 0; transform: translate(30px, 26px); transition: all .6s var(--e) .35s; }
+  .fx:is(:hover, :focus-visible, .on) .zs { opacity: 0; transform: scale(.94); filter: blur(2px); }
+  .fx:is(:hover, :focus-visible, .on) .es { opacity: 1; transform: none; }
+  .fx:is(:hover, :focus-visible, .on) .go { transform: translate(2px, 2px); box-shadow: 0 0 0 #c8c8c4; }
+  .fx:is(:hover, :focus-visible, .on) .cur { opacity: 1; transform: none; }
+
+  @media (hover: none) { .hint { display: none; } .fx:hover { transform: none; box-shadow: inset 0 0 0 1px #dcdcd8; } }
+  @media (prefers-reduced-motion: reduce) { .fx, .fx * { transition: none !important; } }
+</style>
