@@ -1,6 +1,6 @@
 ---
-// Footer, option FT4 "Pixel wave" from the canvas: brand block, four link columns, a pixel FACKT wordmark
-// that a wave ripples through every few seconds (CSS only, off for reduced motion), then one quiet bottom row.
+// Footer: brand block, four link columns, the interactive pixel FACKT field (src/scripts/footerPixels.ts),
+// then one quiet bottom row.
 import Mark from './home/Mark.astro';
 import { site } from '../data/site';
 import { homeSettings } from '../data/settings';
@@ -41,27 +41,6 @@ const cols: { title: string; links: L[] }[] = [
   ] },
 ];
 
-// Pixel wordmark: 5x7 letters, one blank column between letters.
-const FONT: Record<string, string[]> = {
-  F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
-  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
-  C: ['01111', '10000', '10000', '10000', '10000', '10000', '01111'],
-  K: ['10001', '10010', '10100', '11000', '10100', '10010', '10001'],
-  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
-};
-function field(cols: number, rows: number, x0: number, y0: number) {
-  const on = new Set<string>();
-  let x = x0;
-  for (const ch of 'FACKT') {
-    FONT[ch].forEach((line, r) => [...line].forEach((v, c) => { if (v === '1') on.add(`${x + c},${y0 + r}`); }));
-    x += 6;
-  }
-  const cells: { on: boolean; d: string }[] = [];
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push({ on: on.has(`${c},${r}`), d: `${((c + r * 1.8) * 0.045).toFixed(3)}s` });
-  return cells;
-}
-const wide = field(40, 9, 5, 1);
-const narrow = field(31, 9, 1, 1);
 const FIG = '<svg width="8" height="12" viewBox="0 0 38 57" aria-hidden="true"><path fill="currentColor" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0zM0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0zM19 0v19h9.5a9.5 9.5 0 1 0 0-19H19zM0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5zM0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>';
 ---
 <footer class="ft">
@@ -85,8 +64,7 @@ const FIG = '<svg width="8" height="12" viewBox="0 0 38 57" aria-hidden="true"><
     </nav>
   </div>
 
-  <div class="px px-w" aria-hidden="true">{wide.map((c) => <i class={c.on ? 'on' : undefined} style={`animation-delay:${c.d}`}></i>)}</div>
-  <div class="px px-n" aria-hidden="true">{narrow.map((c) => <i class={c.on ? 'on' : undefined} style={`animation-delay:${c.d}`}></i>)}</div>
+  <canvas class="px" data-ft-px aria-hidden="true"></canvas>
 
   <div class="btm">
     <span class="so">{site.socials.map((s) => <a href={s.href} rel="noopener">{s.label}</a>)}</span>
@@ -115,13 +93,8 @@ const FIG = '<svg width="8" height="12" viewBox="0 0 38 57" aria-hidden="true"><
   .col a :global(svg) { vertical-align: -1px; margin-right: 4px; }
   .ch { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; margin-bottom: 4px; }
 
-  .px { display: grid; margin-top: 48px; }
-  .px-w { grid-template-columns: repeat(40, minmax(0, 1fr)); }
-  .px-n { display: none; grid-template-columns: repeat(31, minmax(0, 1fr)); }
-  .px i { display: block; aspect-ratio: 1; border-radius: 1px; background: #c8c8c4; transform: scale(.18); animation: pw 5.5s ease-in-out infinite; }
-  .px i.on { background: #111; transform: scale(.86); animation-name: pwo; }
-  @keyframes pw { 0%, 16%, 100% { transform: scale(.18); } 7% { transform: scale(.62); background: #8a8a86; } }
-  @keyframes pwo { 0%, 16%, 100% { transform: scale(.86); } 7% { transform: scale(1) rotate(45deg); } }
+  .px { display: block; width: 100%; height: calc((100vw - 32px) / 31 * 9); max-height: 216px; margin-top: 48px; touch-action: pan-y; cursor: crosshair; }
+  @media (min-width: 560px) { .px { height: calc(min(960px, 100vw - 32px) / 40 * 9); } }
 
   .btm { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 36px; padding-top: 18px; border-top: 1px solid #ececea; font-size: 12.5px; color: #8a8a86; }
   .so, .lg { display: inline-flex; gap: 16px; flex-wrap: wrap; }
@@ -138,11 +111,11 @@ const FIG = '<svg width="8" height="12" viewBox="0 0 38 57" aria-hidden="true"><
     .ft { padding: 40px 0 28px; }
     .cols { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
     .px { margin-top: 36px; }
-    .px-w { display: none; }
-    .px-n { display: grid; }
     .btm { flex-direction: column; align-items: flex-start; gap: 12px; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .px i { animation: none; }
-  }
 </style>
+
+<script>
+  import { initFooterPixels } from '../scripts/footerPixels';
+  document.querySelectorAll<HTMLCanvasElement>('[data-ft-px]').forEach((c) => initFooterPixels(c));
+</script>

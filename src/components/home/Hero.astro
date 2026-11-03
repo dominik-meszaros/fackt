@@ -11,6 +11,8 @@ interface Quote { name: string; role: string; quote: string; photo?: string; lin
 interface Props { stage: Project[]; cats: string[]; all: Project[]; quotes: Quote[]; variant?: 'a' | 'b' | 'c'; title?: string; muted?: string; text?: string; chips?: boolean }
 const { stage, cats, all, quotes, variant = 'a', chips: showChips = true } = Astro.props;
 const lean = variant !== 'a';
+// The live homepage plays the showreel in the stage (public/uploads/reel). Logic in src/scripts/hero.ts.
+const reel = variant === 'a';
 // Label for a quote's public source link: "View on X", "View on Contra"...
 const srcLabel = (u?: string) => !u ? 'View source' : /x\.com|twitter\.com/.test(u) ? 'View on X' : /linkedin\./.test(u) ? 'View on LinkedIn' : /contra\./.test(u) ? 'View on Contra' : 'View source';
 const h = homeSettings;
@@ -64,13 +66,20 @@ const index = {
   )}
 
   {variant !== 'c' && <>
-  <div class="stage" id="stage">
-    <a class="tagl" href={`/work/${stage[0]?.slug}`} data-stage-link><span data-stage-label>{stage[0]?.name}, {stage[0]?.service}</span><b>View case study &#8594;</b></a>
-    <span class="tagr" data-stage-idx>01 / {pad(stage.filter((s) => s.cat === 0).length)}</span>
+  <div class:list={['stage', { 'has-reel reel-on': reel }]} id="stage">
+    {reel
+      ? <a class="tagl" href="/work" data-stage-link><span data-stage-label>Fackt showreel</span><b data-stage-cta>View all work &#8594;</b></a>
+      : <a class="tagl" href={`/work/${stage[0]?.slug}`} data-stage-link><span data-stage-label>{stage[0]?.name}, {stage[0]?.service}</span><b data-stage-cta>View case study &#8594;</b></a>}
+    <span class="tagr" data-stage-idx>{reel ? '0:00 / 0:24' : `01 / ${pad(stage.filter((s) => s.cat === 0).length)}`}</span>
+    {reel && <button type="button" class="rb" data-reel-btn hidden>Replay</button>}
+    {reel && <div class="reel" data-reel>
+      <video muted playsinline preload="none" disablepictureinpicture poster="/uploads/reel/reel-start.webp" aria-label="Fackt showreel: our case studies in motion" data-reel-video></video>
+      <div class="rwall" data-reel-wall hidden></div>
+    </div>}
     {stage.map((p, i) => (
       <a href={`/work/${p.slug}`} class:list={['shot', { ph: p.imageKind === 'phone' && !p.stageImage, bleed: !!p.stageImage, on: i === 0 }]} data-slug={p.slug} data-i={i}
         tabindex={i === 0 ? 0 : -1} aria-hidden={i === 0 ? undefined : 'true'}>
-        {i === 0
+        {i === 0 && !reel
           ? <img src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} width="2240" height="1120" loading="eager" fetchpriority="high" decoding="async" />
           : <img data-src={p.stageImage ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} width="2240" height="1120" decoding="async" />}
       </a>
@@ -164,6 +173,21 @@ const index = {
   .tagl:hover { box-shadow: inset 0 0 0 1px #111, 2px 2px 0 #111; }
   .tagr { right: 24px; color: #6a6a66; }
 
+  /* showreel: plays once, then rests on the wall of case studies, each tile a link */
+  .reel { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; transition: opacity .5s; background: #fff; }
+  .reel video { display: block; width: 100%; height: 100%; object-fit: cover; background: #fff; }
+  .stage.reel-on .reel { opacity: 1; pointer-events: auto; }
+  .stage.reel-on .shot { opacity: 0; pointer-events: none; }
+  .stage.reel-on::after { opacity: 0; }
+  .stage.has-reel::after { transition: opacity .5s; }
+  .rwall { position: absolute; inset: 0; }
+  .rwall[hidden] { display: none; }
+  .rwall :global(a) { position: absolute; border-radius: 3px; transition: box-shadow .2s; }
+  .rwall :global(a:hover), .rwall :global(a:focus-visible) { outline: none; box-shadow: 0 0 0 2px #111, 3px 3px 0 2px #111; }
+  .rb { all: unset; position: absolute; top: 20px; right: 24px; z-index: 2; cursor: pointer; font-size: 12.5px; font-weight: 500; color: #111; background: #fff; padding: 4px 9px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .2s; }
+  .rb:hover, .rb:focus-visible { box-shadow: inset 0 0 0 1px #111, 2px 2px 0 #111; }
+  .rb[hidden] { display: none; }
+
   .ask { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3; width: min(640px, 100% - 24px); text-align: left; }
   .askbar { position: relative; height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px #c8c8c4, 0 1px 2px rgba(0, 0, 0, .06), 0 12px 28px -14px rgba(0, 0, 0, .22); color: #111; }
   .fld { position: relative; flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; }
@@ -235,7 +259,11 @@ const index = {
     .shot { width: calc(100% - 28px); top: 52px; }
     .shot.ph { width: 122px; top: 48px; }
     .shot.ph img { border-radius: 20px; }
-    .tagl, .tagr { top: 12px; font-size: 11.5px; padding: 3px 7px; }
+    .tagl, .tagr, .rb { top: 12px; font-size: 11.5px; padding: 3px 7px; }
+    .rb { right: 12px; }
+    .has-reel .tagl b { display: none; }
+    .has-reel .tagl { max-width: calc(100% - 110px); }
+    .has-reel .tagl span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tagl { left: 12px; gap: 8px; } .tagr { right: 12px; }
     .tagl b { padding-left: 8px; }
     .like { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 360px; gap: 6px; margin-top: 14px; }

@@ -64,6 +64,7 @@ export function initHero() {
   function show(slug: string) {
     const i = data.stage.findIndex((s) => s.slug === slug);
     if (i < 0) return false;
+    reel?.exit();
     showSlide(i); restart();
     return true;
   }
@@ -80,8 +81,9 @@ export function initHero() {
     timer = window.setInterval(() => { if (!stage?.matches(':hover') && document.activeElement?.id !== 'ask') { showSlide(cur + 1); kick(); } }, MS);
   }
   chipRow?.style.setProperty('--stage-ms', MS + 'ms');
-  chips.forEach((c) => c.addEventListener('click', () => { showSlide(data.stage.findIndex((s) => s.cat === Number(c.dataset.chip))); restart(); }));
-  restart();
+  chips.forEach((c) => c.addEventListener('click', () => { reel?.exit(); showSlide(data.stage.findIndex((s) => s.cat === Number(c.dataset.chip))); restart(); }));
+  const reel = initReel(data, chips, chipRow, () => clearInterval(timer));
+  if (!reel) restart();
   // Warm the next slide once the page has finished loading, so the first switch is instant.
   if (document.readyState === 'complete') load(1); else window.addEventListener('load', () => load(1), { once: true });
 
@@ -302,6 +304,123 @@ export function initHero() {
     quiet.forEach((el) => io.observe(el));
   }
   void stage;
+}
+
+// ---------- showreel ----------
+// The live homepage stage plays the reel once (muted, only while in view), keeps the stage label,
+// case study link and category chip in step with what is on screen, then rests on its last frame:
+// the wall of all case studies, where every tile is a link. A chip or the ask bar switches back to
+// the image slides; the button on the right plays the reel again.
+const REEL_END = 24.35;
+const CHAPTERS: [number, string][] = [
+  [0, ''], [1.83, 'firecut'], [6.45, 'polar'], [9.2, 'communi-mobile'], [10.82, 'communi'], [11.5, 'floxy-brand'],
+  [12.9, 'floxy'], [14.0, 'promote'], [15.3, 'promote-app'], [16.5, 'nation'], [19.5, 'kindscore'], [21, 'glowtify'],
+  [21.333, 'viewmax'], [21.667, 'zums'], [22, 'tradox'], [22.333, 'story-story'], [22.667, 'earntask'], [23.1, ''],
+];
+// Tiles on the last frame, in the 1920 x 960 video: 6 x 3 grid, 48 padding, 12 gap, pushed in by 1.6667%.
+const WALL = ['firecut', 'polar', 'communi', 'communi-mobile', 'floxy', 'floxy-brand', 'promote', 'promote-app', 'glowtify',
+  'viewmax', 'zums', 'earntask', 'tradox', 'story-story', 'kindscore', 'deaflingo', 'nation'];
+const wallRect = (k: number) => {
+  const r = Math.floor(k / 6), c = k % 6, tw = 294, th = 280, wp = 1 + 0.025 * (2 / 3);
+  const x = 48 + c * (tw + 12), y = 48 + r * (th + 12);
+  return [960 + (x - 960) * wp, 480 + (y - 480) * wp, tw * wp, th * wp];
+};
+const clock = (t: number) => `0:${String(Math.floor(t)).padStart(2, '0')}`;
+
+function initReel(data: Index, chips: HTMLButtonElement[], chipRow: HTMLElement | null, stopSlides: () => void) {
+  const stage = document.getElementById('stage');
+  const video = stage?.querySelector<HTMLVideoElement>('[data-reel-video]');
+  const wall = stage?.querySelector<HTMLElement>('[data-reel-wall]');
+  const btn = stage?.querySelector<HTMLButtonElement>('[data-reel-btn]');
+  if (!stage || !video || !wall || !btn) return null;
+  const label = stage.querySelector<HTMLElement>('[data-stage-label]');
+  const cta = stage.querySelector<HTMLElement>('[data-stage-cta]');
+  const link = stage.querySelector<HTMLAnchorElement>('[data-stage-link]');
+  const idx = stage.querySelector<HTMLElement>('[data-stage-idx]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phone = matchMedia('(max-width: 720px)').matches;
+  const byslug = (s: string) => data.projects.find((p) => p.slug === s);
+  let on = true, ended = false, inView = false, chapter = -1, raf = 0, loaded = false;
+
+  // wall links, placed over the video with the same cover crop the video gets
+  WALL.forEach((slug, k) => {
+    const p = byslug(slug); if (!p) return;
+    const a = document.createElement('a');
+    a.href = `/work/${slug}`; a.dataset.k = String(k);
+    a.setAttribute('aria-label', `${p.name}, ${p.service}`); a.title = p.name;
+    wall.appendChild(a);
+  });
+  const place = () => {
+    const w = video.clientWidth, h = video.clientHeight, s = Math.max(w / 1920, h / 960);
+    const ox = (w - 1920 * s) / 2, oy = (h - 960 * s) / 2;
+    wall.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => {
+      const [x, y, rw, rh] = wallRect(Number(a.dataset.k));
+      Object.assign(a.style, { left: ox + x * s + 'px', top: oy + y * s + 'px', width: rw * s + 'px', height: rh * s + 'px' });
+    });
+  };
+  new ResizeObserver(place).observe(video);
+
+  function setChapter(t: number) {
+    let i = 0; while (i + 1 < CHAPTERS.length && t >= CHAPTERS[i + 1][0]) i++;
+    if (idx) idx.textContent = `${clock(Math.min(t, REEL_END))} / ${clock(REEL_END)}`;
+    if (i === chapter) return;
+    chapter = i;
+    const p = CHAPTERS[i][1] ? byslug(CHAPTERS[i][1]) : undefined;
+    if (label) label.textContent = p ? `${p.name}, ${p.service}` : i === 0 ? 'Fackt showreel' : `${WALL.length} case studies`;
+    if (cta) cta.textContent = p ? 'View case study →' : 'View all work →';
+    if (link) link.href = p ? `/work/${p.slug}` : '/work';
+    const cat = p ? data.stage.find((s) => s.slug === p.slug)?.cat : undefined;
+    chips.forEach((c) => { const m = Number(c.dataset.chip) === cat; c.classList.toggle('on', m); c.setAttribute('aria-pressed', String(m)); });
+  }
+  const tick = () => { setChapter(video.currentTime); raf = on && !video.paused ? requestAnimationFrame(tick) : 0; };
+
+  function src() {
+    if (loaded) return;
+    loaded = true;
+    video.src = phone ? '/uploads/reel/reel-m.mp4' : '/uploads/reel/reel.mp4';
+    video.preload = 'auto';
+  }
+  function showEnd() {
+    ended = true;
+    video.poster = '/uploads/reel/reel-end.webp';
+    if (loaded && video.currentTime < REEL_END - 0.2) { try { video.currentTime = REEL_END; } catch { /* poster shows instead */ } }
+    wall.hidden = false; place();
+    setChapter(REEL_END);
+    btn.textContent = reduce && !loaded ? 'Play reel' : 'Replay';
+    btn.hidden = false; if (idx) idx.hidden = true;
+  }
+  function play() {
+    if (!on || ended || !inView) return;
+    src();
+    video.play().then(() => { if (!raf) raf = requestAnimationFrame(tick); }).catch(() => { if (video.currentTime < 0.05) showEnd(); });
+  }
+  video.addEventListener('ended', showEnd);
+  btn.addEventListener('click', () => { enter(); });
+
+  function enter() {
+    stopSlides();
+    on = true; ended = false; chapter = -1;
+    chipRow?.classList.remove('auto');
+    stage!.classList.add('reel-on');
+    wall.hidden = true; btn.hidden = true; if (idx) idx.hidden = false;
+    src();
+    try { video.currentTime = 0; } catch { /* not loaded yet */ }
+    setChapter(0);
+    inView = true; play();
+  }
+  function exit() {
+    if (!on) return;
+    on = false; video.pause(); cancelAnimationFrame(raf); raf = 0;
+    stage!.classList.remove('reel-on');
+    if (cta) cta.textContent = 'View case study →';
+    wall.hidden = true; if (idx) idx.hidden = true;
+    btn.textContent = 'Play reel'; btn.hidden = false;
+  }
+
+  setChapter(0);
+  if (reduce) showEnd();
+  else new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) play(); else if (!video.paused) video.pause(); }, { threshold: 0.35 }).observe(stage);
+  return { exit };
 }
 
 function initQuotes() {
