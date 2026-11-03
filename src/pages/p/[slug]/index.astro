@@ -14,7 +14,9 @@ const { entry } = Astro.props;
 const r = entry.data;
 const price = new Intl.NumberFormat('en-US', { style: 'currency', currency: r.currency, maximumFractionDigits: 0 }).format(r.price);
 const live = Boolean(r.checkoutUrl);
-const free = r.freeSlug ? `/free/${r.freeSlug}` : '';
+// Only link the free sample once its page is live (draft off in src/content/free/<slug>.md).
+const freeEntry = r.freeSlug ? (await getCollection('free')).find((f) => f.id === r.freeSlug && !f.data.draft) : undefined;
+const free = freeEntry ? `/free/${freeEntry.id}` : '';
 const ld = [{
   '@context': 'https://schema.org', '@type': 'Product', name: r.title, description: r.description,
   image: new URL(r.cover, 'https://fackt.io').toString(), brand: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' },
