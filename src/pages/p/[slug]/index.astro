@@ -52,7 +52,7 @@ const ld = [{
     {r.gallery.length > 0 && (
       <section class="gal" aria-label="Screens">
         {r.gallery.map((g, i) => (
-          <figure class={i === 0 ? 'wide' : ''}>
+          <figure class={i === 0 || g.wide ? 'wide' : ''}>
             <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
             {g.caption && <figcaption>{g.caption}</figcaption>}
           </figure>

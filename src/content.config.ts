@@ -135,7 +135,7 @@ const products = defineCollection({
     currency: z.string().default('USD'),
     checkoutUrl: z.string().default(''),
     cover: z.string(),
-    gallery: z.array(z.object({ src: z.string(), alt: z.string(), caption: z.string().default('') })).default([]),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string(), caption: z.string().default(''), wide: z.boolean().default(false) })).default([]),
     inside: z.array(z.string()).default([]),
     forWho: z.array(z.string()).default([]),
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),

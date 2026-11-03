@@ -1,8 +1,8 @@
 ---
 title: "Relay CRM UI kit"
 headline: "Relay, a complete SaaS CRM in Figma"
-lede: "The product from the video. 15 screens, the onboarding, every empty and error state, light and dark mode, all built on variables. Duplicate it and start from a finished product instead of a blank canvas."
-description: "Relay is a complete SaaS CRM UI kit for Figma: dashboard, pipeline, contacts, deals, inbox, tasks, calendar, reports, onboarding and a full states sheet, built on variables with light and dark mode."
+lede: "The product from the video, on desktop and mobile. 15 desktop screens, 22 mobile screens, the onboarding, every empty and error state, light and dark mode, all built on variables. Duplicate it and start from a finished product instead of a blank canvas."
+description: "Relay is a complete SaaS CRM UI kit for Figma, desktop and mobile: dashboard, pipeline, contacts, deals, inbox, tasks, calendar, reports, onboarding and every state, built on variables with light and dark mode."
 price: 49
 checkoutUrl: "https://buy.polar.sh/polar_cl_JLPGF75tYNG0pWlRT0rILnmzMTf6JP5ZNbb8Y3nP4wJ"
 cover: /uploads/products/relay/cover.webp
@@ -10,6 +10,10 @@ gallery:
   - src: /uploads/products/relay/dashboard.webp
     alt: "Relay dashboard with revenue, pipeline value by stage and tasks due today"
     caption: "Dashboard. The screen people live in: pipeline value by stage, revenue by month, what is due today."
+  - src: /uploads/products/relay/mobile.webp
+    alt: "Relay on mobile: dashboard, pipeline, deal detail and an inbox thread"
+    caption: "Mobile. 22 screens at 390 wide, from the dashboard to a deal to a conversation, plus the mobile onboarding and states."
+    wide: true
   - src: /uploads/products/relay/pipeline.webp
     alt: "Relay pipeline board with deals in Lead, Qualified, Proposal, Negotiation and Won columns"
     caption: "Pipeline. Every deal is a folder, every stage a column, with totals per stage."
@@ -26,7 +30,9 @@ gallery:
     alt: "Relay dashboard in dark mode"
     caption: "Dark mode. Every color is a variable, so switching modes is one click."
 inside:
-  - "15 product screens: dashboard, pipeline, contacts, contact detail, deal detail, companies, inbox, tasks, calendar, reports, settings"
+  - "15 desktop screens: dashboard, pipeline, contacts, contact detail, deal detail, companies, inbox, tasks, calendar, reports, settings"
+  - "22 mobile screens at 390 wide, including the mobile onboarding, an inbox thread, a More menu and five mobile states"
+  - "Mobile components: tab bar, headers, list rows and status bar, built on the same variables"
   - "3 onboarding screens: name the workspace, bring in contacts, set up the pipeline"
   - "A states sheet: empty, no results, loading, import failed, confirmations, toasts"
   - "Foundations: color, type, spacing and radius as Figma variables, light and dark mode"
