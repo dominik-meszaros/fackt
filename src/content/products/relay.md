@@ -1,8 +1,8 @@
 ---
 title: "Relay CRM UI kit"
 headline: "Relay, a complete SaaS CRM in Figma"
-lede: "The product from the video, on desktop and mobile. 15 desktop screens, 22 mobile screens, the onboarding, every empty and error state, light and dark mode, all built on variables. Duplicate it and start from a finished product instead of a blank canvas."
-description: "Relay is a complete SaaS CRM UI kit for Figma, desktop and mobile: dashboard, pipeline, contacts, deals, inbox, tasks, calendar, reports, onboarding and every state, built on variables with light and dark mode."
+lede: "The product from the video, on desktop and mobile. 19 desktop screens, 26 mobile screens, billing, team and notification settings, 5 product emails, every empty and error state, light and dark mode, all built on variables. Duplicate it and start from a finished product instead of a blank canvas."
+description: "Relay is a complete SaaS CRM UI kit for Figma, desktop and mobile: dashboard, pipeline, contacts, deals, inbox, tasks, calendar, reports, billing, members, integrations, onboarding, product emails and every state, built on variables with light and dark mode."
 price: 49
 checkoutUrl: "https://buy.polar.sh/polar_cl_JLPGF75tYNG0pWlRT0rILnmzMTf6JP5ZNbb8Y3nP4wJ"
 cover: /uploads/products/relay/cover.webp
@@ -12,7 +12,7 @@ gallery:
     caption: "Dashboard. The screen people live in: pipeline value by stage, revenue by month, what is due today."
   - src: /uploads/products/relay/mobile.webp
     alt: "Relay on mobile: dashboard, pipeline, deal detail and an inbox thread"
-    caption: "Mobile. 22 screens at 390 wide, from the dashboard to a deal to a conversation, plus the mobile onboarding and states."
+    caption: "Mobile. 26 screens at 390 wide, from the dashboard to a deal to a conversation, plus the mobile onboarding, settings and states."
     wide: true
   - src: /uploads/products/relay/pipeline.webp
     alt: "Relay pipeline board with deals in Lead, Qualified, Proposal, Negotiation and Won columns"
@@ -23,6 +23,13 @@ gallery:
   - src: /uploads/products/relay/contact.webp
     alt: "Relay contact detail page with activity timeline, deals and next step"
     caption: "Contact detail. Activity, open deals and the next step on one page."
+  - src: /uploads/products/relay/settings.webp
+    alt: "Relay billing settings with plan cards, usage, payment method and invoices"
+    caption: "Billing, members, integrations, notifications. The settings every SaaS needs and nobody wants to design."
+  - src: /uploads/products/relay/emails.webp
+    alt: "Relay welcome, weekly digest and trial ending emails"
+    caption: "Emails. Welcome, invite, weekly digest, password reset and trial ending, 600 wide and built on the same variables."
+    wide: true
   - src: /uploads/products/relay/states.webp
     alt: "Relay states sheet with empty pipeline, no search results, loading, import failed and confirmation states"
     caption: "States. Empty, no results, loading, failed import, confirmations and toasts. The part most kits skip."
@@ -30,8 +37,10 @@ gallery:
     alt: "Relay dashboard in dark mode"
     caption: "Dark mode. Every color is a variable, so switching modes is one click."
 inside:
-  - "15 desktop screens: dashboard, pipeline, contacts, contact detail, deal detail, companies, inbox, tasks, calendar, reports, settings"
-  - "22 mobile screens at 390 wide, including the mobile onboarding, an inbox thread, a More menu and five mobile states"
+  - "19 desktop screens: dashboard, pipeline, contacts, contact detail, deal detail, companies, inbox, tasks, calendar, reports, settings"
+  - "SaaS settings on desktop and mobile: billing and plans, members and invites, integrations, notifications"
+  - "5 product emails: welcome, invite a teammate, weekly digest, password reset, trial ending"
+  - "26 mobile screens at 390 wide, including the mobile onboarding, an inbox thread, a More menu and five mobile states"
   - "Mobile components: tab bar, headers, list rows and status bar, built on the same variables"
   - "3 onboarding screens: name the workspace, bring in contacts, set up the pipeline"
   - "A states sheet: empty, no results, loading, import failed, confirmations, toasts"
