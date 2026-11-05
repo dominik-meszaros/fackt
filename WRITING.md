@@ -1,5 +1,14 @@
 # Writing for fackt.io
 
+## Positioning (from November 2026)
+
+Fackt helps SaaS and AI products grow, using product thinking and design. Design is the tool, growth is the promise: more signups, activation and retention, not just nicer screens.
+
+- Headline everywhere: "We help SaaS products grow." Support line: "Product thinking and design for founders who need more signups, activation and retention, not just nicer screens."
+- Lead with the business problem (users drop off, trials do not convert, nobody understands the product), then the design that fixes it.
+- Service names stay (Product design, Web design and development, Motion design, Visual branding) because people search for them; their descriptions lead with the outcome.
+- Proof is real work only: FireCut's 100 cancellation reasons, Shredder's onboarding and paywall rounds, Promote's reported numbers. Never invent growth numbers.
+
 ## The golden rule
 
 Every blog note and every piece of site copy must be so valuable that after reading a few paragraphs, a founder has no reason not to book a call, and thinks: "wow, that makes sense."

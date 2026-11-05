@@ -8,7 +8,7 @@ const { short = false, lean = false } = Astro.props;
 const icon = (slug: string) => ((sketch.services as Record<string, string>)[slug] ?? '').replace('class="sk"', 'class="si"');
 ---
 <section class="m-sec" id="services">
-  <SectionHead icon="design" title="What we design" lede={lean ? undefined : "One studio from first flow to final pixel."} />
+  <SectionHead icon="design" title="How we help you grow" lede={lean ? undefined : "Product thinking first, then the design that ships it."} />
   <div class="svcs">
     {services.map((s) => (
       <a class="svc" href={`/services/${s.slug}`}>

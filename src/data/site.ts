@@ -4,9 +4,9 @@
 export const site = {
   name: 'Fackt',
   url: 'https://fackt.io',
-  title: 'Fackt: SaaS product design and UI/UX studio',
+  title: 'Fackt: product design that helps SaaS products grow',
   description:
-    'Independent SaaS product design studio. We design products, dashboards and mobile apps, and build Framer, Webflow and code websites. Start with a free audit.',
+    'Fackt helps SaaS and AI products grow with product thinking and design: audits, product redesigns, websites and brands for signups, activation and retention.',
   email: 'dominik@fackt.io',
   booking: 'https://cal.com/fackt/30min',
   // Expert badges in the footer. Add each profile link once you have it (empty = badge shows without a link).
@@ -42,34 +42,34 @@ export const clients = [
 export const services = [
   {
     title: 'Product Design',
-    short: 'Clear interfaces for complex SaaS and AI products.',
+    short: 'Fix what loses users: onboarding, flows and dashboards.',
     slug: 'product-design',
     shape: 'a',
-    text: 'We turn complex problems into simple, beautiful interfaces. From early concept to a product your users love.',
+    text: 'We find where users get stuck or leave, then redesign those flows. From the audit to dev-ready UI.',
     tags: ['UI/UX Design', 'Mobile Apps', 'Desktop Apps', 'Prototypes'],
   },
   {
     title: 'Web Design & Development',
-    short: 'Sites that explain your product, built in Framer or Webflow.',
+    short: 'Sites that turn visitors into signups, in Framer, Webflow or code.',
     slug: 'web-design-development',
     shape: 'b',
-    text: 'From pre-launch landing pages to complete website redesigns, we create experiences that capture attention and inspire action, built in Framer, Webflow or custom code.',
+    text: 'Landing pages and marketing sites that explain your product fast and turn visitors into signups, built in Framer, Webflow or code.',
     tags: ['UI/UX Design', 'Visual Identity', 'No-Code Development', 'Code Development'],
   },
   {
     title: 'Motion Design',
-    short: 'Animation that shows how your product works.',
+    short: 'Motion that sells the product and shows how it works.',
     slug: 'motion-design',
     shape: 'c',
-    text: 'We use animation and interaction to guide attention, communicate state, and make every action feel satisfying.',
+    text: 'Product animation and ads that show what your product does, so people get it before they read a word.',
     tags: ['Interaction Design', '3D Design', 'Web Animation'],
   },
   {
     title: 'Visual Branding',
-    short: 'A visual identity people remember.',
+    short: 'A brand that makes a young product look established.',
     slug: 'visual-branding',
     shape: 'd',
-    text: 'We build the visual language, voice, and feeling that makes you immediately, unmistakably you.',
+    text: 'A visual identity that makes a young product look established and trusted, in the product and outside it.',
     tags: ['Visual Identity', 'Brand Systems'],
   },
 ] as const;

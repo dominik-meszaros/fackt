@@ -28,8 +28,8 @@ export const servicePages: ServicePage[] = [
     seoTitle: 'SaaS Product Design Agency: UI/UX for dashboards | Fackt',
     seoDescription:
       'Product design for SaaS and tech companies: UX audits, user flows, high fidelity UI, design systems, prototypes and mobile apps, handed off ready for development.',
-    headline: 'SaaS product design that users understand and pay for.',
-    lede: 'We design SaaS platforms, dashboards and mobile apps, from the first user flow to dev-ready UI, so your product is easier to adopt and easier to sell.',
+    headline: 'Product design that grows activation and retention.',
+    lede: 'We find where users get stuck or leave, then design the flows, dashboards and mobile apps that fix it, from the first user flow to dev-ready UI.',
     tint: 'blue',
     work: ['communi', 'floxy', 'glowtify', 'promote-app', 'viewmax', 'earntask'],
     deliverables: [
@@ -93,7 +93,7 @@ export const servicePages: ServicePage[] = [
     seoTitle: 'Motion Design for SaaS | Product animation and Rive | Fackt',
     seoDescription:
       'Motion design for SaaS and tech products: product animations, interaction design, interactive Rive assets, web animation and 3D.',
-    headline: 'Motion that explains your product and makes it feel alive.',
+    headline: 'Motion that sells the product and shows how it works.',
     lede: 'We use animation and interaction to guide attention, communicate state, and make every action in your product and on your site feel satisfying.',
     tint: 'lilac',
     work: ['tradox'],
@@ -125,7 +125,7 @@ export const servicePages: ServicePage[] = [
     seoTitle: 'Brand Identity Design for Tech Startups | Fackt',
     seoDescription:
       'Visual branding for SaaS, AI and tech startups: logo and wordmark, visual identity, brand systems and guidelines that carry into your product and website.',
-    headline: 'Brand identities for tech products and startups.',
+    headline: 'Brand identities that make young tech products look established.',
     lede: 'We build the visual language, voice and feeling that makes you immediately recognisable, and make sure it works inside your product, not just on a logo sheet.',
     tint: 'mint',
     work: ['promote', 'floxy-brand'],

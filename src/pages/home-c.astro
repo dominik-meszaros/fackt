@@ -34,13 +34,13 @@ import { homeSettings } from '../data/settings';
 const faqLd = (homeSettings.ask as any[]).filter((a) => a.type === 'answer' && a.answer);
 const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqLd.map((a) => ({ '@type': 'Question', name: a.question, acceptedAnswer: { '@type': 'Answer', text: a.answer } })) }] : [];
 ---
-<Base title="Fackt: product design for SaaS and AI startups" noindex lcp={featured[0]?.preview ?? featured[0]?.image}>
+<Base title="Fackt: we help SaaS products grow with design" noindex lcp={featured[0]?.preview ?? featured[0]?.image}>
   <div class="m-page">
     <SketchDefs />
     <Nav />
     <main>
       <Hero variant="c" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
-        title="Product design for SaaS and AI startups." text="For founders whose product is good but hard to explain. We design the product, the website and the brand, so people get it in seconds." />
+        title="We help SaaS products grow." text="For founders whose product is good but not growing. We find where users drop off, then design the fix: product, website or brand." />
       <Work projects={featured} total={all.length} resultChips />
       <ProofRow variant="c" />
       <Step />

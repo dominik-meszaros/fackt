@@ -15,7 +15,7 @@ export async function GET() {
 
 > ${site.description}
 
-Fackt is a product design studio founded by Dominik Mészáros (Dom), based in ${site.location} and working with clients worldwide. It designs SaaS products, dashboards, mobile apps and websites for founders and teams, and builds websites in Framer, Webflow or code. Contact: ${site.email}.
+Fackt helps SaaS and AI products grow with product thinking and design. It was founded by Dominik Mészáros (Dom), based in ${site.location} and working with clients worldwide. It designs SaaS products, dashboards, mobile apps and websites for founders and teams, and builds websites in Framer, Webflow or code. Contact: ${site.email}.
 
 ## Key facts
 
