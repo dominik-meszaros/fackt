@@ -3,6 +3,7 @@
 import { getCollection } from 'astro:content';
 import { site } from '../data/site';
 import { servicePages } from '../data/servicePages';
+import { niches } from '../data/niches';
 import { publishedPosts } from '../data/blog';
 import auditJson from '../content/settings/audit.json';
 
@@ -28,6 +29,11 @@ Fackt helps SaaS and AI products grow with product thinking and design. It was f
 ## Services
 
 ${servicePages.map((s) => `- [${s.seoTitle.split("|")[0].trim()}](${u(`/services/${s.slug}`)}): ${s.seoDescription}`).join('\n')}
+${niches.map((n) => `- [${n.seoTitle.split('|')[0].trim()}](${u(`/${n.slug}`)}): ${n.seoDescription}`).join('\n')}
+
+## Free tools
+
+- [App Store screenshot sizes (2026)](${u('/tools/app-store-screenshot-sizes')}): every iPhone and iPad screenshot size, required sizes marked, with one tap copy.
 
 ## Case studies
 

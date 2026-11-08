@@ -3,6 +3,7 @@ name: Shredder
 service: Brand and mobile app design
 category: mobile
 summary: A social app for skiers and snowboarders, designed across two eras, from a logo sketch and a mascot to a relaunch as a dating app.
+seoTitle: "Social app design for skiers and snowboarders | Shredder"
 keywords: [shredder, ski app, snowboard, mobile app, ios, dating app, social app, mascot, brand identity, app icon, onboarding, paywall, a/b testing, app store screenshots, rebrand, product design]
 image: /uploads/shredder-01.webp
 preview: /uploads/shredder-preview.webp

@@ -3,6 +3,7 @@ name: TradoxVPS
 service: Web design and motion
 category: web
 summary: A landing page with custom 3D hardware illustrations and Lottie animations for a trading VPS, built to be easy to understand and proven to trust.
+seoTitle: "Trading VPS landing page with 3D and Lottie | Tradox"
 keywords: [website, landing page, web design, vps, trading, hosting, lottie, animation, motion, 3d, dark mode]
 image: /uploads/tradox-screen.webp
 preview: /uploads/tradox-preview.webp

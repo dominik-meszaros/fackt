@@ -3,6 +3,7 @@ name: Dozy
 service: Brand, product design and iOS app
 category: mobile
 summary: Our own sleep tracker and smart alarm for iPhone. We named it, drew the sloth, designed every screen, wrote 28k lines of SwiftUI and shipped it in 20 languages.
+seoTitle: "Sleep tracker app design and SwiftUI build | Dozy"
 keywords: [sleep, sleep tracker, smart alarm, snoring, ios, iphone, app, mascot, illustration, branding, subscription, swiftui, revenuecat, paywall, a/b testing, widgets, localization, alarmkit, posthog, analytics, notifications, gamification]
 image: /uploads/dozy-screen.webp
 preview: /uploads/dozy-preview.webp
@@ -66,7 +67,7 @@ chapters:
     text: |-
       Dozy Pro is $39.99 a year with a 7 day trial or $7.99 a month, sold through RevenueCat. Three paywall layouts ship in the app, each telling a different story about Pro: the night (features), the morning (trial timeline) and Free vs Pro.
 
-      RevenueCat offering metadata decides which one people see, and one remote flag turns the soft paywall into a hard one, so every experiment is a dashboard change, not an App Store update. The layout is sent to RevenueCat as a subscriber attribute and to PostHog on every event, so each purchase is tied to the paywall that sold it.
+      RevenueCat offering metadata decides which one people see, and one remote flag turns the soft paywall into a hard one, so every experiment is a dashboard change, not an App Store update. The layout goes to PostHog on every event and the hard or soft mode to RevenueCat as a subscriber attribute, so each purchase is tied to the paywall that sold it.
     image: /uploads/dozy-cs-paywalls.webp
   - title: The moments that sell
     text: |-

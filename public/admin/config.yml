@@ -176,6 +176,7 @@ collections:
       - { name: service, label: "Service", widget: string }
       - { name: category, label: "Category", widget: select, options: [product, web, mobile, branding, motion] }
       - { name: summary, label: "Summary", widget: text }
+      - { name: seoTitle, label: "Search title (about 60 characters, how people search)", widget: string, required: false }
       - { name: image, label: "Image", widget: image, choose_url: false, hint: "Product screen, shown framed in the homepage stage and the search" }
       - { name: preview, label: "Preview image (optional)", widget: image, choose_url: false, required: false, hint: "Full-bleed image for the work cards and the case study hero, like a brand board" }
       - { name: imageKind, label: "Image shape", widget: select, options: [desktop, phone], default: desktop }

@@ -3,6 +3,7 @@ name: ViewMax
 service: Product and web design
 category: product
 summary: A web-based video editing platform that turns scripts and ideas into short-form videos, designed together with the website that sells it.
+seoTitle: "AI video editor product and website design | ViewMax"
 keywords: [video, editing, short-form, ai, voiceover, creator, saas, website, landing, tiktok, reels]
 image: /uploads/viewmax-screen.webp
 preview: /uploads/viewmax-preview.webp

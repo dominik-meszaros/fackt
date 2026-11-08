@@ -27,6 +27,39 @@ const { art, title, text } = Astro.props;
         </div>
         <span class="cur"><svg width="14" height="18" viewBox="0 0 14 18"><path d="M1 1l12 7.2-5.3 1.3L5 16z" fill="#111" stroke="#fff" stroke-width="1.2" /></svg></span>
       </>}
+
+      {art === 'paywall' && <>
+        <div class="pw0"><i></i><i></i><i></i><i></i><i></i><span class="pb">Subscribe</span></div>
+        <div class="pw1"><small>Last night</small><em>7h 12m</em><span class="tlx"><i>Today</i><i>Day 5</i><i>Day 7</i></span><span class="go">Start free week</span></div>
+      </>}
+      {art === 'firstrun' && <>
+        <div class="fr0"><span>Step 2 of 14</span><div class="fb"><i></i></div><i class="fld"></i><i class="fld"></i><i class="fld"></i></div>
+        <div class="fr1"><span class="dots"><i></i><i></i><i></i></span><span class="win"><span class="ck">&#10003;</span><b>Your first win</b><small>Done in under a minute</small></span></div>
+      </>}
+      {art === 'store' && <>
+        <div class="sp"><i></i><i></i><i></i><i></i></div>
+        <div class="sh"><b>Wake up in <mark>light</mark> sleep.</b></div>
+      </>}
+      {art === 'nudge' && <>
+        <div class="nd0"><span>Signed up 3 days ago</span><span>No activity since</span></div>
+        <div class="nd1"><span class="ap"></span><span><b>You are one step from your first report</b><small>Connect a source, it takes a minute</small></span></div>
+      </>}
+      {art === 'fold' && <>
+        <div class="fo"><i class="hl"></i><i class="hl s"></i><span class="vg">Revolutionize your workflow</span><span class="cl">Ship onboarding in a day, not a sprint</span><span class="sub"></span><span class="go">Start free</span><span class="pic"></span></div>
+      </>}
+      {art === 'proof' && <>
+        <div class="pf"><span class="go">Book a demo</span><span class="lgs"><i></i><i></i><i></i><i></i></span><span class="qt">&#9733;&#9733;&#9733;&#9733;&#9733;<small>reviews next to the button</small></span></div>
+      </>}
+      {art === 'cta' && <>
+        <div class="ca"><span class="b0">Learn more</span><span class="b1">Start free, no card</span><small>Takes 2 minutes</small></div>
+      </>}
+      {art === 'cms' && <>
+        <div class="cm0"><span>Ticket: update pricing page</span><small>Waiting for a developer</small><span class="q"><i></i><i></i><i></i></span></div>
+        <div class="cm1"><span>Pricing page</span><span class="tg"><i></i></span><b>Published by marketing</b><small>2 minutes ago</small></div>
+      </>}
+      {art === 'speed' && <>
+        <div class="spd"><span class="gauge"><i></i></span><span class="lbl"><b class="s0">Slow</b><b class="s1">Fast</b></span><span class="bars"><i></i><i></i><i></i></span></div>
+      </>}
     </div>
   </div>
   <b class="t">{title}</b>
@@ -96,6 +129,97 @@ const { art, title, text } = Astro.props;
   .fx:is(:hover, :focus-visible, .on) .es { opacity: 1; transform: none; }
   .fx:is(:hover, :focus-visible, .on) .go { transform: translate(2px, 2px); box-shadow: 0 0 0 #c8c8c4; }
   .fx:is(:hover, :focus-visible, .on) .cur { opacity: 1; transform: none; }
+
+
+  /* shared helpers for the new arts */
+  .pn :is(.pw1, .fr1, .nd1, .cm1, .sh) { opacity: 0; transform: translateY(10px); transition: all .5s var(--e) .15s; }
+  .pn :is(.pw0, .fr0, .nd0, .cm0) { transition: all .45s var(--e); }
+  .fx:is(:hover, :focus-visible, .on) :is(.pw0, .fr0, .nd0, .cm0) { opacity: 0; transform: scale(.94); filter: blur(2px); }
+  .fx:is(:hover, :focus-visible, .on) :is(.pw1, .fr1, .nd1, .cm1, .sh) { opacity: 1; transform: none; }
+
+  /* paywall: feature list -> their own night and a trial timeline */
+  .pw0, .pw1 { position: absolute; inset: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .pw0 i { height: 7px; border-radius: 2px; background: #ececea; width: 80%; } .pw0 i:nth-child(2n) { width: 62%; }
+  .pb { margin-top: auto; height: 24px; border-radius: 3px; background: #dcdcd8; color: #8a8a86; font-size: 11px; display: grid; place-items: center; }
+  .pw1 { align-items: flex-start; gap: 2px; }
+  .pw1 small { font-size: 10.5px; color: #8a8a86; }
+  .pw1 em { font: 400 30px var(--m-serif); font-style: normal; line-height: 1; }
+  .tlx { display: flex; gap: 14px; margin-top: 8px; font-size: 10.5px; color: #3f3f3f; }
+  .tlx i { font-style: normal; padding-left: 10px; position: relative; } .tlx i::before { content: ''; position: absolute; left: 0; top: 4px; width: 6px; height: 6px; border-radius: 50%; background: #111; }
+  .pw1 .go { margin-top: auto; }
+
+  /* first run: 14 steps -> 3 steps and a first win */
+  .fr0, .fr1 { position: absolute; inset: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .fr0 span { font-size: 10.5px; color: #8a8a86; }
+  .fb { height: 5px; border-radius: 3px; background: #ececea; } .fb i { display: block; width: 14%; height: 100%; border-radius: 3px; background: #c8c8c4; }
+  .fld { height: 18px; border-radius: 3px; box-shadow: inset 0 0 0 1px #e2e2de; }
+  .fr1 { align-items: center; justify-content: center; }
+  .dots { display: flex; gap: 6px; } .dots i { width: 22px; height: 5px; border-radius: 3px; background: #111; }
+  .win { display: flex; flex-direction: column; align-items: center; margin-top: 8px; }
+  .ck { width: 30px; height: 30px; border-radius: 50%; background: #111; color: #fff; display: grid; place-items: center; font-size: 15px; }
+  .win b { margin-top: 6px; font-size: 12.5px; font-weight: 500; } .win small { font-size: 11px; color: #8a8a86; }
+
+  /* store: plain screenshot -> a headline that sells one thing */
+  .sp { position: absolute; left: 50%; top: 10px; bottom: -30px; width: 86px; transform: translateX(-50%); border-radius: 14px; box-shadow: 0 0 0 1.5px #111; padding: 14px 8px; display: flex; flex-direction: column; gap: 6px; background: #fff; transition: all .5s var(--e); }
+  .sp i { height: 6px; border-radius: 2px; background: #ececea; } .sp i:first-child { height: 26px; background: #f2f2f0; }
+  .sh { position: absolute; left: 10px; right: 10px; top: 10px; text-align: center; }
+  .sh b { font: 400 17px/1.15 var(--m-serif); } .sh mark { background: #111; color: #fff; padding: 0 4px; border-radius: 2px; }
+  .fx:is(:hover, :focus-visible, .on) .sp { top: 52px; width: 76px; }
+
+  /* nudge: silence -> one useful reminder */
+  .nd0, .nd1 { position: absolute; inset: 12px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+  .nd0 span { font-size: 11.5px; color: #a3a3a3; padding: 8px 10px; border-radius: 3px; background: #f6f6f4; }
+  .nd1 { flex-direction: row; align-items: center; gap: 10px; padding: 12px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px #dcdcd8, 0 10px 20px -14px rgba(0,0,0,.4); inset: auto 10px 30px 10px; }
+  .ap { width: 26px; height: 26px; border-radius: 7px; background: #111; flex-shrink: 0; }
+  .nd1 b { display: block; font-size: 11.5px; font-weight: 500; } .nd1 small { font-size: 10.5px; color: #8a8a86; }
+
+  /* fold: vague headline -> a clear promise, one button and the product */
+  .fo { position: absolute; inset: 12px; }
+  .fo .hl { position: absolute; left: 0; top: 8px; width: 70%; height: 10px; border-radius: 2px; background: #ececea; transition: opacity .3s; } .fo .hl.s { top: 24px; width: 50%; }
+  .fo .vg { position: absolute; left: 0; top: 44px; font: 400 14px var(--m-serif); color: #a3a3a3; transition: opacity .3s; }
+  .fo .cl { position: absolute; left: 0; top: 4px; width: 62%; font: 400 15px/1.15 var(--m-serif); color: #111; opacity: 0; transition: opacity .4s .15s; }
+  .fo .sub { position: absolute; left: 0; top: 48px; width: 50%; height: 6px; border-radius: 2px; background: #ececea; opacity: 0; transition: opacity .4s .2s; }
+  .fo .go { position: absolute; left: 0; bottom: 6px; opacity: 0; transition: opacity .4s .3s; }
+  .fo .pic { position: absolute; right: 0; top: 4px; width: 32%; bottom: 4px; border-radius: 4px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; opacity: 0; transform: translateX(10px); transition: all .5s var(--e) .25s; }
+  .fx:is(:hover, :focus-visible, .on) .fo :is(.hl, .vg) { opacity: 0; }
+  .fx:is(:hover, :focus-visible, .on) .fo :is(.cl, .sub, .go) { opacity: 1; }
+  .fx:is(:hover, :focus-visible, .on) .fo .pic { opacity: 1; transform: none; }
+
+  /* proof: a lonely button -> logos and a real quote next to it */
+  .pf { position: absolute; inset: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .lgs { display: flex; gap: 8px; opacity: 0; transform: translateY(8px); transition: all .45s var(--e) .1s; } .lgs i { width: 34px; height: 10px; border-radius: 2px; background: #c8c8c4; }
+  .qt { font: 400 14px var(--m-serif); letter-spacing: 2px; text-align: center; opacity: 0; transform: translateY(8px); transition: all .45s var(--e) .25s; } .qt small { display: block; font: 400 10px Geist, sans-serif; color: #8a8a86; }
+  .fx:is(:hover, :focus-visible, .on) :is(.lgs, .qt) { opacity: 1; transform: none; }
+
+  /* cta: vague -> specific with what happens next */
+  .ca { position: absolute; inset: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .ca .b0, .ca .b1 { height: 30px; padding: 0 16px; border-radius: 3px; display: flex; align-items: center; font-size: 12px; font-weight: 500; transition: all .45s var(--e); }
+  .ca .b0 { box-shadow: inset 0 0 0 1px #c8c8c4; color: #8a8a86; }
+  .ca .b1 { position: absolute; background: #111; color: #fff; box-shadow: 2px 2px 0 #c8c8c4; opacity: 0; transform: scale(.9); }
+  .ca small { font-size: 10.5px; color: #8a8a86; opacity: 0; transform: translateY(14px); transition: all .45s var(--e) .2s; }
+  .fx:is(:hover, :focus-visible, .on) .ca .b0 { opacity: 0; transform: scale(1.1); }
+  .fx:is(:hover, :focus-visible, .on) .ca .b1 { opacity: 1; transform: none; }
+  .fx:is(:hover, :focus-visible, .on) .ca small { opacity: 1; transform: translateY(26px); }
+
+  /* cms: waiting on a developer -> marketing publishes */
+  .cm0, .cm1 { position: absolute; inset: 12px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+  .cm0 span { font-size: 12px; font-weight: 500; color: #8a8a86; } .cm0 small { font-size: 10.5px; color: #b0b0ac; }
+  .q { display: flex; gap: 5px; margin-top: 6px; } .q i { width: 22px; height: 6px; border-radius: 3px; background: #ececea; }
+  .cm1 { align-items: flex-start; }
+  .cm1 span:first-child { font-size: 12px; font-weight: 500; }
+  .tg { width: 34px; height: 18px; border-radius: 9px; background: #111; position: relative; margin: 6px 0; } .tg i { position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+  .cm1 b { font-size: 11.5px; font-weight: 500; } .cm1 small { font-size: 10.5px; color: #8a8a86; }
+
+  /* speed: slow -> fast */
+  .spd { position: absolute; inset: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .gauge { width: 120px; height: 60px; border-radius: 60px 60px 0 0; box-shadow: inset 0 0 0 8px #ececea; position: relative; overflow: hidden; }
+  .gauge i { position: absolute; left: 58px; bottom: 0; width: 4px; height: 50px; background: #111; border-radius: 2px; transform-origin: 2px 50px; transform: rotate(-60deg); transition: transform .9s var(--e) .1s; }
+  .lbl { position: relative; height: 16px; width: 60px; text-align: center; } .lbl b { position: absolute; inset: 0; font-size: 12px; font-weight: 500; transition: opacity .3s; } .lbl .s1 { opacity: 0; }
+  .bars { display: flex; gap: 4px; } .bars i { width: 40px; height: 5px; border-radius: 3px; background: #ececea; overflow: hidden; position: relative; }
+  .bars i::after { content: ''; position: absolute; inset: 0; width: 30%; background: #c8c8c4; transition: width .8s var(--e) .2s, background .3s; }
+  .fx:is(:hover, :focus-visible, .on) .gauge i { transform: rotate(60deg); }
+  .fx:is(:hover, :focus-visible, .on) .lbl .s0 { opacity: 0; } .fx:is(:hover, :focus-visible, .on) .lbl .s1 { opacity: 1; }
+  .fx:is(:hover, :focus-visible, .on) .bars i::after { width: 100%; background: #111; }
 
   @media (hover: none) { .hint { display: none; } .fx:hover { transform: none; box-shadow: inset 0 0 0 1px #dcdcd8; } }
   @media (prefers-reduced-motion: reduce) { .fx, .fx * { transition: none !important; } }

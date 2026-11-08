@@ -3,6 +3,7 @@ name: Deaflingo
 service: Mobile app
 category: mobile
 summary: A retro-inspired, competitive mobile app where people track their daily performance, compete weekly and earn rewards.
+seoTitle: "Accessible mobile app design case study | DeafLingo"
 keywords: [mobile, app, ios, android, gamification, leaderboard, competition, learning, retro, illustration]
 image: /uploads/deaflingo-screen.webp
 preview: /uploads/deaflingo-preview.webp

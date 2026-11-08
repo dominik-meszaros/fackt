@@ -3,6 +3,7 @@ name: FireCut
 service: Product design
 category: product
 summary: A UX redesign of an AI editing plugin for Premiere Pro, turning a flat grid of 12 tools into one clear flow, starting from 100 cancellation responses.
+seoTitle: "AI video editing plugin UX redesign | FireCut case study"
 keywords: [firecut, ai, video editing, premiere pro, plugin, ux redesign, product design, churn, information architecture, user flows, design system, saas, creator tools]
 image: /uploads/firecut-home.webp
 preview: /uploads/firecut-preview.webp

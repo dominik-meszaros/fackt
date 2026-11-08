@@ -3,6 +3,7 @@ name: Zums
 service: Mobile app
 category: mobile
 summary: A reward app that lets Gen Z gamers earn real money by playing games and finishing daily challenges, designed to feel like an arcade, not a utility.
+seoTitle: "Gen Z gaming rewards app design | Zums case study"
 keywords: [mobile, app, rewards, earning, gaming, gamification, gen z, cashback, ios, android]
 image: /uploads/zums-screen.webp
 preview: /uploads/zums-preview.webp

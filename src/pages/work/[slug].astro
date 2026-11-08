@@ -9,6 +9,7 @@ import WorkCta from '../../components/pages/work/WorkCta.astro';
 import NoteFromDom from '../../components/NoteFromDom.astro';
 import { site } from '../../data/site';
 import { publishedPosts } from '../../data/blog';
+import { niches } from '../../data/niches';
 
 export async function getStaticPaths() {
   const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -19,6 +20,10 @@ const said = (await getCollection('videos')).map((v) => v.data).find((v) => v.vi
 const { Content } = await render(entry);
 const note = (await publishedPosts()).find((b) => b.data.related === entry.id);
 const p = entry.data;
+// The service page this case study is proof for (by category, with a few hand picks), linked under the write-up.
+const svcFor: Record<string, string> = { firecut: 'saas-onboarding-design', 'promote-app': 'saas-dashboard-design', viewmax: 'saas-landing-page-design', nation: 'framer-agency-for-saas' };
+const svcByCat: Record<string, string> = { mobile: 'ios-app-design', web: 'saas-landing-page-design', product: 'saas-dashboard-design' };
+const svc = niches.find((n) => n.slug === (svcFor[entry.id] ?? svcByCat[p.category]));
 // Full-width presentation boards (kind: board) show edge to edge under the write-up; screens show in the column.
 const boards = p.gallery.filter((g) => g.kind === 'board');
 const shots = p.gallery.filter((g) => g.kind !== 'board');
@@ -48,7 +53,7 @@ const caseSchema = [
 ];
 const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 ---
-<Base type="article" schema={caseSchema} title={`${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
+<Base type="article" schema={caseSchema} title={p.seoTitle ?? `${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
   <div class="m-page">
     <Nav />
     <main>
@@ -164,6 +169,12 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
             </figure>
           ))}
         </section>
+      )}
+      {svc && (
+        <a class="rsvc" href={`/${svc.slug}`}>
+          <span><small>Related service</small><b>{svc.h1}</b><em>{svc.lede}</em></span>
+          <span class="ra">See how we work &#8594;</span>
+        </a>
       )}
       {note && (
         <a class="rnote" href={`/blog/${note.id}`}>
@@ -281,6 +292,13 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .next { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px 0; border-top: 1px solid var(--m-line); border-bottom: 1px solid var(--m-line); margin-top: 32px; color: inherit; text-decoration: none; }
   .next .nx { display: flex; align-items: center; gap: 18px; }
   .rnote { width: min(960px, 100% - 32px); margin: 48px auto 0; display: flex; align-items: center; gap: 18px; padding: 14px 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; color: inherit; text-decoration: none; }
+  .rsvc { width: min(960px, 100% - 32px); margin: 48px auto 0; display: flex; align-items: center; gap: 24px; padding: 20px 22px; border-radius: 4px; background: #f4f4f2; color: inherit; text-decoration: none; transition: box-shadow .2s; }
+  .rsvc:hover { box-shadow: inset 0 0 0 1px #111; }
+  .rsvc small { display: block; font-size: 12px; color: #767672; }
+  .rsvc b { display: block; margin-top: 2px; font-family: var(--m-serif); font-weight: 400; font-size: 22px; }
+  .rsvc em { display: block; margin-top: 4px; font-style: normal; font-size: 13.5px; color: #6a6a66; max-width: 560px; }
+  .rsvc .ra { margin-left: auto; font-weight: 500; white-space: nowrap; }
+  .rnote + .rnote, .rsvc + .rnote { margin-top: 12px; }
   .rnote:hover { box-shadow: inset 0 0 0 1px #111; }
   .rnote img { width: 120px; height: 68px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
   .rnote small { display: block; font-size: 12px; color: #767672; }
@@ -321,6 +339,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
     .gst { height: 220px; }
     .quote { grid-template-columns: 1fr; padding: 22px 20px; }
     .quote blockquote { font-size: 18px; }
+    .rsvc { flex-direction: column; align-items: flex-start; gap: 10px; }
     .next { flex-direction: column; align-items: flex-start; gap: 14px; }
     .next .nt { text-align: left; }
     .next .nx { flex-direction: row-reverse; }

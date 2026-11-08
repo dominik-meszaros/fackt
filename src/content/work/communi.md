@@ -3,6 +3,7 @@ name: Communi
 service: Product design
 category: product
 summary: All-in-one community platform for creators, designed end to end from the desktop command center to a native mobile app.
+seoTitle: "Creator community platform design, desktop to mobile | Communi"
 keywords: [saas, dashboard, analytics, community, platform, admin, b2b, web app]
 image: /uploads/communi-screen.webp
 preview: /uploads/communi-preview.webp

@@ -3,6 +3,7 @@ name: KindScore
 service: Mobile app and branding
 category: mobile
 summary: A gamified creative learning app that helps children practice art and music through playful challenges, positive feedback and rewarding progress.
+seoTitle: "Gamified kids learning app design and branding | KindScore"
 keywords: [mobile, app, kids, children, education, learning, gamification, mascot, illustration, branding, ios, android]
 image: /uploads/kindscore-screen.webp
 preview: /uploads/kindscore-preview.webp

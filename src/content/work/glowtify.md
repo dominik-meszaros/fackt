@@ -3,6 +3,7 @@ name: Glowtify
 service: Product design
 category: product
 summary: A redesign of an AI marketing platform's knowledge experience, with a modern design system and workflows rebuilt from written documentation.
+seoTitle: "AI marketing platform redesign and design system | Glowtify"
 keywords: [ai, marketing, saas, dashboard, design system, redesign, knowledge base, integrations, connectors, workflow, web app]
 image: /uploads/glowtify-screen.webp
 preview: /uploads/glowtify-preview.webp

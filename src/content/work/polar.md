@@ -3,6 +3,7 @@ name: Polar
 service: Ad creative and art direction
 category: branding
 summary: Twelve static ads that make an AI browser easy to get, built on one grid, one copper accent and four message angles, in a light and a dark set.
+seoTitle: "Static ad creative for an AI browser, 12 ads | Polar"
 keywords: [polar, ai browser, ads, ad creative, static ads, art direction, campaign, social ads, copywriting, a/b testing, saas marketing, branding]
 image: /uploads/polar-light.webp
 preview: /uploads/polar-preview.webp

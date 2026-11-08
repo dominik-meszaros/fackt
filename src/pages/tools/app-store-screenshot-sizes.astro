@@ -1,0 +1,140 @@
+---
+// Free tool: App Store screenshot sizes, with one-tap copy, from Apple's screenshot specifications
+// (developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications, checked November 2026).
+// Plus what to put on the screenshots, from our own App Store work (Dozy in 20 languages).
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { site } from '../../data/site';
+import '../../styles/faq.css';
+
+type Row = { name: string; sizes: string[]; need: 'Required' | 'Optional' | 'Required if no larger'; note?: string };
+const iphone: Row[] = [
+  { name: 'iPhone with Dynamic Island, medium', sizes: ['1206 × 2622', '1179 × 2556'], need: 'Required' },
+  { name: 'iPhone with Dynamic Island, large', sizes: ['1320 × 2868', '1290 × 2796', '1260 × 2736'], need: 'Optional', note: 'Falls back to Face ID large' },
+  { name: 'iPhone with Face ID, large', sizes: ['1284 × 2778', '1242 × 2688'], need: 'Required if no larger', note: 'Needed when you do not upload Dynamic Island large' },
+  { name: 'iPhone with Face ID, medium', sizes: ['1170 × 2532', '1125 × 2436', '1080 × 2340'], need: 'Optional' },
+  { name: 'iPhone with Home Button, large', sizes: ['1242 × 2208'], need: 'Optional' },
+  { name: 'iPhone with Home Button, medium', sizes: ['750 × 1334'], need: 'Optional' },
+];
+const ipad: Row[] = [
+  { name: 'iPad 13"', sizes: ['2064 × 2752', '2048 × 2732'], need: 'Required', note: 'Only if your app runs on iPad' },
+  { name: 'iPad 12.9"', sizes: ['2048 × 2732'], need: 'Optional', note: 'Falls back to 13"' },
+  { name: 'iPad 11"', sizes: ['1668 × 2420', '1668 × 2388', '1640 × 2360', '1512 × 2316', '1488 × 2266'], need: 'Optional', note: 'Falls back to 13"' },
+  { name: 'iPad 10.5"', sizes: ['1668 × 2224'], need: 'Optional' },
+];
+const faq = [
+  { q: 'What size should App Store screenshots be in 2026?', a: 'For iPhone, the required size is the Dynamic Island medium display: 1206 × 2622 or 1179 × 2556 pixels in portrait. If your app runs on iPad, you also need the 13 inch iPad size: 2064 × 2752 or 2048 × 2732 pixels. Smaller sizes are scaled down from these automatically.' },
+  { q: 'How many screenshots can I upload to the App Store?', a: 'Between 1 and 10 per device size, as JPEG or PNG, with no transparency.' },
+  { q: 'Do I need screenshots for every iPhone size?', a: 'No. If your interface looks the same across sizes, upload the required size and App Store Connect scales it down for the smaller displays.' },
+  { q: 'Should App Store screenshots be localized?', a: 'Yes, if your app is. Upload screenshots per language, with the headline rewritten for that language and the app shown in that language inside the frame.' },
+];
+const ld = [
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'App Store screenshot sizes (2026)', url: new URL('/tools/app-store-screenshot-sizes', site.url).toString(), publisher: { '@type': 'Organization', name: 'Fackt', url: site.url } },
+];
+const table = (rows: Row[]) => rows;
+---
+<Base title="App Store screenshot sizes 2026: iPhone and iPad | Fackt" description="Every App Store screenshot size for iPhone and iPad in 2026, with the required sizes marked and one tap copy, plus what to put on the screenshots so they sell.">
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <div class="m-page">
+    <Nav />
+    <main class="tl">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="/">Fackt</a><span>/</span><b>Free tools</b></nav>
+      <h1>App Store screenshot sizes <span>(2026)</span></h1>
+      <p class="lede">Every size for iPhone and iPad, with the ones you must upload marked. Tap a size to copy it.</p>
+
+      <div class="ans">
+        <div><small>iPhone, required</small><b>1206 × 2622</b><span>or 1179 × 2556, Dynamic Island medium</span></div>
+        <div><small>iPad, required if you support iPad</small><b>2064 × 2752</b><span>or 2048 × 2732, 13 inch</span></div>
+        <div><small>Rules</small><b>1 to 10</b><span>per size, JPEG or PNG, no transparency</span></div>
+      </div>
+
+      <h2>iPhone</h2>
+      <div class="tb">
+        {table(iphone).map((r) => (
+          <div class:list={['rw', { req: r.need === 'Required' }]}>
+            <div class="nm"><b>{r.name}</b>{r.note && <small>{r.note}</small>}</div>
+            <div class="sz">{r.sizes.map((s) => <button type="button" data-copy={s.replace(' × ', 'x')} aria-label={`Copy ${s}`}>{s}</button>)}</div>
+            <span class="nd">{r.need}</span>
+          </div>
+        ))}
+      </div>
+
+      <h2>iPad</h2>
+      <div class="tb">
+        {table(ipad).map((r) => (
+          <div class:list={['rw', { req: r.need === 'Required' }]}>
+            <div class="nm"><b>{r.name}</b>{r.note && <small>{r.note}</small>}</div>
+            <div class="sz">{r.sizes.map((s) => <button type="button" data-copy={s.replace(' × ', 'x')} aria-label={`Copy ${s}`}>{s}</button>)}</div>
+            <span class="nd">{r.need}</span>
+          </div>
+        ))}
+      </div>
+      <p class="src">Portrait sizes shown, landscape is the same numbers swapped. Source: Apple's <a href="https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications" target="_blank" rel="noopener">screenshot specifications</a>, checked November 2026.</p>
+
+      <h2>What to put on them</h2>
+      <div class="prose">
+        <p>The size gets your screenshots accepted. What is on them decides whether anyone downloads. These are the rules we use for our own apps.</p>
+        <p><b>One promise per frame.</b> Each screenshot sells one thing, in one short headline above the phone. "Wake up in light sleep" sells. A screenshot of the settings screen does not.</p>
+        <p><b>The first two frames do the work.</b> Most people never swipe. Put the core promise and the proof of it first, and the feature list later.</p>
+        <p><b>Rewrite per language.</b> If your app is localized, so are the screenshots, with the headline rewritten, not translated, and the app inside the frame in that language too. Our sleep app Dozy has seven previews, redrawn in 20 languages.</p>
+        <p><b>Design at the required size.</b> Build your template at 1206 × 2622 and export everything else from it, so the type stays sharp and you keep one source of truth.</p>
+      </div>
+      <a class="case" href="/work/dozy"><img src="/uploads/dozy-cs-localization.webp" alt="Dozy App Store previews in 20 languages" loading="lazy" /><span>See Dozy's previews in all 20 languages &#8594;</span></a>
+
+      <h2>Questions</h2>
+      <div class="faq">{faq.map((f, i) => (<details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>))}</div>
+
+      <div class="end">
+        <div><b>Want screenshots that sell, in every language?</b><span>We design App Store pages and the apps behind them.</span></div>
+        <a class="m-btn dk" href="/ios-app-design">iOS app design</a>
+      </div>
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  .tl { width: min(860px, 100% - 32px); margin: 0 auto; padding: 40px 0 80px; }
+  .crumb { display: flex; gap: 8px; font-size: 12.5px; color: #8a8a86; } .crumb a { color: inherit; text-decoration: none; } .crumb b { color: #111; font-weight: 500; }
+  h1 { margin: 18px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 48px; line-height: 1.05; letter-spacing: -.02em; } h1 span { color: #8a8a86; }
+  .lede { margin: 12px 0 0; font-size: 17px; color: #3f3f3f; }
+  .ans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+  .ans div { padding: 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; }
+  .ans div:first-child { background: #111; color: #fff; box-shadow: none; }
+  .ans small { display: block; font-size: 12px; opacity: .7; } .ans b { display: block; margin-top: 8px; font-family: var(--m-serif); font-weight: 400; font-size: 32px; line-height: 1; } .ans span { display: block; margin-top: 8px; font-size: 13px; opacity: .75; }
+  h2 { margin: 56px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; letter-spacing: -.01em; }
+  .tb { margin-top: 16px; border-top: 1px solid #111; }
+  .rw { display: grid; grid-template-columns: 1fr 1.2fr 150px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid #ececea; }
+  .nm b { display: block; font-weight: 500; font-size: 14.5px; } .nm small { display: block; margin-top: 2px; font-size: 12.5px; color: #8a8a86; }
+  .sz { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sz button { all: unset; cursor: pointer; font: 500 13px var(--mono); padding: 5px 9px; border-radius: 3px; box-shadow: inset 0 0 0 1px #dcdcd8; transition: box-shadow .15s, background .15s; }
+  .sz button:hover { box-shadow: inset 0 0 0 1px #111; } .sz button:focus-visible { box-shadow: inset 0 0 0 2px #111; }
+  .sz button.ok { background: #111; color: #fff; box-shadow: none; }
+  .nd { font-size: 12.5px; color: #8a8a86; text-align: right; } .req .nd { color: #111; font-weight: 500; }
+  .src { margin-top: 14px; font-size: 12.5px; color: #8a8a86; } .src a { color: inherit; }
+  .prose p { font-size: 15.5px; line-height: 1.6; color: #2b2b2b; margin: 14px 0 0; max-width: 680px; }
+  .case { display: block; margin-top: 22px; color: inherit; text-decoration: none; } .case img { display: block; width: 100%; border-radius: 4px; box-shadow: 0 0 0 1px #e6e6e2; } .case span { display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 500; border-bottom: 1px solid #111; }
+  .faq { margin-top: 16px; text-align: left; }
+  .end { display: flex; align-items: center; gap: 20px; margin-top: 56px; padding: 22px 24px; border-radius: 4px; background: #f4f4f2; }
+  .end b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 22px; } .end span { display: block; margin-top: 4px; font-size: 14px; color: #6a6a66; }
+  .end .m-btn { margin-left: auto; }
+  @media (max-width: 720px) {
+    h1 { font-size: 34px; }
+    .ans { grid-template-columns: 1fr; }
+    .rw { grid-template-columns: 1fr; gap: 8px; }
+    .nd { text-align: left; }
+    .end { flex-direction: column; align-items: flex-start; } .end .m-btn { margin-left: 0; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy!); } catch { return; }
+      const t = b.textContent; b.classList.add('ok'); b.textContent = 'Copied';
+      setTimeout(() => { b.classList.remove('ok'); b.textContent = t; }, 1200);
+    });
+  });
+</script>

@@ -3,6 +3,7 @@ name: EarnTask
 service: Web design
 category: web
 summary: A landing page that makes paid social-media tasks feel approachable, transparent and easy to understand, designed in two weeks.
+seoTitle: "Landing page design for a paid social tasks app | EarnTask"
 keywords: [website, landing page, web design, earn, rewards, social media, tasks, fintech, responsive]
 image: /uploads/earntask-screen.webp
 preview: /uploads/earntask-preview.webp

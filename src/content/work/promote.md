@@ -3,6 +3,7 @@ name: Promote.fun
 service: Branding
 category: branding
 summary: A bold, creator-first brand identity for a performance marketing platform that connects brands and creators.
+seoTitle: "Brand identity for a creator marketing platform | Promote"
 keywords: [branding, brand identity, logo, visual identity, creator, marketing, influencer, performance marketing]
 image: /uploads/promote-product.webp
 preview: /uploads/promote-preview.webp

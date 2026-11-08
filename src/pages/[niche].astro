@@ -29,7 +29,7 @@ const ld = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [...n.crumb, { label: n.current, href: `/${n.slug}` }].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: new URL(c.href, site.url).toString() })) },
 ];
 ---
-<Base title={n.seoTitle} description={n.seoDescription} lcp={hero.preview ?? hero.image}>
+<Base title={n.seoTitle} description={n.seoDescription} lcp={n.hero.image ?? hero.card ?? hero.preview ?? hero.image}>
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
   <div class="m-page">
     <SketchDefs />
@@ -47,7 +47,7 @@ const ld = [
             </div>
           </div>
           <a class="shot" href={`/work/${hero.slug}`} data-journey={tag(`hero case study ${hero.slug}`)}>
-            <img src={hero.preview ?? hero.image} alt={`${hero.name}, ${hero.service.toLowerCase()} by Fackt`} width="1600" height="1000" loading="eager" fetchpriority="high" />
+            <img src={n.hero.image ?? hero.card ?? hero.preview ?? hero.image} alt={`${hero.name}, ${hero.service.toLowerCase()} by Fackt`} width="1600" height="1000" loading="eager" fetchpriority="high" />
             <span class="tag">{n.hero.caption}<b>View case study &#8594;</b></span>
           </a>
         </div>
@@ -75,7 +75,7 @@ const ld = [
         <div class="cases">
           {cases.map((c) => (
             <a href={`/work/${c.slug}`} data-journey={tag(`case study ${c.slug}`)}>
-              <div class="im"><img src={c.preview ?? c.image} alt={`${c.name}, ${c.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
+              <div class="im"><img src={c.card ?? c.preview ?? c.image} alt={`${c.name}, ${c.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
               <b>{c.name}</b><span>{c.line}</span><em>View case study &#8594;</em>
             </a>
           ))}

@@ -3,6 +3,7 @@ name: Promote.fun
 service: Product design
 category: product
 summary: The creator dashboard for a performance-based influencer marketing platform, turning earnings, campaigns and growth into a rewarding play experience.
+seoTitle: "Creator dashboard design for an influencer platform | Promote"
 keywords: [dashboard, saas, creator, influencer, marketing, gamification, earnings, campaigns, mobile, web app, dark mode]
 image: /uploads/promote-app-screen.webp
 preview: /uploads/promote-product-preview.webp

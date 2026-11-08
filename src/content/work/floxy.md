@@ -3,6 +3,7 @@ name: Floxy
 service: Product design
 category: product
 summary: A proxy dashboard that turns a network of 30M+ residential and 500K+ datacenter proxies into a clear, fast workspace.
+seoTitle: "Proxy dashboard design for a 30M+ IP network | Floxy"
 keywords: [proxy, proxies, dashboard, saas, data, infrastructure, analytics, billing, web app, developer]
 image: /uploads/floxy-screen.webp
 preview: /uploads/floxy-preview.webp

@@ -3,6 +3,7 @@ name: Ritual
 service: Brand, product design and native iOS rebuild
 category: mobile
 summary: Our own habit tracker for iPhone. We designed the brand and every screen, rebuilt the app from scratch in SwiftUI and shipped four releases in a week, in 35 languages.
+seoTitle: "Habit tracker app design and native iOS rebuild | Ritual"
 keywords: [habit tracker, habits, ritual, ios, iphone, app, swiftui, rebuild, onboarding, revenuecat, paywall, a/b testing, freemium, widgets, notifications, apple health, posthog, analytics, localization, illustration, branding]
 image: /uploads/ritual-screen.webp
 preview: /uploads/ritual-preview.webp

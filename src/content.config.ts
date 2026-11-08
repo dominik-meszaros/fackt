@@ -10,6 +10,8 @@ const work = defineCollection({
     service: z.string(),
     category: z.enum(['product', 'web', 'mobile', 'branding', 'motion']),
     summary: z.string(),
+    // Optional title for search results and the browser tab (about 60 characters), written the way people search.
+    seoTitle: z.string().optional(),
     // Words people might type in the search bar to find this project.
     keywords: z.array(z.string()).default([]),
     image: z.string(),

@@ -3,6 +3,7 @@ name: Communi
 service: Mobile app
 category: mobile
 summary: The native mobile app for Communi, carrying the creator command center to the phone so communities stay active around the clock.
+seoTitle: "Community mobile app design for creators | Communi"
 keywords: [mobile, app, ios, android, community, creator, chat, courses, onboarding]
 image: /uploads/communi-mobile-screen.webp
 preview: /uploads/communi-mobile-preview.webp

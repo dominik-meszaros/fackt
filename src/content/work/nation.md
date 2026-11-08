@@ -3,6 +3,7 @@ name: Nation
 service: Brand identity and web design
 category: branding
 summary: A warm, screenprint-inspired identity and landing page for an AI platform that helps people launch and run an online store.
+seoTitle: "Brand identity and landing page for an AI store builder | Nation"
 keywords: [branding, brand identity, logo, symbol, visual identity, ecommerce, online store, ai, ai agents, landing page, hero, web design, typography, color, saas]
 image: /uploads/nation-lockup.webp
 preview: /uploads/nation-preview.webp

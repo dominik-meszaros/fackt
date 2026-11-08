@@ -12,7 +12,7 @@ export async function GET() {
   const products = (await getCollection('products')).filter((p) => !p.data.draft);
   const today = new Date().toISOString().slice(0, 10);
   const pages: [string, string][] = [
-    ['/', '1.0'], ['/work', '0.9'], ['/services', '0.9'], ['/who-we-work-with', '0.8'], ['/audit', '0.8'], ['/book', '0.8'], ['/privacy', '0.3'],
+    ['/', '1.0'], ['/work', '0.9'], ['/services', '0.9'], ['/who-we-work-with', '0.8'], ['/audit', '0.8'], ['/book', '0.8'], ['/privacy', '0.3'], ['/tools/app-store-screenshot-sizes', '0.7'],
     ...servicePages.map((s) => [`/services/${s.slug}`, '0.8'] as [string, string]),
     ...niches.map((n) => [`/${n.slug}`, '0.8'] as [string, string]),
     ...work.map((w) => [`/work/${w.id}`, '0.7'] as [string, string]),
