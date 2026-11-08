@@ -9,6 +9,7 @@ import Step from '../components/home/Step.astro';
 import Hero from '../components/home/Hero.astro';
 import Logos from '../components/home/Logos.astro';
 import Work from '../components/home/Work.astro';
+import Apps from '../components/home/Apps.astro';
 import Services from '../components/home/Services.astro';
 import Audience from '../components/home/Audience.astro';
 import Process from '../components/home/Process.astro';
@@ -46,6 +47,8 @@ const schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FAQ
       <StartLine />
       <Step />
       <Work projects={featured} total={all.length} />
+      <Step />
+      <Apps apps={all.filter((p) => p.ownApp)} />
       <Step />
       <Audience />
       <Step />

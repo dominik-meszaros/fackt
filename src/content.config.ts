@@ -38,6 +38,15 @@ const work = defineCollection({
     results: z.array(z.object({ value: z.string(), label: z.string() })).optional().default([]),
     // `video` (optional): an mp4 that plays in place of the image, muted and looping, once it scrolls into view. The image is its poster.
     gallery: z.array(z.object({ image: z.string(), video: z.string().optional(), caption: z.string().optional().default(''), kind: z.enum(['desktop', 'phone', 'board']).default('desktop') })).optional().default([]),
+    // Our own apps (Dozy, Ritual): app icon, a card cover at the card ratio, an App Store link, one line for the homepage
+    // apps section, the stack, and `chapters` (title, text, board image) which switch the case study to the chapter layout.
+    ownApp: z.boolean().default(false),
+    appStore: z.string().optional(),
+    icon: z.string().optional(),
+    card: z.string().optional(),
+    tagline: z.string().optional(),
+    stack: z.string().optional(),
+    chapters: z.array(z.object({ title: z.string(), text: z.string(), image: z.string(), caption: z.string().optional() })).optional().default([]),
     quote: z.string().optional(),
     quoteName: z.string().optional(),
     quoteRole: z.string().optional(),

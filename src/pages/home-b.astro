@@ -15,6 +15,7 @@ import Step from '../components/home/Step.astro';
 import Hero from '../components/home/Hero.astro';
 import ProofRow from '../components/home/ProofRow.astro';
 import Work from '../components/home/Work.astro';
+import Apps from '../components/home/Apps.astro';
 import Services from '../components/home/Services.astro';
 import Proof from '../components/home/Proof.astro';
 import Pricing from '../components/home/Pricing.astro';
@@ -46,6 +47,8 @@ const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FA
       <ProofRow variant="b" />
       <Step />
       <Work projects={featured} total={all.length} lean resultChips />
+      <Step />
+      <Apps apps={all.filter((p) => p.ownApp)} />
       <Step />
       <Services short lean />
       <Step />

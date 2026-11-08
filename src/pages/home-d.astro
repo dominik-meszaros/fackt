@@ -15,6 +15,7 @@ import SectionHead from '../components/home/SectionHead.astro';
 import Step from '../components/home/Step.astro';
 import Logos from '../components/home/Logos.astro';
 import Work from '../components/home/Work.astro';
+import Apps from '../components/home/Apps.astro';
 import Proof from '../components/home/Proof.astro';
 import PhoneBar from '../components/home/PhoneBar.astro';
 import { site } from '../data/site';
@@ -88,6 +89,8 @@ for (let i = 0; i * 18 < PH + 50; i++) {
       <Logos />
       <Step />
       <Work projects={featured} total={all.length} lean resultChips />
+      <Step />
+      <Apps apps={all.filter((p) => p.ownApp)} />
       <Step />
       <Proof videos={videos} reviews={reviews} maxVideos={6} short wall
         highlights={["Best product designer I've ever worked with.", 'Super reliable and easy to work with.', 'We would 100% work with Dominik again.']} />

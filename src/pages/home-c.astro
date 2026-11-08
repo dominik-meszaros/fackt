@@ -13,6 +13,7 @@ import Step from '../components/home/Step.astro';
 import Hero from '../components/home/Hero.astro';
 import ProofRow from '../components/home/ProofRow.astro';
 import Work from '../components/home/Work.astro';
+import Apps from '../components/home/Apps.astro';
 import Services from '../components/home/Services.astro';
 import Process from '../components/home/Process.astro';
 import Proof from '../components/home/Proof.astro';
@@ -42,6 +43,8 @@ const _schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FA
       <Hero variant="c" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
         title="We help SaaS products grow." text="For founders whose product is good but not growing. We find where users drop off, then design the fix: product, website or brand." />
       <Work projects={featured} total={all.length} resultChips />
+      <Step />
+      <Apps apps={all.filter((p) => p.ownApp)} />
       <ProofRow variant="c" />
       <Step />
       <Proof videos={videos} reviews={reviews} />

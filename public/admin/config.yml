@@ -211,6 +211,21 @@ collections:
           - { name: image, label: "Image", widget: image, choose_url: false }
           - { name: caption, label: "Caption", widget: string, required: false }
           - { name: kind, label: "Shape", widget: select, options: [desktop, phone, board], default: desktop, hint: "board = full-width presentation image under the write-up" }
+      - { name: ownApp, label: "Our own app (shows in the homepage apps section)", widget: boolean, required: false, default: false }
+      - { name: appStore, label: "App Store link", widget: string, required: false }
+      - { name: icon, label: "App icon", widget: image, required: false, choose_url: false }
+      - { name: card, label: "Card cover (1.55 wide, shows in the work grid and apps section)", widget: image, required: false, choose_url: false }
+      - { name: tagline, label: "One line for the apps section", widget: string, required: false }
+      - { name: stack, label: "Stack", widget: string, required: false }
+      - name: chapters
+        label: "Chapters (switches the case study to the chapter layout)"
+        widget: list
+        required: false
+        fields:
+          - { name: title, label: "Title", widget: string }
+          - { name: text, label: "Text", widget: text }
+          - { name: image, label: "Board", widget: image, choose_url: false }
+          - { name: caption, label: "Alt text", widget: string, required: false }
       - { name: quote, label: "Client quote (word for word)", widget: text, required: false }
       - { name: quoteName, label: "Quote: name", widget: string, required: false }
       - { name: quoteRole, label: "Quote: role and company", widget: string, required: false }

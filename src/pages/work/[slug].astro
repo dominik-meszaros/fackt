@@ -33,7 +33,10 @@ const blocks = [
   said ? { id: 'words', label: 'In their words' } : null,
   p.gallery.length ? { id: 'screens', label: 'Screens' } : null,
 ].filter(Boolean) as { id: string; label: string }[];
-const showBody = blocks.length === 0 || !bodyIsStub;
+// Our own apps with chapters use the chapter layout: build numbers and the challenge up top, then one block per chapter (text and its board).
+const app = p.chapters.length > 0;
+if (app) blocks.splice(0, blocks.length, ...(p.challenge ? [{ id: 'challenge', label: 'The challenge' }] : []), ...p.chapters.map((c, i) => ({ id: `ch-${i + 1}`, label: c.title })));
+const showBody = !app && (blocks.length === 0 || !bodyIsStub);
 if (showBody && !bodyIsStub) blocks.unshift({ id: 'overview', label: 'Overview' });
 const caseSchema = [
   { '@context': 'https://schema.org', '@type': 'CreativeWork', name: `${p.name}: ${p.service}`, about: p.summary, description: p.summary, url: new URL(`/work/${entry.id}`, site.url).toString(), image: new URL(p.preview ?? p.image, site.url).toString(), creator: { '@type': 'Organization', name: 'Fackt', url: site.url }, genre: p.service },
@@ -52,30 +55,49 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
       <section class="cs-h">
         <div>
           <span class="crumb"><a href="/work">Work</a> <span>/</span> <b>{p.name}</b></span>
-          <span class="tag">{p.service}</span>
-          <h1>{p.name}</h1>
+          {p.icon
+            ? <div class="appid"><img src={p.icon} alt={`${p.name} app icon`} width="64" height="64" /><div><h1>{p.name}</h1><span class="mu2">{p.service}</span></div></div>
+            : <><span class="tag">{p.service}</span><h1>{p.name}</h1></>}
           <p class="lede">{p.summary}</p>
+          {p.appStore && (
+            <div class="acts"><a class="m-btn dk" href={p.appStore} target="_blank" rel="noopener">View on the App Store &#8599;</a><a class="m-btn lt" href={site.bookPage}>Book a call about your app</a></div>
+          )}
         </div>
         <dl class="cs-meta">
-          <div><dt>Client</dt><dd>{p.name}</dd></div>
+          <div><dt>Client</dt><dd>{p.ownApp ? 'Fackt, our own app' : p.name}</dd></div>
           {p.year && <div><dt>Year</dt><dd>{p.year}</dd></div>}
           <div><dt>Services</dt><dd>{p.service}</dd></div>
           {p.platform && <div><dt>Platform</dt><dd>{p.platform}</dd></div>}
-          {p.scope && <div class="wide"><dt>Scope</dt><dd>{p.scope}</dd></div>}
+          {p.stack && <div class="wide"><dt>Stack</dt><dd>{p.stack}</dd></div>}
+          {p.scope && !app && <div class="wide"><dt>Scope</dt><dd>{p.scope}</dd></div>}
         </dl>
       </section>
 
       <div class:list={['cs-stage', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}>
-        <img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} />
+        <picture>{p.card && <source media="(max-width: 720px)" srcset={p.card} />}<img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} /></picture>
       </div>
 
-      <section class:list={['cs-body', { solo: blocks.length < 2 }]}>
+      <section class:list={['cs-body', { solo: blocks.length < 2, app }]}>
         {blocks.length > 1 && (
           <nav class="toc" aria-label="On this page" data-toc>
-            {blocks.map((b, i) => <a class:list={{ on: i === 0 }} href={`#${b.id}`}>{b.label}</a>)}
+            {app && <span class="eb">Chapters</span>}
+            {blocks.map((b, i) => <a class:list={{ on: i === 0 }} href={`#${b.id}`}>{app && b.id.startsWith('ch-') && <i>{b.id.slice(3).padStart(2, '0')}</i>}{b.label}</a>)}
           </nav>
         )}
         <div class="col">
+          {app && p.results.length > 0 && (
+            <div class="blk nums-top"><span class="eb">{p.resultsTitle ?? 'The build in numbers'}</span><div class="nums four">{p.results.map((r) => <div><b>{r.value}</b><span>{r.label}</span></div>)}</div></div>
+          )}
+          {app && p.challenge && (
+            <div class="blk" id="challenge"><span class="eb">The challenge</span>{paras(p.challenge).map((t) => <p class="big">{t}</p>)}</div>
+          )}
+          {app && p.chapters.map((c, i) => (
+            <div class="blk ch" id={`ch-${i + 1}`}>
+              <h2><i>{String(i + 1).padStart(2, '0')}</i>{c.title}</h2>
+              {paras(c.text).map((t) => <p>{t}</p>)}
+              <figure><img src={c.image} alt={c.caption || `${p.name}: ${c.title}`} loading={i < 1 ? 'eager' : 'lazy'} decoding="async" /></figure>
+            </div>
+          ))}
           {showBody && !bodyIsStub && (
             <div class="blk prose" id="overview"><span class="eb">Overview</span><Content /></div>
           )}
@@ -87,13 +109,13 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               <a class="lnk" href={site.bookPage}>Book a free call &#8594;</a>
             </div>
           )}
-          {(p.challenge || p.challengeTitle) && (
+          {!app && (p.challenge || p.challengeTitle) && (
             <div class="blk" id="challenge"><span class="eb">The challenge</span>{p.challengeTitle && <h2>{p.challengeTitle}</h2>}{paras(p.challenge).map((t) => <p>{t}</p>)}</div>
           )}
           {(p.approach || p.approachTitle) && (
             <div class="blk" id="approach"><span class="eb">What we did</span>{p.approachTitle && <h2>{p.approachTitle}</h2>}{paras(p.approach).map((t) => <p>{t}</p>)}</div>
           )}
-          {(p.results.length > 0 || p.resultsTitle) && (
+          {!app && (p.results.length > 0 || p.resultsTitle) && (
             <div class="blk" id="results">
               <span class="eb">Results</span>{p.resultsTitle && <h2>{p.resultsTitle}</h2>}
               {p.results.length > 0 && <div class="nums">{p.results.map((r) => <div><b>{r.value}</b><span>{r.label}</span></div>)}</div>}
@@ -128,7 +150,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
               </div>
             </figure>
           )}
-          <NoteFromDom from="Case study" id={entry.id} line={`Building something like ${p.name}? <i>Two easy next steps:</i>`} />
+          <NoteFromDom from="Case study" id={entry.id} line={app ? `Building an app like ${p.name}? <i>Two easy next steps:</i>` : `Building something like ${p.name}? <i>Two easy next steps:</i>`} />
         </div>
       </section>
       {boards.length > 0 && (
@@ -208,6 +230,23 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .soon p { margin: 8px 0 14px; color: var(--m-mu); font-size: 14.5px; }
   .lnk { color: var(--m-ink); font-weight: 500; font-size: 14px; text-decoration: none; border-bottom: 1px solid var(--m-ink); }
 
+  .appid { display: flex; gap: 16px; align-items: center; margin-top: 18px; }
+  .appid img { width: 64px; height: 64px; flex-shrink: 0; }
+  .appid h1 { margin: 0; }
+  .acts { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .cs-body.app { width: min(1280px, 100% - 32px); grid-template-columns: 220px 1fr; gap: 100px; }
+  .app .toc { gap: 8px; top: 96px; }
+  .app .toc .eb { margin: 0 0 4px; }
+  .app .toc a { display: flex; gap: 10px; font-size: 13px; }
+  .app .toc a i { font-style: normal; font-family: var(--mono); font-size: 11px; width: 16px; padding-top: 2px; color: var(--m-mu-2); }
+  .nums.four { grid-template-columns: repeat(4, 1fr); }
+  .nums-top { padding-bottom: 48px; }
+  .blk p.big { font-family: var(--m-serif); font-size: 27px; line-height: 1.35; color: var(--m-ink); max-width: 760px; letter-spacing: -.005em; }
+  .ch { padding-top: 32px; }
+  .ch h2 { display: flex; gap: 12px; align-items: baseline; font-size: 30px; }
+  .ch h2 i { font-style: normal; font-family: var(--mono); font-size: 12px; color: var(--m-mu-2); }
+  .ch figure { margin: 22px 0 0; }
+  .ch img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 0 0 1px var(--m-line); background: var(--m-soft); }
   .nums { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 20px; border-top: 1px solid var(--m-line); }
   .nums div { padding: 18px 18px 0 0; }
   .nums div + div { padding-left: 18px; border-left: 1px solid var(--m-line-2); }
@@ -265,6 +304,18 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
     .toc { display: none; }
     .blk p, .prose :global(p) { font-size: 14.5px; }
     .nums { grid-template-columns: 1fr; }
+    .nums.four { grid-template-columns: 1fr 1fr; }
+    .nums.four div { padding: 14px 10px 14px 0; border-left: 0; }
+    .nums.four div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--m-line-2); }
+    .cs-body.app { grid-template-columns: 1fr; gap: 0; width: calc(100% - 32px); }
+    .blk p.big { font-size: 21px; }
+    .ch h2 { font-size: 24px; }
+    .appid img { width: 52px; height: 52px; }
+    .app .toc { display: flex; flex-direction: row; gap: 6px; position: sticky; top: 0; z-index: 5; margin: 0 -16px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; background: #fff; border-left: 0; border-bottom: 1px solid var(--m-line-2); }
+    .app .toc .eb, .app .toc a i { display: none; }
+    .app .toc a { flex-shrink: 0; font-size: 12px; padding: 5px 10px; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--m-line); }
+    .app .toc a.on { background: var(--m-ink); color: #fff; box-shadow: none; }
+    .app .toc a.on::before { display: none; }
     .nums div, .nums div + div { padding: 14px 0; border-left: 0; border-bottom: 1px solid var(--m-line-2); }
     .gal { grid-template-columns: 1fr; }
     .gst { height: 220px; }
@@ -293,7 +344,12 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   const toc = document.querySelector<HTMLElement>('[data-toc]');
   if (toc && 'IntersectionObserver' in window) {
     const links = [...toc.querySelectorAll<HTMLAnchorElement>('a')];
-    const set = (id: string) => links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === `#${id}`));
+    const set = (id: string) => links.forEach((a) => {
+      const on = a.getAttribute('href') === `#${id}`;
+      a.classList.toggle('on', on);
+      // On phones the chapters are a row of chips: keep the active one in view.
+      if (on && toc.scrollWidth > toc.clientWidth) toc.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+    });
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) set(e.target.id); }), { rootMargin: '-30% 0px -60% 0px' });
     links.forEach((a) => { const el = document.querySelector(a.getAttribute('href')!); if (el) io.observe(el); });
   }

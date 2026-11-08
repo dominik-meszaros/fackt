@@ -32,7 +32,7 @@ const workLd = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', n
         <div class="wg">
           {all.map((p) => (
             <a class="wc" href={`/work/${p.slug}`} data-c={p.category}>
-              <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview, pv: !!p.preview }]}><img src={p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
+              <div class:list={['im', { ph: p.imageKind === 'phone' && !p.preview && !p.card, pv: !!(p.card ?? p.preview) }]}><img src={p.card ?? p.preview ?? p.image} alt={`${p.name}, ${p.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" />{p.ownApp && <span class="own"><svg viewBox="0 0 20 20" width="11" height="11" aria-hidden="true"><path d="M1.03 0H18.97V6.67H13.57V13.33H7.55V20H1.03Z" fill="currentColor"/></svg>Our own app</span>}</div>
               <div class="cap"><span><b>{p.name}</b> <span class="mu2">&#183; {p.service}</span></span><span class="ct">View case study &#8594;</span></div>
               <p>{p.summary}</p>
             </a>
@@ -46,6 +46,7 @@ const workLd = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', n
 </Base>
 
 <style>
+  .own { position: absolute; left: 12px; top: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; background: #fff; color: var(--m-ink); border-radius: 3px; box-shadow: inset 0 0 0 1px var(--m-line); font-size: 12px; font-weight: 500; }
   .wi { width: min(960px, 100% - 32px); margin: 0 auto; }
   .wi-h { padding: 56px 0 8px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
   .wi-h p { margin: 0; max-width: 340px; color: var(--m-mu); font-size: 14.5px; }
