@@ -178,6 +178,11 @@
     var f = e.target, fields = {};
     if (!f || !f.elements) return;
     if (f.hasAttribute && f.hasAttribute("data-no-lead")) return; // email list signups are counted on their own, not as leads
+    if (f.hasAttribute && f.hasAttribute("data-ask-form")) { // the homepage ask bar is a search, not an enquiry: log the question, no lead email
+      var q = f.elements.notes ? String(f.elements.notes.value || "").trim().slice(0, 120) : "";
+      if (q) track("Asked: " + q);
+      return;
+    }
     Array.prototype.forEach.call(f.elements, function (el) {
       if (!el.name || el.type === "password" || el.type === "hidden" || el.type === "submit") return;
       if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;
