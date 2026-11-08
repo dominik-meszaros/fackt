@@ -22,7 +22,7 @@ challenge: |-
   Everywhere at once. 35 languages, so every release reads native wherever it lands.
 approachTitle: Soft Grain, rebuilt native
 approach: |-
-  Brand. A warm paper look we call Soft Grain: cream and sand, a dark brown ink, one bright orange and a garden green. Instrument Serif for headlines with one word in italic orange, Instrument Sans for the interface, and Caveat for handwritten notes, the kind you would stick on a fridge. The icon is a small candle, a diya, lit for one ritual a day.
+  Brand. A warm paper look we call Soft Grain: cream and sand, a dark brown ink, one bright orange and a garden green. Instrument Serif for headlines with one word in italic orange, Instrument Sans for the interface, and Caveat for handwritten notes, the kind you would stick on a fridge. The icon is a seed sprouting under a warm sky: small start, steady growth.
 
   The rebuild. From our Soft Grain designs we rebuilt Ritual natively in SwiftUI, keeping the bundle ID. Version 2.0 shipped the whole app: a 13 step onboarding in light and dark, Home with the week and the streak, ritual detail, timers, water and reading logs, Apple Health, reminders, rest days, data export and four paywall designs. Then we kept going. 2.1 gave every ritual its own room, added new rituals, the meadow with seasonal plants, widgets and a weekly recap you can share. 2.2 added a plan paywall built from the onboarding answers. 2.3 brought a What's New screen in all 35 languages and analytics. Four releases in about a week.
 
