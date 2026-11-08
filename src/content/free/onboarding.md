@@ -8,8 +8,8 @@ preview: /uploads/free/onboarding.webp
 previewIsSketch: false
 videoUrl: "https://youtu.be/94DlJnkYrtw"
 inside:
-  - "[Dom: what is inside the file, e.g. the full onboarding flow, step by step]"
-  - "[Dom: e.g. desktop and mobile versions]"
-  - "[Dom: e.g. components and states you can reuse]"
+  - "7 desktop screens for Halden, a spend management SaaS: sign up, role, workspace, connect data, first dashboard, first report and team invite"
+  - "Each step asks only what changes the setup, with sample data so the first win comes before the hard part"
+  - "Dark UI with real copy, ready to duplicate and adapt to your own product"
 draft: false
 ---
