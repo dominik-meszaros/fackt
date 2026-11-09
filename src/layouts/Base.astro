@@ -15,7 +15,8 @@ interface Props {
   schema?: Record<string, unknown>[];
 }
 const { title = site.title, description = site.description, image = '/og/home.jpg', noindex = false, type = 'website', schema = [] } = Astro.props;
-const canonical = new URL(Astro.url.pathname, site.url).toString();
+// Pages build as files (work/x.html) but are served without .html, so the canonical must drop it.
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') , site.url).toString();
 const ld = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
