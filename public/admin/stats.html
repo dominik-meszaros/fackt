@@ -222,6 +222,7 @@
         <section class="card"><p class="eb">Per free file</p><table><thead><tr><th>File</th><th class="r">Page views</th><th class="r">Signups</th><th class="r">Confirmed</th><th class="r">View to signup</th></tr></thead><tbody data-list-files></tbody></table></section>
         <section class="card"><p class="eb">Where signups came from</p><div class="rows" data-list-src></div></section>
       </div>
+      <section class="card"><p class="eb">Who signed up <span style="text-transform:none;letter-spacing:0">(all time, newest first)</span></p><table><thead><tr><th>Email</th><th>Free file</th><th>Source</th><th class="r">Opened file</th><th class="r">Emails sent</th><th class="r">Signed up</th></tr></thead><tbody data-list-people><tr><td colspan="6" class="none">Loading</td></tr></tbody></table></section>
     </section>
 
     <section class="seo" aria-label="Search">
@@ -336,10 +337,22 @@
   var seoLoaded = false;
   function extras() {
     homeTest();
+    people();
     fetch(API.replace('/stats', '/crawlstats') + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (c) { if (c) renderCrawl(c); }).catch(function () {});
     if (!seoLoaded) fetch('/admin/aiseo.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (a) { if (a) { seoLoaded = true; renderAiSeo(a); } }).catch(function () {});
+  }
+  // Fackt notes subscribers (Supabase "listpeople"): every signup, all time, whatever range is picked.
+  function people() {
+    fetch(API.replace('/stats', '/listpeople'), { headers: { 'x-stats-key': key }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        if (!d) return;
+        var st = function (p) { return p.unsub ? '<span class="tag">unsubscribed</span>' : p.status === 'confirmed' ? '<span class="tag hot">confirmed</span>' : '<span class="tag">not confirmed</span>'; };
+        $('[data-list-people]').innerHTML = d.people.length ? d.people.map(function (p) {
+          return '<tr' + (p.test ? ' style="opacity:.45"' : '') + '><td><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' + st(p) + (p.test ? ' <span class="tag">you</span>' : '') + '</td><td>' + esc(p.file || '') + '</td><td>' + esc(p.source) + '</td><td class="r">' + (p.opens ? p.opens + '&times;' : 'no') + '</td><td class="r">' + p.emails + ' of 3</td><td class="r">' + new Date(p.at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</td></tr>';
+        }).join('') : '<tr><td colspan="6" class="none">No signups yet.</td></tr>';
+      }).catch(function () {});
   }
   // Homepage test: setup from /home-test.json (versions, shares, what they show), numbers from the Supabase "hometest" function.
   var htCfg = null;
