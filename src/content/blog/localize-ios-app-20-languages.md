@@ -1,7 +1,7 @@
 ---
 title: "Localizing an iOS app into 20 languages: what to translate and what to rewrite"
 seoTitle: "How to localize an iOS app into 20 languages"
-description: "Translating strings is the easy part. The App Store previews, the jokes in your notifications and the one highlighted word in your headline are where localization actually wins or loses."
+description: "Translating strings is the easy part. App Store previews, notification jokes and the one highlighted word in your headline are where localization wins or loses."
 category: Mobile apps
 cover: /uploads/blog/cover-11.webp
 date: 2026-11-08

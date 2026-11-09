@@ -1,7 +1,7 @@
 ---
 title: "Paywall A/B tests without App Store updates: how we do it with RevenueCat"
 seoTitle: "Paywall A/B testing with RevenueCat, no app update"
-description: "Most apps hardcode one paywall and wait two weeks to try another. In Dozy, three paywall layouts ship in the app and one line of JSON in RevenueCat decides who sees which."
+description: "Most apps hardcode one paywall and wait two weeks to try another. In Dozy, three paywalls ship in the app and one line of JSON in RevenueCat decides who sees which."
 category: Mobile apps
 cover: /uploads/blog/cover-09.webp
 date: 2026-11-08

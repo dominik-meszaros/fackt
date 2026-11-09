@@ -12,7 +12,7 @@ interface Props { stage: Project[]; cats: string[]; all: Project[]; quotes: Quot
 const { stage, cats, all, quotes, variant = 'a', chips: showChips = true } = Astro.props;
 const lean = variant !== 'a';
 // The live homepage plays the showreel in the stage (public/uploads/reel). Logic in src/scripts/hero.ts.
-const reel = variant === 'a';
+const reel = true; // every homepage version plays the showreel
 // Label for a quote's public source link: "View on X", "View on Contra"...
 const srcLabel = (u?: string) => !u ? 'View source' : /x\.com|twitter\.com/.test(u) ? 'View on X' : /linkedin\./.test(u) ? 'View on LinkedIn' : /contra\./.test(u) ? 'View on Contra' : 'View source';
 const h = homeSettings;
@@ -65,7 +65,7 @@ const index = {
     </figure>
   )}
 
-  {variant !== 'c' && <>
+  {(reel || variant !== 'c') && <>
   <div class:list={['stage', { 'has-reel reel-on': reel }]} id="stage">
     {reel
       ? <a class="tagl" href="/work" data-stage-link><span data-stage-label>Fackt showreel</span><b data-stage-cta>View all work &#8594;</b></a>

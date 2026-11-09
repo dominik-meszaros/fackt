@@ -3,7 +3,7 @@ name: Story-Story
 service: Web design and branding
 category: web
 summary: A color-coded landing page and brand UI for an influencer marketing platform that brings discovery, monitoring, saved content and campaigns into one workspace.
-seoTitle: "Landing page and brand UI for an influencer platform | Story-Story"
+seoTitle: "Influencer platform landing page and brand UI | Story-Story"
 keywords: [website, landing page, web design, branding, saas, influencer, marketing, creator, color system, motion]
 image: /uploads/story-screen.webp
 preview: /uploads/story-preview.webp

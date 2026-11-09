@@ -52,7 +52,7 @@ for (let i = 0; i * 18 < PH + 50; i++) {
   contours.push(d);
 }
 ---
-<Base title="Fackt: we help SaaS products grow with design" noindex lcp={reel[0]?.img}>
+<Base title="Fackt: we help SaaS products grow with design" noindex lcp="/uploads/reel/reel-start.webp">
   <div class="m-page">
     <SketchDefs />
     <Nav figmaButton={false} />
@@ -69,18 +69,15 @@ for (let i = 0; i * 18 < PH + 50; i++) {
         </div>
 
         <div class="player" data-reel>
-          {reel.map((p, i) => (
-            <a class:list={['slide', { on: i === 0 }]} href={`/work/${p.slug}`} data-i={i} aria-hidden={i === 0 ? undefined : 'true'} tabindex={i === 0 ? 0 : -1} data-journey={`Home ${V}: opened case study ${p.name} (reel)`}>
-              <img src={p.img} alt={`${p.name}, ${p.service.toLowerCase()}`} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
-            </a>
-          ))}
+          <video muted playsinline preload="metadata" disablepictureinpicture poster="/uploads/reel/reel-start.webp" aria-label="Fackt showreel: our case studies in motion" data-reel-video></video>
+          <a class="all" href="/work" data-journey={`Home ${V}: view all work (reel)`}>View all work &#8594;</a>
           <div class="ctrl">
             <button type="button" class="ic" data-reel-toggle aria-label="Pause the reel">
               <svg class="i-play" width="11" height="11" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"></path></svg>
               <svg class="i-pause" width="11" height="11" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1h2v8H2zM6 1h2v8H6z" fill="currentColor"></path></svg>
             </button>
             <span class="tm" data-reel-time>0:00 / 0:00</span>
-            <span class="now" data-reel-label>{reel[0]?.name}, {reel[0]?.service.toLowerCase()}</span>
+            <span class="now">Fackt showreel</span>
             <button type="button" class="ic" data-reel-full aria-label="Full screen"><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" fill="none" stroke="currentColor" stroke-width="1.3"></path></svg></button>
             <span class="track" aria-hidden="true"><i data-reel-bar></i></span>
           </div>
@@ -134,9 +131,9 @@ for (let i = 0; i * 18 < PH + 50; i++) {
 
   /* reel: plays through the work like a video, in the same frame as the live homepage's stage */
   .player { position: relative; width: min(960px, 100%); aspect-ratio: 2 / 1; margin-top: 36px; border-radius: 4px; overflow: hidden; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; }
-  .slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; z-index: 0; }
-  .slide.on { opacity: 1; z-index: 1; }
-  .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .player video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #fff; }
+  .player .all { position: absolute; top: 12px; right: 12px; z-index: 2; padding: 7px 11px; border-radius: 3px; background: rgba(17,17,17,.82); color: #fff; font-size: 13px; text-decoration: none; }
+  .player:fullscreen video { object-fit: contain; }
   .ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 10px; padding: 34px 14px 10px; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.5)); color: #fff; font-size: 12px; font-weight: 500; text-align: left; }
   .ic { all: unset; cursor: pointer; width: 22px; height: 22px; display: grid; place-items: center; color: #fff; border-radius: 2px; }
   .ic:hover { background: rgba(255,255,255,.14); }
@@ -181,41 +178,34 @@ for (let i = 0; i * 18 < PH + 50; i++) {
     .cal .bd, .loading { min-height: 560px; }
     .faqw { grid-template-columns: 1fr; gap: 20px; padding: 40px 0 56px; }
   }
-  @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
 </style>
 
 <script>
   import '../scripts/faq';
 
-  // Reel: crossfades through the work (3.2 s each) with time and progress, plays while on screen, pause and full screen.
+  // Reel: the same showreel as the other homepage versions. Plays while on screen, with time, progress, pause and full screen.
   const player = document.querySelector<HTMLElement>('[data-reel]');
-  if (player) {
-    const slides = Array.from(player.querySelectorAll<HTMLAnchorElement>('.slide'));
-    const label = player.querySelector<HTMLElement>('[data-reel-label]');
+  const video = player?.querySelector<HTMLVideoElement>('[data-reel-video]');
+  if (player && video) {
     const time = player.querySelector<HTMLElement>('[data-reel-time]');
     const bar = player.querySelector<HTMLElement>('[data-reel-bar]');
     const btn = player.querySelector<HTMLButtonElement>('[data-reel-toggle]');
-    const MS = 3200, TOTAL = MS * slides.length;
-    const mmss = (ms: number) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let pos = 0, last = 0, cur = 0, userPaused = reduce, visible = false;
-    const show = (i: number) => {
-      if (i === cur) return; cur = i;
-      slides.forEach((s, k) => { const on = k === i; s.classList.toggle('on', on); s.tabIndex = on ? 0 : -1; if (on) s.removeAttribute('aria-hidden'); else s.setAttribute('aria-hidden', 'true'); });
-      const next = slides[(i + 1) % slides.length]?.querySelector('img'); if (next) next.loading = 'eager';
-      const img = slides[i]?.querySelector('img'); if (label && img) label.textContent = img.alt;
+    const mmss = (t: number) => { const s = Math.floor(t || 0); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+    let userPaused = matchMedia('(prefers-reduced-motion: reduce)').matches, visible = false;
+    video.src = matchMedia('(max-width: 700px)').matches ? '/uploads/reel/reel-m.mp4' : '/uploads/reel/reel.mp4';
+    video.loop = true;
+    const paint = () => { if (time) time.textContent = `${mmss(video.currentTime)} / ${mmss(video.duration)}`; if (bar && video.duration) bar.style.width = `${(video.currentTime / video.duration) * 100}%`; };
+    const sync = () => {
+      player.classList.toggle('paused', userPaused);
+      btn?.setAttribute('aria-label', userPaused ? 'Play the reel' : 'Pause the reel');
+      if (visible && !userPaused && document.visibilityState === 'visible') video.play().catch(() => {}); else video.pause();
     };
-    const paint = () => { if (time) time.textContent = `${mmss(pos)} / ${mmss(TOTAL)}`; if (bar) bar.style.width = `${(pos / TOTAL) * 100}%`; };
-    const playing = () => visible && !userPaused && document.visibilityState === 'visible';
-    const frame = (now: number) => {
-      if (playing() && last) { pos = (pos + (now - last)) % TOTAL; show(Math.floor(pos / MS)); paint(); }
-      last = now; requestAnimationFrame(frame);
-    };
-    player.classList.toggle('paused', userPaused);
-    paint(); requestAnimationFrame(frame);
-    btn?.addEventListener('click', () => { userPaused = !userPaused; player.classList.toggle('paused', userPaused); btn.setAttribute('aria-label', userPaused ? 'Play the reel' : 'Pause the reel'); });
+    video.addEventListener('timeupdate', paint); video.addEventListener('loadedmetadata', paint);
+    btn?.addEventListener('click', () => { userPaused = !userPaused; sync(); });
+    document.addEventListener('visibilitychange', sync);
     player.querySelector('[data-reel-full]')?.addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else player.requestFullscreen?.(); });
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0.4 }).observe(player);
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0.4 }).observe(player);
+    sync();
   }
 
   // Calendar on the page (same Cal.com event and namespace as /book, so bookings are tracked the same way).

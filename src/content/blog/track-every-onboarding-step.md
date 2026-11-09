@@ -1,7 +1,7 @@
 ---
 title: "Track every onboarding step before launch, not after"
 seoTitle: "Onboarding analytics: track every step from day one"
-description: "Most teams add analytics after users start leaving, and then have nothing to compare against. Here are the events and properties we put into our own apps before the first user arrived."
+description: "Most teams add analytics after users start leaving, with nothing to compare against. These are the events we put into our own apps before the first user arrived."
 category: Onboarding
 cover: /uploads/blog/cover-12.webp
 date: 2026-11-08

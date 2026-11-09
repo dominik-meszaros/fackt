@@ -2,7 +2,7 @@
 title: "Relay CRM UI kit"
 headline: "Relay, a complete SaaS CRM in Figma"
 lede: "The product from the video, on desktop and mobile. 19 desktop screens, 26 mobile screens, billing, team and notification settings, 5 product emails, every empty and error state, light and dark mode, all built on variables. Duplicate it and start from a finished product instead of a blank canvas."
-description: "Relay is a complete SaaS CRM UI kit for Figma, desktop and mobile: dashboard, pipeline, contacts, deals, inbox, tasks, calendar, reports, billing, members, integrations, onboarding, product emails and every state, built on variables with light and dark mode."
+description: "Relay is a SaaS CRM UI kit for Figma, desktop and mobile: dashboard, pipeline, contacts, deals, inbox, reports, onboarding and every state, in light and dark mode."
 price: 49
 checkoutUrl: "https://buy.polar.sh/polar_cl_JLPGF75tYNG0pWlRT0rILnmzMTf6JP5ZNbb8Y3nP4wJ"
 cover: /uploads/products/relay/cover.webp
