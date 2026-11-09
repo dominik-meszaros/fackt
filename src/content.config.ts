@@ -12,6 +12,8 @@ const work = defineCollection({
     summary: z.string(),
     // Optional title for search results and the browser tab (about 60 characters), written the way people search.
     seoTitle: z.string().optional(),
+    // Other case studies to point readers to, shown near the top and again at the end (work slugs).
+    seeAlso: z.array(z.string()).default([]),
     // Words people might type in the search bar to find this project.
     keywords: z.array(z.string()).default([]),
     image: z.string(),

@@ -51,6 +51,8 @@ const caseSchema = [
     { '@type': 'ListItem', position: 3, name: p.name, item: new URL(`/work/${entry.id}`, site.url).toString() },
   ] },
 ];
+const allWork = await getCollection('work');
+const also = p.seeAlso.map((id) => allWork.find((w) => w.id === id)).filter(Boolean) as typeof allWork;
 const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 ---
 <Base type="article" schema={caseSchema} title={p.seoTitle ?? `${p.name}: ${p.service} case study | Fackt`} description={p.summary} image={`/og/work-${entry.id}.jpg`}>
@@ -64,6 +66,9 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
             ? <div class="appid"><img src={p.icon} alt={`${p.name} app icon`} width="64" height="64" /><div><h1>{p.name}</h1><span class="mu2">{p.service}</span></div></div>
             : <><span class="tag">{p.service}</span><h1>{p.name}</h1></>}
           <p class="lede">{p.summary}</p>
+          {also.length > 0 && (
+            <p class="also">See also: {also.map((w) => <a href={`/work/${w.id}`}>{w.data.name}, {w.data.service.toLowerCase()} &#8594;</a>)}<a href="/audit">Free audit of your product &#8594;</a></p>
+          )}
           {p.appStore && (
             <div class="acts"><a class="m-btn dk" href={p.appStore} target="_blank" rel="noopener">View on the App Store &#8599;</a><a class="m-btn lt" href={site.bookPage}>Book a call about your app</a></div>
           )}
@@ -169,6 +174,14 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
             </figure>
           ))}
         </section>
+      )}
+      {also.length > 0 && (
+        <nav class="also-end" aria-label="See also">
+          {also.map((w) => (
+            <a href={`/work/${w.id}`}><img src={w.data.card ?? w.data.preview ?? w.data.image} alt="" loading="lazy" /><span><small>Next read</small><b>{w.data.name}</b><em>{w.data.summary}</em></span></a>
+          ))}
+          <a class="au" href="/audit"><span><small>Free</small><b>Get an audit of your product</b><em>A video walkthrough and a written list of fixes, within 2 days.</em></span></a>
+        </nav>
       )}
       {svc && (
         <a class="rsvc" href={`/${svc.slug}`}>
@@ -292,6 +305,17 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .next { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px 0; border-top: 1px solid var(--m-line); border-bottom: 1px solid var(--m-line); margin-top: 32px; color: inherit; text-decoration: none; }
   .next .nx { display: flex; align-items: center; gap: 18px; }
   .rnote { width: min(960px, 100% - 32px); margin: 48px auto 0; display: flex; align-items: center; gap: 18px; padding: 14px 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px #dcdcd8; color: inherit; text-decoration: none; }
+  .also { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: #6a6a66; }
+  .also a { color: #111; text-decoration: underline; text-underline-offset: 3px; }
+  .also-end { width: min(960px, 100% - 32px); margin: 48px auto 0; display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px; }
+  .also-end a { display: flex; gap: 18px; align-items: center; padding: 14px; background: #f4f4f2; border-radius: 4px; color: inherit; text-decoration: none; transition: box-shadow .2s; }
+  .also-end a:hover { box-shadow: inset 0 0 0 1px #111; }
+  .also-end img { width: 132px; aspect-ratio: 4/3; object-fit: cover; border-radius: 2px; flex: none; }
+  .also-end small { display: block; font-size: 12px; color: #767672; }
+  .also-end b { display: block; margin-top: 2px; font-family: var(--m-serif); font-weight: 400; font-size: 22px; }
+  .also-end em { display: block; margin-top: 4px; font-style: normal; font-size: 13.5px; color: #6a6a66; }
+  .also-end .au { background: #111; color: #fff; padding: 20px 22px; }
+  .also-end .au small, .also-end .au em { color: #b8b8b4; }
   .rsvc { width: min(960px, 100% - 32px); margin: 48px auto 0; display: flex; align-items: center; gap: 24px; padding: 20px 22px; border-radius: 4px; background: #f4f4f2; color: inherit; text-decoration: none; transition: box-shadow .2s; }
   .rsvc:hover { box-shadow: inset 0 0 0 1px #111; }
   .rsvc small { display: block; font-size: 12px; color: #767672; }
@@ -339,6 +363,7 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
     .gst { height: 220px; }
     .quote { grid-template-columns: 1fr; padding: 22px 20px; }
     .quote blockquote { font-size: 18px; }
+    .also-end { grid-template-columns: 1fr; }
     .rsvc { flex-direction: column; align-items: flex-start; gap: 10px; }
     .next { flex-direction: column; align-items: flex-start; gap: 14px; }
     .next .nt { text-align: left; }

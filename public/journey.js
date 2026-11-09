@@ -189,6 +189,12 @@
       var v = String(el.value || "").trim();
       if (v) fields[el.name.slice(0, 60)] = v.slice(0, 3000);
     });
+    // Only a form that hands us an email is a lead. Search bars and prefill bars are just logged.
+    var email = "";
+    for (var k in fields) if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields[k])) { email = fields[k]; break; }
+    if (!email) { track("Used a form without email on " + path()); return; }
+    if (window.__facktLastLead === email && Date.now() - window.__facktLastLeadAt < 10000) return; // double click
+    window.__facktLastLead = email; window.__facktLastLeadAt = Date.now();
     track("Submitted a form on " + path());
     convert("form", fields);
   }, true);

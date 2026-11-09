@@ -9,6 +9,7 @@ image: /uploads/earntask-screen.webp
 preview: /uploads/earntask-preview.webp
 tint: mint
 featured: false
+seeAlso: [communi]
 platform: Website, desktop to mobile
 scope: Product design, UX design and design system, delivered in two weeks
 challengeTitle: Paid tasks people can trust
