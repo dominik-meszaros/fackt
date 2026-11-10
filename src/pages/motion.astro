@@ -1,0 +1,68 @@
+---
+// Unlisted motion showcase: fackt.io/motion. Ten animated screens from Fackt's own shipped iOS apps
+// (Dozy, Ritual, Fluo), each a live web port of the app's SwiftUI / SpriteKit with the same springs and art.
+// Not in the nav or sitemap, noindex. Shared by link with prospects and past clients.
+// Dom's comments: write them in `notes` below (one per screen). Empty notes are not shown.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import NoteFromDom from '../components/NoteFromDom.astro';
+import Mark from '../components/home/Mark.astro';
+import screens from '../data/motion-screens.html?raw';
+import '../styles/motion.css';
+
+const notes: Record<string, string> = {
+  wake: '',
+  sleep: '',
+  score: '',
+  garden: '',
+  breathe: '',
+  done: '',
+  mood: '',
+  fix: '',
+  voice: '',
+  reply: '',
+};
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const html = screens.replace(/<!--note:(\w+)-->/g, (_, k) =>
+  notes[k] ? `<p class="mo-dom"><span class="mo-dom-k">Dom</span>${esc(notes[k])}</p>` : '');
+---
+<Base title="Motion in shipped apps | Fackt" description="Ten animated screens from three iOS apps Fackt designed and built: Dozy, Ritual and Fluo. Running code, not videos." noindex>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@600;700;800;900&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=Caveat:wght@500;700&family=Geologica:wght@300;400;500;600&family=Doto:wght@800&display=swap" />
+  <div class="m-page">
+    <Nav />
+    <main class="mo">
+      <header class="mo-hero m-wrap">
+        <span class="mo-tag"><Mark size={13} />Motion design</span>
+        <h1>Motion that ships.</h1>
+        <p class="mo-lede">Ten animated screens from three iOS apps we designed and built end to end: <b>Dozy</b>, <b>Ritual</b> and <b>Fluo</b>, all live on the App Store. Nothing here is a video. Each screen runs as code, ported from the app's own SwiftUI and SpriteKit with the same springs, timings and artwork. Hit Replay on any screen and open the source under it to see what runs on the phone.</p>
+        <div class="mo-facts"><span>SwiftUI</span><span>SpriteKit</span><span>3 apps on the App Store</span><span>Figma to production</span></div>
+      </header>
+      <div class="mo-body m-wrap" set:html={html} />
+      <div class="m-wrap mo-end"><NoteFromDom from="Motion" id="motion" line="Want screens that feel <i>this alive</i> in your app? Two easy next steps:" /></div>
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<script>
+  import '../scripts/motion.js';
+</script>
+
+<style is:global>
+  .mo .m-wrap { width: min(1240px, 100% - 32px); }
+  .mo-hero { padding: 56px 0 36px; border-bottom: 1.5px solid var(--m-ink); display: grid; gap: 14px; }
+  .mo-tag { display: inline-flex; align-items: center; gap: 7px; font: 500 12px 'Geist Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--m-mu); }
+  .mo-hero h1 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: clamp(44px, 7vw, 84px); line-height: .98; letter-spacing: -.025em; text-wrap: balance; }
+  .mo-lede { margin: 0; max-width: 64ch; font-size: 16.5px; color: var(--m-ink-2); }
+  .mo-lede b { font-weight: 500; color: var(--m-ink); }
+  .mo-facts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mo-facts span { font: 12px 'Geist Mono', ui-monospace, monospace; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--m-line); padding: 4px 9px; color: var(--m-mu); }
+  .mo-body { display: flex; flex-direction: column; gap: 72px; padding: 48px 0 24px; }
+  .mo .chead h2 { font-family: var(--m-serif); font-weight: 400; letter-spacing: -.02em; }
+  .mo .store { border-radius: 3px; border-width: 1px; box-shadow: 2px 2px 0 var(--m-hard); font-size: 12.5px; }
+  .mo .cap button { border-radius: 3px; font-family: 'Geist Mono', ui-monospace, monospace; }
+  .mo-dom { margin: 0; display: flex; gap: 10px; align-items: baseline; font-family: var(--m-serif); font-size: 18px; line-height: 1.3; color: var(--m-ink); }
+  .mo-dom-k { flex: none; font: 500 11px 'Geist Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; background: var(--m-ink); color: #fff; border-radius: 3px; padding: 2px 6px; transform: translateY(-2px); }
+  .mo-end { padding-bottom: 56px; }
+</style>

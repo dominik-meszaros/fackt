@@ -1,0 +1,282 @@
+<!-- ================= DOZY ================= -->
+  <section class="chap" style="--c:var(--dozy)" aria-labelledby="h-dozy">
+    <div class="chead">
+      <img src="/motion/icon-dozy.png" alt="Dozy app icon" width="64" height="64">
+      <div class="meta">
+        <h2 id="h-dozy">Dozy</h2>
+        <span class="sub">Sleep tracker and smart alarm, with a sloth who sleeps when you do.</span>
+        <span class="stack">SwiftUI · custom springs · Reduce Motion fallbacks</span>
+      </div>
+      <a class="store" href="https://apps.apple.com/us/app/dozy-sleep-tracker/id6775070929" target="_blank" rel="noopener">App Store ↗</a>
+    </div>
+    <div class="screens">
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen dz dz-wake" id="s-wake">
+          <div class="dz-art">
+            <div class="dz-sun" id="wk-sun"><span style="width:434px;height:434px;margin:-217px;background:rgba(255,196,96,.14)"></span><span style="width:330.67px;height:330.67px;margin:-165.3px;background:rgba(255,196,96,.25)"></span><span style="width:227.33px;height:227.33px;margin:-113.7px;background:#FFC25C"></span></div>
+            <img class="dz-hills" src="/motion/dozy-wakehills.svg" alt="">
+            <img class="dz-sloth" id="wk-sloth" src="/motion/dozy-wakeslothbranch.svg" alt="">
+          </div>
+          <div class="dz-night" id="wk-night" style="opacity:0"></div>
+          <div class="dz-top">
+            <div class="dz-pill" data-ap="3"><img src="/motion/dozy-wakesun.svg" width="15" height="15" alt="">Woken in light sleep</div>
+            <div style="text-align:center"><div class="dz-time" data-ap="4">7:24</div><div class="dz-gm" data-ap="5">Good morning, Alex</div></div>
+          </div>
+          <div class="dz-btns"><div class="dz-b1" data-ap="5">I'm up, show my score</div><div class="dz-b2" data-ap="6">Snooze 5 min</div></div>
+        </div><div class="island"></div><div class="sbar" style="color:#231942"><span>7:24</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Smart alarm sunrise</h3><button type="button" data-replay="wake">Replay</button></div>
+        <p class="desc">The night tint lifts, the sun climbs from behind the hills and the sloth springs up with a little overshoot.</p>
+        <!--note:wake-->
+        <details><summary>WakeUpScreen.swift</summary><pre>// Sunrise: the night tint lifts, the sun climbs, the sloth springs up.
+withAnimation(.easeOut(duration: 1.4)) { risen = true }
+
+sunRings
+    .scaleEffect(risen ? 1 : 0.9)
+    .offset(y: 48 + (risen ? 0 : 230))
+    .animation(.easeOut(duration: 1.6), value: risen)
+
+Image("WakeSlothBranch")
+    .scaleEffect(x: 1, y: risen ? 1 : 0.94, anchor: .bottom)
+    .offset(x: 7.3, y: risen ? 0 : 34)
+    .animation(.spring(duration: 0.9, bounce: 0.38).delay(0.35), value: risen)</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen dz dz-sleep" id="s-sleep">
+          <div class="dz-night"></div>
+          <div id="stars"></div>
+          <div class="dz-head">
+            <div class="dz-tpill"><span class="dz-dot"></span>Tracking your sleep</div>
+            <div class="dz-clock"><span>11</span><span class="dz-colon">:</span><span>42</span></div>
+            <div class="dz-alarm">Alarm 7:30 AM, smart window from 7:00</div>
+          </div>
+          <img class="dz-sl" src="/motion/dozy-sleepslothbranch.svg" alt="">
+          <div class="dz-slide"><div class="dz-knob"><svg width="34" height="34" viewBox="0 0 34 34"><g fill="#fff"><circle cx="17" cy="17" r="7"/><g id="rays"></g></g></svg></div>Slide to wake up</div>
+        </div><div class="island"></div><div class="sbar" style="color:#fff"><span>11:42</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Night mode</h3><button type="button" data-replay="sleep">Replay</button></div>
+        <p class="desc">Ambient loops tuned to feel asleep: a slow breath on the sloth, twinkling stars, a heartbeat colon and a pulsing tracking dot.</p>
+        <!--note:sleep-->
+        <details><summary>SleepFlowView.swift</summary><pre>Image("SleepSlothBranch")
+    // Sloth and branch are one image: a very slow,
+    // shallow breath anchored at the branch.
+    .dozyBreathing(amount: 0.018, duration: 3.6, anchor: .top)
+
+// The colon breathes softly like a sleeping heartbeat.
+withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) { dim = true }
+
+// Green "tracking" dot with a soft expanding halo.
+withAnimation(.easeOut(duration: 1.8).repeatForever(autoreverses: false)) { pulse = true }</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen dz dz-score" id="s-score">
+          <div class="dz-top" style="top:70px"><div class="dz-pill" data-sc="0">Last night · Mon, Sep 21</div></div>
+          <svg class="dz-ring" viewBox="0 0 240 240"><circle cx="120" cy="120" r="104" fill="none" stroke="#E2D8FF" stroke-width="22"/><circle id="sc-arc" cx="120" cy="120" r="104" fill="none" stroke="#8853FF" stroke-width="22" stroke-linecap="round" transform="rotate(-90 120 120)" stroke-dasharray="653.5" stroke-dashoffset="91.5"/></svg>
+          <div class="dz-num"><span id="sc-n">86</span></div>
+          <div class="dz-cards"><div class="dz-card" data-sc="1"><b>7h 49m</b><span>asleep</span></div><div class="dz-card" data-sc="2"><b>1h 54m</b><span>deep</span></div><div class="dz-card" data-sc="3"><b>93%</b><span>efficiency</span></div></div>
+          <img class="dz-wink" data-sc="4" src="/motion/dozy-insightsslothwink.svg" alt="">
+        </div><div class="island"></div><div class="sbar" style="color:#231942"><span>7:25</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Score reveal</h3><button type="button" data-replay="score">Replay</button></div>
+        <p class="desc">After "I'm up": the ring fills, the number counts up with a numeric transition and the stat cards stagger in.</p>
+        <!--note:score-->
+        <details><summary>DozyMotion.swift</summary><pre>// Every Dozy screen enters in a stagger: index * step.
+header.dozyAppear(1, step: 0.09)
+Text(score.formatted())
+    .contentTransition(.numericText())
+    .animation(DozyMotion.snappy, value: score)</pre></details>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= RITUAL ================= -->
+  <section class="chap" style="--c:var(--ritual)" aria-labelledby="h-ritual">
+    <div class="chead">
+      <img src="/motion/icon-ritual.png" alt="Ritual app icon" width="64" height="64">
+      <div class="meta">
+        <h2 id="h-ritual">Ritual</h2>
+        <span class="sub">Habit tracker where every ritual you finish waters an isometric garden.</span>
+        <span class="stack">SwiftUI · SpriteKit garden · haptics on every landing</span>
+      </div>
+      <a class="store" href="https://apps.apple.com/us/app/ritual-habit-tracker-goals/id6757848730" target="_blank" rel="noopener">App Store ↗</a>
+    </div>
+    <div class="screens">
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen rt" id="s-garden">
+          <div class="rt-h"><div class="rt-hand">your garden</div><h4 class="rt-serif">Level 3, growing</h4><p>Every ritual you finish waters your plot.</p></div>
+          <div class="rt-plot" id="plot"></div>
+          <div class="rt-seeds"><img src="/motion/ritual-seed.png" width="18" height="18" alt=""><span id="seeds">+12 seeds today</span></div>
+        </div><div class="island"></div><div class="sbar" style="color:#2B231D"><span>9:41</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Garden that grows</h3><button type="button" data-replay="garden">Replay</button></div>
+        <p class="desc">Plants pop onto the lawn, level up with a bump and sparkles, sway on their own rhythm, and the land expands with a glow.</p>
+        <!--note:garden-->
+        <details><summary>PlotScene.swift</summary><pre>// New plant: pop in from a seed.
+node.setScale(0.1)
+node.run(.sequence([.scale(to: 1.1, duration: 0.22),
+                    .scale(to: 1, duration: 0.18)]))
+
+// A gentle sway, each plant on its own rhythm.
+let d = Double.random(in: 1.8...2.6), a = CGFloat.random(in: 0.025...0.04)
+sprite.run(.repeatForever(.sequence([.rotate(toAngle: a, duration: d),
+                                     .rotate(toAngle: -a, duration: d)])))
+
+// Land grows: the new edge glows, then fades.
+glow.run(.sequence([.wait(forDuration: Double(i + j) * 0.04),
+                    .fadeAlpha(to: 0, duration: 1.4)]))</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen rt rt-br" id="s-breathe">
+          <div class="rt-bt">BOX BREATHING · ROUND <span id="br-r">1</span> OF 8</div>
+          <svg class="rt-ring" viewBox="0 0 300 300"><circle cx="150" cy="150" r="125" fill="radial" style="fill:none"/><circle cx="150" cy="150" r="125" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="6"/><circle id="br-arc" cx="150" cy="150" r="125" fill="none" stroke="#F4ECE1" stroke-width="6" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="785.4" stroke-dashoffset="785.4"/></svg>
+          <div class="rt-orb" id="br-orb"><img src="/motion/ritual-breathe_halo.png" alt=""><img src="/motion/ritual-breathe_orb.png" alt=""><img id="br-sp" src="/motion/ritual-breathe_sparkles.png" alt=""></div>
+          <div class="rt-blab rt-serif" id="br-l">Breathe in</div>
+          <div class="rt-bnum" id="br-n">4</div>
+          <div class="rt-segs"><div><i></i></div><div><i></i></div><div><i></i></div><div><i></i></div></div>
+          <div class="rt-segl"><span>IN</span><span>HOLD</span><span>OUT</span><span>HOLD</span></div>
+        </div><div class="island"></div><div class="sbar" style="color:#F4ECE1"><span>9:41</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Guided breathing</h3><button type="button" data-replay="breathe">Replay</button></div>
+        <p class="desc">A 4, 4, 4, 4 box breath: the orb grows and shrinks with the lungs, the ring tracks the phase, the label crossfades.</p>
+        <!--note:breathe-->
+        <details><summary>BreatheSession.swift</summary><pre>ZStack {
+    RoomLayer(room: "breathe", layer: "halo")
+    RoomLayer(room: "breathe", layer: "orb")
+    RoomLayer(room: "breathe", layer: "sparkles")
+        .opacity(phase == .exhale ? 0.4 : 1)
+}
+.scaleEffect(0.42 + 0.5 * m.scale)
+
+Text(phase.label)
+    .contentTransition(.opacity)
+    .animation(.easeInOut(duration: 0.35), value: m.step)</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen rt" id="s-done">
+          <div class="rt-done">
+            <div class="rt-art" id="dn-art"><div class="sun" id="dn-sun"></div><div class="hz"></div></div>
+            <div class="rt-hand rt-cheer rt-rv" data-rv="0">up on time!</div>
+            <div class="rt-serif rt-hl rt-rv" data-rv="1">Up at 6:58.</div>
+            <div class="rt-fact rt-rv" data-rv="2">That's 13 early mornings in a row.</div>
+            <div class="rt-stats"><div class="rt-stat rt-rv" data-rv="3"><b>13 days</b><span>streak, kept</span></div><div class="rt-stat rt-rv" data-rv="4"><b>2 of 4</b><span>rituals today</span></div></div>
+          </div>
+          <div class="rt-btn">Back to today</div>
+        </div><div class="island"></div><div class="sbar" style="color:#2B231D"><span>6:58</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Done moment</h3><button type="button" data-replay="done">Replay</button></div>
+        <p class="desc">The art lands like a stamp on paper (with a haptic thump), then the words settle in one by one.</p>
+        <!--note:done-->
+        <details><summary>DoneMoment.swift</summary><pre>withAnimation(.spring(duration: 0.9, bounce: 0.4).delay(0.15)) { on = true }
+// The art lands like a stamp on paper: feel it.
+DispatchQueue.main.asyncAfter(deadline: .now() + 0.42) { Haptics.land() }
+
+Text(copy.headline).reveal(1, after: 0.35)
+
+// reveal(): fade + lift, staggered 0.07s per sibling
+static let settle = Animation.spring(duration: 0.55, bounce: 0.28)</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen rt" id="s-mood">
+          <div class="rt-mood">
+            <div class="rt-hand" style="font-size:24px;color:#B4500C;font-weight:700">evening check-in</div>
+            <h4 class="rt-serif">How did today feel?</h4>
+            <div class="rt-faces" id="faces"></div>
+            <div class="rt-note"><div class="rt-hand">a word or two</div><p id="mood-t"></p></div>
+            <div class="rt-hand" style="font-size:22px;color:#5A4636;margin-top:24px">this week</div>
+            <div class="rt-week" id="week"></div>
+          </div>
+        </div><div class="island"></div><div class="sbar" style="color:#2B231D"><span>9:12</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Mood check-in</h3><button type="button" data-replay="mood">Replay</button></div>
+        <p class="desc">Tap a face: it pops with a springy bump, the note types itself and today drops into the week.</p>
+        <!--note:mood-->
+        <details><summary>Motion.swift</summary><pre>static let pop = Animation.spring(duration: 0.38, bounce: 0.55)
+
+/// One springy bump every time `trigger` changes.
+func bump&lt;T: Equatable&gt;(on trigger: T, scale: CGFloat = 1.05) -> some View
+
+/// One small side to side wobble every time `trigger` changes.
+func wobble&lt;T: Equatable&gt;(on trigger: T, degrees: Double = 1.6) -> some View</pre></details>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= FLUO ================= -->
+  <section class="chap" style="--c:var(--fluo)" aria-labelledby="h-fluo">
+    <div class="chead">
+      <img src="/motion/icon-fluo.png" alt="Fluo app icon" width="64" height="64">
+      <div class="meta">
+        <h2 id="h-fluo">Fluo</h2>
+        <span class="sub">AI keyboard that fixes typos in six languages, types what you say and drafts replies.</span>
+        <span class="stack">SwiftUI keyboard extension · pixel motion language</span>
+      </div>
+      <a class="store" href="https://apps.apple.com/us/app/fluo-ai-keyboard/id6831063211" target="_blank" rel="noopener">App Store ↗</a>
+    </div>
+    <div class="screens">
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen fl" id="s-fix">
+          <div class="fl-head"><div class="fl-av"></div><div><b>Mia</b><span>online</span></div></div>
+          <div class="fl-msgs"><div class="fl-in">Coffee at 9:30 still on?</div><div class="fl-out">Yes! See you there</div><div class="fl-in">Still on for 9:30?</div></div>
+          <div class="fl-compose" id="fx-c">hey running late sry can we meet at ten</div>
+          <div class="fl-kb" id="fx-kb"></div>
+        </div><div class="island"></div><div class="sbar" style="color:#ECF3EE"><span>9:41</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>One tap fix</h3><button type="button" data-replay="fix">Replay</button></div>
+        <p class="desc">Tap Fix: a lime pixel sweeps the text while it works, then every change is highlighted before you replace it.</p>
+        <!--note:fix-->
+        <details><summary>KeyboardView.swift</summary><pre>/// While the AI works: the text being fixed, dimmed,
+/// with a lime pixel sweeping across it.
+Rectangle()
+    .fill(Theme.highlight.opacity(0.55))
+    .frame(width: 6)
+    .offset(x: sweep ? geo.size.width - 6 : 0)
+    .onAppear { withAnimation(.easeInOut(duration: 0.9)
+        .repeatForever(autoreverses: true)) { sweep = true } }
+
+Text(WordDiff.highlighted(original: source, revised: model.result))</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen fl" id="s-voice">
+          <div class="fl-head"><div class="fl-av"></div><div><b>Tom</b><span>online</span></div></div>
+          <div class="fl-msgs"><div class="fl-in">Are we good for the pitch?</div><div class="fl-out">Yes, deck is almost done</div><div class="fl-in">Can you grab stuff on the way?</div></div>
+          <div class="fl-compose" id="vc-c">&nbsp;</div>
+          <div class="fl-kb"><div class="fl-panel" style="top:8px">
+            <div class="fl-vh"><span>Listening</span><b id="vc-t">0:00</b></div>
+            <div class="fl-bars" id="bars"></div>
+            <div class="fl-said" id="vc-said"></div>
+            <div class="fl-stop"><i></i></div>
+          </div></div>
+        </div><div class="island"></div><div class="sbar" style="color:#ECF3EE"><span>9:41</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Talk, it types</h3><button type="button" data-replay="voice">Replay</button></div>
+        <p class="desc">Dictation right inside the keyboard: pixel bars ride a sine wave snapped to a 6pt grid while the words land.</p>
+        <!--note:voice-->
+        <details><summary>KeyboardView.swift</summary><pre>/// Pixel bars that pulse while listening.
+TimelineView(.animation(minimumInterval: 1 / 20)) { timeline in
+    let t = timeline.date.timeIntervalSinceReferenceDate
+    ForEach(0..&lt;count, id: \.self) { i in
+        let wave = (sin(t * 6 + Double(i) * 0.8) + 1) / 2
+        let height = ((6 + 26 * CGFloat(wave)) / 6).rounded() * 6
+        Rectangle().fill(Theme.keyAccent).frame(width: 6, height: height)
+    }
+}</pre></details>
+      </figure>
+
+      <figure class="shot" style="margin:0">
+        <div class="phone"><div class="screen fl" id="s-reply">
+          <div class="fl-head"><div class="fl-av"></div><div><b>Sara</b><span>online</span></div></div>
+          <div class="fl-msgs" id="rp-msgs"><div class="fl-in">Dinner at 7 tonight?</div><div class="fl-out">Obviously</div><div class="fl-in">Sounds good, see you at 7!</div></div>
+          <div class="fl-compose" id="rp-c">&nbsp;</div>
+          <div class="fl-kb" id="rp-kb"></div>
+        </div><div class="island"></div><div class="sbar" style="color:#ECF3EE"><span>9:41</span><i>●●● ▮</i></div></div>
+        <div class="cap"><h3>Reply in a tap</h3><button type="button" data-replay="reply">Replay</button></div>
+        <p class="desc">Reply drafts three answers in your style. They spring in, you tap one, it lands in the chat.</p>
+        <!--note:reply-->
+        <details><summary>KeyboardView.swift</summary><pre>.animation(.spring(response: 0.28, dampingFraction: 0.9), value: model.panel)
+
+ForEach(model.replyOptions, id: \.self) { option in
+    Button { model.insertReply(option) } label: { ... }
+        .buttonStyle(PressableStyle())
+}</pre></details>
+      </figure>
+    </div>
+  </section>
+
+  
