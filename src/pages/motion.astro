@@ -38,7 +38,7 @@ const apps: Record<string, { name: string; kind: string; tagline: string; icon: 
 };
 function pick(slug: string) {
   const d = fromWork(slug) ?? {};
-  return { name: d.name ?? slug, tagline: d.tagline ?? '', icon: `/motion/icon-${slug}.png`, results: (d.results ?? []).slice(0, 3), story: `/work/${slug}`, appStore: d.appStore ?? '' };
+  return { name: d.name ?? slug, tagline: d.tagline ?? '', icon: d.icon ?? `/motion/icon-${slug}.png`, results: (d.results ?? []).slice(0, 3), story: `/work/${slug}`, appStore: d.appStore ?? '' };
 }
 const head = (k: string) => {
   const a = apps[k];
@@ -57,7 +57,7 @@ const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!
     <main class="mo">
       <header class="mo-hero m-wrap">
         <h1>Motion that ships.</h1>
-        <p class="mo-lede">Ten animated screens from three iOS apps we designed and built end to end: <b>Dozy</b>, <b>Ritual</b> and <b>Fluo</b>, all live on the App Store. Nothing here is a video. Each screen runs as code, ported from the app's own SwiftUI and SpriteKit with the same springs, timings and artwork. Hit Replay on any screen and open the source under it to see what runs on the phone.</p>
+        <p class="mo-lede">Ten animated screens from three iOS apps Fackt designed and built: <b>Dozy</b>, <b>Ritual</b> and <b>Fluo</b>, all live on the App Store. Nothing here is a video. Each screen runs as code, ported from the app's own SwiftUI and SpriteKit with the same springs, timings and artwork. Hit Replay on any screen and open the source under it to see what runs on the phone.</p>
         <div class="mo-facts"><span>SwiftUI</span><span>SpriteKit</span><span>Figma to production</span></div>
       </header>
       <div class="mo-body m-wrap" set:html={html} />
@@ -83,7 +83,7 @@ const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!
   /* App header: the same card language as the homepage "We ship our own apps too". */
   .mo-app { display: flex; flex-wrap: wrap; gap: 10px 32px; align-items: center; justify-content: space-between; padding: 22px 26px; border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 1px var(--m-line), 3px 3px 0 var(--m-line-2); }
   .mo-id { display: flex; gap: 14px; align-items: center; grid-column: 1; }
-  .mo-id img { width: 56px; height: 56px; border-radius: 22.5%; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .mo-id img { width: 56px; height: 56px; flex: none; object-fit: contain; }
   .mo-id h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1; letter-spacing: -.01em; }
   .mo-id span { display: block; margin-top: 5px; font-size: 12.5px; color: var(--m-mu); }
   .mo-tl { margin: 0; font-size: 14.5px; color: var(--m-ink-2); max-width: 52ch; }
