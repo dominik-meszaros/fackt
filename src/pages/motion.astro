@@ -10,6 +10,7 @@ import NoteFromDom from '../components/NoteFromDom.astro';
 import Mark from '../components/home/Mark.astro';
 import screens from '../data/motion-screens.html?raw';
 import '../styles/motion.css';
+import { getCollection } from 'astro:content';
 
 const notes: Record<string, string> = {
   wake: '',
@@ -23,8 +24,32 @@ const notes: Record<string, string> = {
   voice: '',
   reply: '',
 };
+// App headers reuse the case study data (same card language as the homepage "We ship our own apps too").
+const work = await getCollection('work');
+const fromWork = (slug: string) => work.find((w) => w.id === slug)?.data as any;
+const apps: Record<string, { name: string; kind: string; tagline: string; icon: string; results: { value: string; label: string }[]; story?: string; appStore: string }> = {
+  dozy: { kind: 'Sleep tracker and smart alarm', ...pick('dozy') },
+  ritual: { kind: 'Habit tracker', ...pick('ritual') },
+  fluo: {
+    name: 'Fluo', kind: 'AI keyboard', icon: '/motion/icon-fluo.png',
+    tagline: 'A keyboard that fixes typos in six languages, types what you say and drafts replies.',
+    results: [{ value: '6', label: 'languages, switch mid chat' }, { value: '6', label: 'keyboard themes' }, { value: '1', label: 'tap to fix a message' }],
+    appStore: 'https://apps.apple.com/us/app/fluo-ai-keyboard/id6831063211',
+  },
+};
+function pick(slug: string) {
+  const d = fromWork(slug) ?? {};
+  return { name: d.name ?? slug, tagline: d.tagline ?? '', icon: d.icon ?? `/motion/icon-${slug}.png`, results: (d.results ?? []).slice(0, 3), story: `/work/${slug}`, appStore: d.appStore ?? '' };
+}
+const head = (k: string) => {
+  const a = apps[k];
+  return `<div class="mo-app"><div class="mo-id"><img src="${a.icon}" alt="${a.name} app icon" width="56" height="56"><div><h2 id="h-${k}">${a.name}</h2><span>${a.kind} &#183; iOS &#183; our own app</span></div></div>`
+    + `<p class="mo-tl">${esc(a.tagline)}</p>`
+    + `<div class="mo-st">${a.results.map((r) => `<div><b>${esc(r.value)}</b><span>${esc(r.label)}</span></div>`).join('')}</div>`
+    + `<div class="mo-lk">${a.story ? `<a class="mo-story" href="${a.story}">Read the build story &#8594;</a>` : '<span></span>'}<a class="mo-as" href="${a.appStore}" target="_blank" rel="noopener">App Store &#8599;</a></div></div>`;
+};
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const html = screens.replace(/<!--note:(\w+)-->/g, (_, k) =>
+const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!--note:(\w+)-->/g, (_, k) =>
   notes[k] ? `<p class="mo-dom"><span class="mo-dom-k">Dom</span>${esc(notes[k])}</p>` : '');
 ---
 <Base title="Motion in shipped apps | Fackt" description="Ten animated screens from three iOS apps Fackt designed and built: Dozy, Ritual and Fluo. Running code, not videos." noindex>
@@ -59,9 +84,44 @@ const html = screens.replace(/<!--note:(\w+)-->/g, (_, k) =>
   .mo-facts { display: flex; flex-wrap: wrap; gap: 8px; }
   .mo-facts span { font: 12px 'Geist Mono', ui-monospace, monospace; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--m-line); padding: 4px 9px; color: var(--m-mu); }
   .mo-body { display: flex; flex-direction: column; gap: 72px; padding: 48px 0 24px; }
-  .mo .chead h2 { font-family: var(--m-serif); font-weight: 400; letter-spacing: -.02em; }
-  .mo .store { border-radius: 3px; border-width: 1px; box-shadow: 2px 2px 0 var(--m-hard); font-size: 12.5px; }
-  .mo .cap button { border-radius: 3px; font-family: 'Geist Mono', ui-monospace, monospace; }
+  /* App header: the same card language as the homepage "We ship our own apps too". */
+  .mo-app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto; gap: 18px 32px; align-items: center; padding: 22px 26px; border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 1px var(--m-line), 3px 3px 0 var(--m-line-2); }
+  .mo-id { display: flex; gap: 14px; align-items: center; grid-column: 1; }
+  .mo-id img { width: 56px; height: 56px; border-radius: 13px; flex: none; }
+  .mo-id h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1; letter-spacing: -.01em; }
+  .mo-id span { display: block; margin-top: 5px; font-size: 12.5px; color: var(--m-mu); }
+  .mo-tl { margin: 0; grid-column: 1; grid-row: 2; font-size: 14.5px; color: var(--m-ink-2); max-width: 46ch; }
+  .mo-st { grid-column: 2; grid-row: 1 / span 2; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--m-line); border-bottom: 1px solid var(--m-line); }
+  .mo-st div { padding: 12px 12px 12px 0; min-width: 0; }
+  .mo-st div + div { padding-left: 12px; border-left: 1px solid var(--m-line); }
+  .mo-st b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 28px; line-height: 1; }
+  .mo-st span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.3; color: var(--m-mu); }
+  .mo-lk { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .mo-story { font-size: 13.5px; font-weight: 500; color: var(--m-ink); text-decoration: none; border-bottom: 1px solid var(--m-ink); white-space: nowrap; }
+  .mo-as { font-size: 13px; color: var(--m-mu); text-decoration: none; white-space: nowrap; }
+  .mo-as:hover { color: var(--m-ink); }
+  @media (max-width: 900px) {
+    .mo-app { grid-template-columns: 1fr; padding: 18px; }
+    .mo-st, .mo-lk, .mo-tl { grid-column: 1; grid-row: auto; }
+    .mo-lk { flex-direction: row; justify-content: space-between; align-items: center; }
+    .mo-st b { font-size: 24px; }
+  }
+  /* Each screen sits on a tinted plate, like the case study covers. */
+  .mo .screens { grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 20px; }
+  .mo .shot { background: #fff; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--m-line); overflow: hidden; gap: 0; }
+  .mo .plate { padding: 26px 30px 22px; display: flex; justify-content: center; border-bottom: 1px solid var(--m-line); }
+  .mo [data-app="dozy"] .plate { background: var(--tint-lilac); }
+  .mo [data-app="ritual"] .plate { background: var(--tint-peach); }
+  .mo [data-app="fluo"] .plate { background: var(--tint-mint); }
+  .mo .phone { width: 100%; margin: 0; box-shadow: 0 0 0 6px #0d0d0f, 0 0 0 7px #3a3a40, 0 22px 34px -20px rgba(0,0,0,.45); }
+  .mo .shot-bd { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px 16px; }
+  .mo .cap h3 { font-family: var(--m-serif); font-weight: 400; font-size: 22px; letter-spacing: -.01em; }
+  .mo .cap button { border-radius: 3px; border: 0; box-shadow: inset 0 0 0 1px var(--m-line), 2px 2px 0 var(--m-line-2); font-family: 'Geist Mono', ui-monospace, monospace; }
+  .mo .cap button:hover { box-shadow: inset 0 0 0 1px var(--m-ink), 2px 2px 0 var(--m-hard); }
+  .mo .desc { font-size: 14px; color: var(--m-ink-2); }
+  .mo details { border-top-color: var(--m-line-2); }
+  .mo summary { color: var(--m-mu); }
+  .mo .chap { gap: 18px; }
   .mo-dom { margin: 0; display: flex; gap: 10px; align-items: baseline; font-family: var(--m-serif); font-size: 18px; line-height: 1.3; color: var(--m-ink); }
   .mo-dom-k { flex: none; font: 500 11px 'Geist Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; background: var(--m-ink); color: #fff; border-radius: 3px; padding: 2px 6px; transform: translateY(-2px); }
   .mo-end { padding-bottom: 56px; }
