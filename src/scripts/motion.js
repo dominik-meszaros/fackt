@@ -58,7 +58,26 @@
     $('stars').innerHTML=stars.map(function(s){return '<span class="dz-star" style="left:'+(s[0]*402)+'px;top:'+(s[1]*874)+'px;width:'+s[2]+'px;height:'+s[2]+'px;--d:'+s[3]+'s;--dl:'+s[4]+'s"></span>'}).join('');
     var r=''; for(var i=0;i<8;i++){ r+='<rect x="15.5" y="2" width="3" height="6" rx="1.5" transform="rotate('+(i*45)+' 17 17)"/>'; } $('rays').innerHTML=r;
   })();
-  scenes.sleep = function(){ var root=$('s-sleep'); appear(Q(root,'.dz-head > *, .dz-sl, .dz-slide').map(function(e,i){e.setAttribute('data-sa',i);return e}),'data-sa',0.09,0); };
+  // ---------- Dozy: slide to wake ----------
+  (function(){
+    var tr_=$('sl'), k=$('sl-k'), fill=$('sl-fill'), lab=$('sl-l'), svg=k.querySelector('svg'), woke=$('sl-woke');
+    var MAX=402-40-60-10, x=0, from=0, to=0, t0=0, mode=null, dragging=false, done=false;
+    function sv(t,d,b){ if(t<=0) return 0; var w=2*Math.PI/d,z=1-b,wd=w*Math.sqrt(1-z*z); return 1-Math.exp(-z*w*t)*(Math.cos(wd*t)+z*w/wd*Math.sin(wd*t)); }
+    function go(v,d,b){ from=x; to=v; t0=performance.now()/1000; mode=[d,b]; }
+    function draw(){ var p=Math.min(Math.max(x,0),MAX)/MAX; k.style.transform='translateX('+x+'px)'; svg.style.transform='rotate('+(p*90)+'deg)'; fill.style.width=(70+Math.min(Math.max(x,0),MAX))+'px'; fill.style.opacity=Math.min(p*2.5,1); lab.style.opacity=1-p*1.4; lab.style.paddingLeft=(60*(1-p))+'px'; }
+    (function f(){ if(mode && !dragging){ var t=performance.now()/1000-t0; x=from+(to-from)*sv(t,mode[0],mode[1]); if(t>mode[0]*1.6){x=to;mode=null;} } draw(); requestAnimationFrame(f); })();
+    function rb(v){ return v<0?v*.3:v>MAX?MAX+(v-MAX)*.3:v; }
+    function release(){ k.classList.remove('drag'); if(x>MAX*.85){ done=true; go(MAX,.3,.2); later('slide',function(){ woke.style.opacity=1; },280); later('slide',function(){ woke.style.opacity=0; done=false; go(0,.6,.3); },2600); } else go(0,.5,.35); }
+    var sx=0, bx=0, sc=1;
+    k.addEventListener('pointerdown',function(e){ if(done) return; clear('slide'); dragging=true; mode=null; sx=e.clientX; bx=x; sc=tr_.getBoundingClientRect().width/362; k.setPointerCapture(e.pointerId); k.classList.add('drag'); });
+    k.addEventListener('pointermove',function(e){ if(dragging) x=rb(bx+(e.clientX-sx)/sc); });
+    k.addEventListener('pointerup',function(){ if(!dragging) return; dragging=false; release(); });
+    function fake(toX,ms,cb){ dragging=true; k.classList.add('drag'); var a=x, s=performance.now(); (function d(){ var p=Math.min(1,(performance.now()-s)/ms); x=a+(toX-a)*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2); if(p<1) timers.slide.push(requestAnimationFrame(d)); else { dragging=false; cb&&cb(); } })(); }
+    scenes.slide=function(){ clear('slide'); timers.slide=[]; done=false; woke.style.opacity=0; x=0; mode=null;
+      later('slide',function(){ fake(MAX*.55,650,release); },1400);
+      later('slide',function(){ fake(MAX*.97,900,release); },3300); };
+  })();
+  scenes.sleep = function(){ scenes.slide(); var root=$('s-sleep'); appear(Q(root,'.dz-head > *, .dz-sl').map(function(e,i){e.setAttribute('data-sa',i);return e}),'data-sa',0.09,0); };
 
 
   // ---------- Ritual: garden ----------

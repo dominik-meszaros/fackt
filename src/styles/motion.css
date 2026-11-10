@@ -60,10 +60,12 @@
 .dz-alarm{font-weight:600;font-size:15px;color:rgba(255,255,255,.6)}
 .dz-sl{position:absolute;left:-2px;width:405.93px;top:300px;transform-origin:50% 0;animation:dzBreath 3.6s ease-in-out infinite alternate}
 @keyframes dzBreath{to{transform:scale(1.018)}}
-.dz-slide{position:absolute;left:20px;right:20px;bottom:44px;height:72px;border-radius:999px;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-weight:700;font-size:16px}
-.dz-knob{position:absolute;left:8px;top:8px;width:56px;height:56px;border-radius:50%;background:linear-gradient(#FFCC55,#FFAF45 50%,#EF88E8);box-shadow:0 0 6px rgba(255,193,58,.25),0 0 17px rgba(255,171,89,.5),0 0 52px rgba(236,132,227,.5);display:grid;place-items:center}
-.dz-knob svg{animation:dzSpin 9s linear infinite}
-@keyframes dzSpin{to{transform:rotate(360deg)}}
+.dz-slide{position:absolute;left:20px;right:20px;bottom:44px;height:70px;border-radius:999px;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);overflow:hidden;touch-action:none}
+.dz-fill{position:absolute;left:0;top:0;bottom:0;width:70px;border-radius:999px;background:linear-gradient(90deg,rgba(255,175,69,0),rgba(255,175,69,.35),rgba(239,136,232,.45));opacity:0}
+.dz-sl-l{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:60px;font-weight:700;font-size:20px;background:linear-gradient(#fff,#B7A6FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dz-knob{position:absolute;left:5px;top:5px;width:60px;height:60px;border-radius:50%;background:linear-gradient(#FFCC55,#FFAF45 50%,#EF88E8);box-shadow:0 0 6px rgba(255,193,58,.25),0 0 17px rgba(255,171,89,.5),0 0 52px rgba(236,132,227,.5);display:grid;place-items:center;cursor:grab;transition:scale .2s}
+.dz-knob.drag{scale:1.06}
+.dz-woke{position:absolute;inset:0;background:linear-gradient(#A9D0FF,#D4E5FF 34%,#FFDCC6 58%,#FFC7A4 68%);opacity:0;pointer-events:none;z-index:20;display:grid;place-items:center;font-family:Urbanist,sans-serif;font-weight:900;font-size:40px;color:#231942;transition:opacity .7s ease-in-out}
 .dz-onb{background:linear-gradient(#2A1A6E,#4B2BB8 55%,#8E6BFF)}
 .dz-ot{position:absolute;left:24px;right:24px;top:96px;text-align:center;color:#fff}
 .dz-ot h4{margin:0;font-weight:900;font-size:44px;line-height:1;letter-spacing:-1.2px}

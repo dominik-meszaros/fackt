@@ -6,7 +6,6 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import NoteFromDom from '../components/NoteFromDom.astro';
 import Mark from '../components/home/Mark.astro';
 import screens from '../data/motion-screens.html?raw';
 import '../styles/motion.css';
@@ -32,21 +31,20 @@ const apps: Record<string, { name: string; kind: string; tagline: string; icon: 
   ritual: { kind: 'Habit tracker', ...pick('ritual') },
   fluo: {
     name: 'Fluo', kind: 'AI keyboard', icon: '/motion/icon-fluo.png',
-    tagline: 'A keyboard that fixes typos in six languages, types what you say and drafts replies.',
+    tagline: 'A keyboard that fixes your typos, types what you say and drafts replies.',
     results: [{ value: '6', label: 'languages, switch mid chat' }, { value: '6', label: 'keyboard themes' }, { value: '1', label: 'tap to fix a message' }],
     appStore: 'https://apps.apple.com/us/app/fluo-ai-keyboard/id6831063211',
   },
 };
 function pick(slug: string) {
   const d = fromWork(slug) ?? {};
-  return { name: d.name ?? slug, tagline: d.tagline ?? '', icon: d.icon ?? `/motion/icon-${slug}.png`, results: (d.results ?? []).slice(0, 3), story: `/work/${slug}`, appStore: d.appStore ?? '' };
+  return { name: d.name ?? slug, tagline: d.tagline ?? '', icon: `/motion/icon-${slug}.png`, results: (d.results ?? []).slice(0, 3), story: `/work/${slug}`, appStore: d.appStore ?? '' };
 }
 const head = (k: string) => {
   const a = apps[k];
-  return `<div class="mo-app"><div class="mo-id"><img src="${a.icon}" alt="${a.name} app icon" width="56" height="56"><div><h2 id="h-${k}">${a.name}</h2><span>${a.kind} &#183; iOS &#183; our own app</span></div></div>`
+  return `<div class="mo-app"><div class="mo-id"><img src="${a.icon}" alt="${a.name} app icon" width="56" height="56"><div><h2 id="h-${k}">${a.name}</h2><span>${a.kind} &#183; iOS</span></div></div>`
     + `<p class="mo-tl">${esc(a.tagline)}</p>`
-    + `<div class="mo-st">${a.results.map((r) => `<div><b>${esc(r.value)}</b><span>${esc(r.label)}</span></div>`).join('')}</div>`
-    + `<div class="mo-lk">${a.story ? `<a class="mo-story" href="${a.story}">Read the build story &#8594;</a>` : '<span></span>'}<a class="mo-as" href="${a.appStore}" target="_blank" rel="noopener">App Store &#8599;</a></div></div>`;
+    + `</div>`;
 };
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!--note:(\w+)-->/g, (_, k) =>
@@ -61,10 +59,9 @@ const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!
         <span class="mo-tag"><Mark size={13} />Motion design</span>
         <h1>Motion that ships.</h1>
         <p class="mo-lede">Ten animated screens from three iOS apps we designed and built end to end: <b>Dozy</b>, <b>Ritual</b> and <b>Fluo</b>, all live on the App Store. Nothing here is a video. Each screen runs as code, ported from the app's own SwiftUI and SpriteKit with the same springs, timings and artwork. Hit Replay on any screen and open the source under it to see what runs on the phone.</p>
-        <div class="mo-facts"><span>SwiftUI</span><span>SpriteKit</span><span>3 apps on the App Store</span><span>Figma to production</span></div>
+        <div class="mo-facts"><span>SwiftUI</span><span>SpriteKit</span><span>Figma to production</span></div>
       </header>
       <div class="mo-body m-wrap" set:html={html} />
-      <div class="m-wrap mo-end"><NoteFromDom from="Motion" id="motion" line="Want screens that feel <i>this alive</i> in your app? Two easy next steps:" /></div>
     </main>
     <Footer />
   </div>
@@ -85,12 +82,12 @@ const html = screens.replace(/<!--app:(\w+)-->/g, (_, k) => head(k)).replace(/<!
   .mo-facts span { font: 12px 'Geist Mono', ui-monospace, monospace; border-radius: 3px; box-shadow: inset 0 0 0 1px var(--m-line); padding: 4px 9px; color: var(--m-mu); }
   .mo-body { display: flex; flex-direction: column; gap: 72px; padding: 48px 0 24px; }
   /* App header: the same card language as the homepage "We ship our own apps too". */
-  .mo-app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto; gap: 18px 32px; align-items: center; padding: 22px 26px; border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 1px var(--m-line), 3px 3px 0 var(--m-line-2); }
+  .mo-app { display: flex; flex-wrap: wrap; gap: 10px 32px; align-items: center; justify-content: space-between; padding: 22px 26px; border-radius: 4px; background: #fff; box-shadow: inset 0 0 0 1px var(--m-line), 3px 3px 0 var(--m-line-2); }
   .mo-id { display: flex; gap: 14px; align-items: center; grid-column: 1; }
-  .mo-id img { width: 56px; height: 56px; border-radius: 13px; flex: none; }
+  .mo-id img { width: 56px; height: 56px; border-radius: 22.5%; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
   .mo-id h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1; letter-spacing: -.01em; }
   .mo-id span { display: block; margin-top: 5px; font-size: 12.5px; color: var(--m-mu); }
-  .mo-tl { margin: 0; grid-column: 1; grid-row: 2; font-size: 14.5px; color: var(--m-ink-2); max-width: 46ch; }
+  .mo-tl { margin: 0; font-size: 14.5px; color: var(--m-ink-2); max-width: 52ch; }
   .mo-st { grid-column: 2; grid-row: 1 / span 2; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--m-line); border-bottom: 1px solid var(--m-line); }
   .mo-st div { padding: 12px 12px 12px 0; min-width: 0; }
   .mo-st div + div { padding-left: 12px; border-left: 1px solid var(--m-line); }
