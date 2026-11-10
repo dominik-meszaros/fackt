@@ -60,16 +60,6 @@
   })();
   scenes.sleep = function(){ var root=$('s-sleep'); appear(Q(root,'.dz-head > *, .dz-sl, .dz-slide').map(function(e,i){e.setAttribute('data-sa',i);return e}),'data-sa',0.09,0); };
 
-  // ---------- Dozy: score ----------
-  scenes.score = function(){
-    var root=$('s-score'), arc=$('sc-arc'), n=$('sc-n');
-    arc.style.transition='none'; arc.style.strokeDashoffset='653.5'; reflow(arc);
-    arc.style.transition='stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1) .2s'; arc.style.strokeDashoffset=String(653.5*(1-.86));
-    clear('score'); var t0=performance.now();
-    (function tick(){ var p=Math.min(1,(performance.now()-t0-200)/1400); p=p<0?0:1-Math.pow(1-p,3); n.textContent=Math.round(86*p); if(p<1) timers.score.push(requestAnimationFrame(tick)); })();
-    timers.score=timers.score||[];
-    appear(Q(root,'[data-sc]'),'data-sc',0.09,0.3);
-  };
 
   // ---------- Ritual: garden ----------
   var TW=128, TH=64; // 2x of the app's 64 x 32 tile
@@ -135,18 +125,71 @@
     })();
   };
 
-  // ---------- Ritual: done ----------
-  scenes.done = function(){
-    var root=$('s-done'), art=$('dn-art'), sun=$('dn-sun');
-    [art,sun].forEach(function(e){e.style.transition='none'});
-    set(sun,{transform:'translateY(80px)'}); set(art,{transform:'translateY(18px) rotate(-2.5deg) scale(.94)',opacity:0});
-    var rv=Q(root,'[data-rv]'); rv.forEach(function(e){e.style.transition='none'; set(e,{opacity:0,transform:'translateY(14px)'})});
-    reflow(art);
-    tr(art,['transform','opacity'],0,spring(0.55,0.28),0.12); set(art,{transform:'none',opacity:1});
-    tr(sun,['transform'],0,spring(0.9,0.4),0.15); set(sun,{transform:'none'});
-    var settle=spring(0.55,0.28);
-    rv.forEach(function(e){ var i=+e.getAttribute('data-rv'); tr(e,['transform','opacity'],0,settle,0.35+i*0.07); set(e,{opacity:1,transform:'none'}); });
+
+  // ---------- Dozy: all set (first night card) ----------
+  (function(){
+    var stars=[[.12,.05,2,2.6,0],[.3,.16,1.5,3.4,.9],[.82,.04,2.5,3,.4],[.66,.13,1.5,2.8,1.4],[.48,.07,2,3.6,.2],[.9,.2,2,2.4,1.1],[.06,.24,2.5,3.2,.6]];
+    $('stars2').innerHTML=stars.map(function(s){return '<span class="dz-star" style="left:'+(s[0]*402)+'px;top:'+(s[1]*874)+'px;width:'+s[2]+'px;height:'+s[2]+'px;--d:'+s[3]+'s;--dl:'+s[4]+'s"></span>'}).join('');
+  })();
+  scenes.allset = function(){
+    var root=$('s-allset'), card=$('as-card');
+    card.style.transition='none'; set(card,{opacity:0,transform:'translateY(36px) rotate(7deg) scale(.9)'}); reflow(card);
+    tr(card,['transform','opacity'],0,spring(0.8,0.35),0.22); set(card,{opacity:1,transform:'rotate(-1.69deg)'});
+    appear(Q(root,'[data-ap]'),'data-ap',0.09,0);
   };
+
+  // ---------- Ritual: wake room (drag the sun up) ----------
+  (function(){
+    var art=$('wr-art'), glow=$('wr-glow'), sun=$('wr-sun'), fs=$('wr-fs'), fa=$('wr-fa'), cl=$('wr-cl'), cr=$('wr-cr'), hint=$('wr-hint'), btn=$('wr-btn'), tm=$('wr-time'), cap=$('wr-cap');
+    function sprVal(t,d,b){ if(t<=0) return 0; var w=2*Math.PI/d, z=1-b; if(z<1){var wd=w*Math.sqrt(1-z*z); return 1-Math.exp(-z*w*t)*(Math.cos(wd*t)+z*w/wd*Math.sin(wd*t));} return 1-Math.exp(-w*t)*(1+w*t); }
+    // An animated number: animate(to, kind, dur, bounce)
+    function Anim(v){ this.v=v; this.from=v; this.to=v; this.t0=0; this.k=null; }
+    Anim.prototype.go=function(to,kind,d,b){ this.from=this.get(); this.to=to; this.t0=performance.now()/1000; this.k=[kind,d,b||0]; };
+    Anim.prototype.set=function(v){ this.v=this.from=this.to=v; this.k=null; };
+    Anim.prototype.get=function(){ if(!this.k) return this.to; var t=performance.now()/1000-this.t0, k=this.k, p;
+      if(k[0]==='spring') p=sprVal(t,k[1],k[2]); else { p=Math.min(1,t/k[1]); p = k[0]==='out'?1-Math.pow(1-p,2): k[0]==='in'?p*p : p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2; }
+      return this.from+(this.to-this.from)*p; };
+    var rise=new Anim(0), parted=new Anim(0), glowTurn=new Anim(-8), squash=new Anim(0), faceA=new Anim(0), faceS=new Anim(1);
+    var awake=false, dragging=false, base=0, start=performance.now()/1000, loopStart=start;
+    function wave(t,p){ return Math.sin(t/p*2*Math.PI); }
+    function frame(){
+      var now=performance.now()/1000, t=now-loopStart, r=rise.get(), lit=Math.min(1,Math.max(0,r)), sunDy=76*(1-r);
+      var bob=(!awake && !dragging && r<0.01)?3*wave(now-start,2.4):0;
+      var spin=awake?(t*6)%30:0, breathe=awake?1+0.03*wave(t,7):1, drift=awake?6*wave(t,14):0, cloudDy=6*(1-lit), co=.75+.25*lit, pa=parted.get(), sq=squash.get();
+      glow.style.transform='translateY('+(bob+sunDy)+'px) scale('+(0.7+0.3*lit)+') rotate('+glowTurn.get()+'deg) scale('+breathe+') rotate('+spin+'deg)';
+      glow.style.opacity=.35+.65*lit;
+      sun.style.transform='translateY('+(bob+sunDy)+'px) scale('+(1+0.06*sq)+','+(1-0.06*sq)+')';
+      fs.style.opacity=faceS.get(); fa.style.opacity=Math.min(1,faceA.get()); fa.style.transform='scale('+(0.8+0.2*faceA.get())+')';
+      cl.style.transform='translate('+(drift-8*pa)+'px,'+cloudDy+'px)'; cr.style.transform='translate('+(-drift+8*pa)+'px,'+cloudDy+'px)';
+      cl.style.opacity=cr.style.opacity=co;
+      hint.style.opacity=(!awake && r<0.05)?1:0;
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    function setRise(v){ var wasP=rise.get()>0.6; rise.set(v); if((v>0.6)!==wasP) parted.go(v>0.6?1:0,'spring',0.5,0.2); }
+    function up(){
+      if(awake) return; base=1;
+      rise.go(1+8/76,'spring',0.35,0.1); parted.go(0,'spring',0.5,0.2); glowTurn.go(0,'out',0.6);
+      later('wakeroom',function(){ rise.go(1,'spring',0.8,0.35); squash.go(1,'out',0.12); },300);
+      later('wakeroom',function(){ squash.go(0,'spring',0.35,0.5); loopStart=performance.now()/1000; awake=true; faceS.go(0,'out',0.15); faceA.go(1,'spring',0.4,0.5);
+        tm.textContent='6:58'; cap.textContent='2 minutes early'; btn.textContent='Not up yet? Undo'; btn.classList.add('soft'); },420);
+    }
+    function reset(){
+      clear('wakeroom'); awake=false; base=0; rise.set(0); parted.set(0); glowTurn.set(-8); squash.set(0); faceA.set(0); faceS.set(1); start=performance.now()/1000;
+      tm.textContent='6:57'; cap.textContent='3 minutes early'; btn.textContent="I'm up"; btn.classList.remove('soft');
+    }
+    // Real drag, like in the app: 76pt of drag lifts the sun all the way, with rubber banding past either end.
+    var y0=0, sc=1;
+    art.addEventListener('pointerdown',function(e){ if(awake) return; clear('wakeroom'); dragging=true; y0=e.clientY; sc=art.getBoundingClientRect().height/320; art.setPointerCapture(e.pointerId); });
+    art.addEventListener('pointermove',function(e){ if(!dragging) return; var raw=base-(e.clientY-y0)/sc/76; setRise(raw>1?1+(raw-1)*.35:raw<0?raw*.35:raw); });
+    art.addEventListener('pointerup',function(){ if(!dragging) return; dragging=false; if(rise.get()>0.6) up(); else { rise.go(0,'spring',0.38,0.55); parted.go(0,'spring',0.38,0.55); base=0; } });
+    btn.addEventListener('click',function(){ awake?reset():up(); });
+    scenes.wakeroom=function(){
+      reset();
+      // Simulated drag: the thumb pulls the sun up past the 0.6 mark, then lets go.
+      later('wakeroom',function(){ dragging=true; var t0=performance.now(); (function d(){ var p=Math.min(1,(performance.now()-t0)/700); setRise(0.72*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2)); if(p<1) timers.wakeroom.push(requestAnimationFrame(d)); else { dragging=false; up(); } })(); },1300);
+    };
+  })();
 
   // ---------- Ritual: mood ----------
   var moods=[['great','great'],['good','good'],['okay','okay'],['low','low'],['rough','rough']];
@@ -228,12 +271,11 @@
 
   // Replay buttons + autoplay when a screen scrolls into view.
   document.addEventListener('click',function(e){ var b=e.target.closest('[data-replay]'); if(b) scenes[b.getAttribute('data-replay')](); });
-  var map={'s-wake':'wake','s-sleep':'sleep','s-score':'score','s-garden':'garden','s-breathe':'breathe','s-done':'done','s-mood':'mood','s-fix':'fix','s-voice':'voice','s-reply':'reply'};
+  var map={'s-wake':'wake','s-sleep':'sleep','s-allset':'allset','s-garden':'garden','s-breathe':'breathe','s-wakeroom':'wakeroom','s-mood':'mood','s-fix':'fix','s-voice':'voice','s-reply':'reply'};
   // Rest state first, so the page reads complete without scripts running animations.
   ['fix','reply'].forEach(function(k){ var kb=$(k==='fix'?'fx-kb':'rp-kb'); kb.innerHTML=keysHTML(); });
   buildLawn(3,false); fitPlot(3,false);
   plants.forEach(function(p,k){ var c=pt(p[1],p[2]); var d=document.createElement('div'); d.className='rt-item'; d.style.left=c.x+'px'; d.style.top=c.y+'px'; d.style.zIndex=10*(p[1]+p[2])+20; d.innerHTML='<img src="/motion/ritual-plot_'+p[0]+'_3.png" style="--d:2.2s;--dl:-'+k*0.4+'s" alt="">'; $('plot').appendChild(d); });
-  Q($('s-done'),'[data-rv]').forEach(function(e){ set(e,{opacity:1,transform:'none'}) });
   if(RM){ scenes.breathe(); scenes.voice(); return; }
   if('IntersectionObserver' in window){
     var seen={};

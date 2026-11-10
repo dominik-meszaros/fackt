@@ -61,21 +61,28 @@ withAnimation(.easeOut(duration: 1.8).repeatForever(autoreverses: false)) { puls
       </figure>
 
       <figure class="shot" style="margin:0">
-        <div class="plate"><div class="phone"><div class="screen dz dz-score" id="s-score">
-          <div class="dz-top" style="top:70px"><div class="dz-pill" data-sc="0">Last night · Mon, Sep 21</div></div>
-          <svg class="dz-ring" viewBox="0 0 240 240"><circle cx="120" cy="120" r="104" fill="none" stroke="#E2D8FF" stroke-width="22"/><circle id="sc-arc" cx="120" cy="120" r="104" fill="none" stroke="#8853FF" stroke-width="22" stroke-linecap="round" transform="rotate(-90 120 120)" stroke-dasharray="653.5" stroke-dashoffset="91.5"/></svg>
-          <div class="dz-num"><span id="sc-n">86</span></div>
-          <div class="dz-cards"><div class="dz-card" data-sc="1"><b>7h 49m</b><span>asleep</span></div><div class="dz-card" data-sc="2"><b>1h 54m</b><span>deep</span></div><div class="dz-card" data-sc="3"><b>93%</b><span>efficiency</span></div></div>
-          <img class="dz-wink" data-sc="4" src="/motion/dozy-insightsslothwink.svg" alt="">
-        <div class="island"></div><div class="sbar" style="color:#231942"><span>7:25</span><i><svg width="78" height="13" viewBox="0 0 78 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3.2" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.2" height="7" rx="1"/><rect x="10" y="3" width="3.2" height="9.5" rx="1"/><rect x="15" y=".5" width="3.2" height="12" rx="1"/><path d="M31 3.2a11 11 0 0 1 14.6 0l-1.4 1.5a9 9 0 0 0-11.8 0z M33.4 5.8a7.4 7.4 0 0 1 9.8 0l-1.5 1.5a5.2 5.2 0 0 0-6.8 0z M35.9 8.4a3.8 3.8 0 0 1 4.8 0l-2.4 2.6z"/><rect x="51.5" y=".8" width="23" height="11.4" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="53.5" y="2.8" width="17" height="7.4" rx="2"/><path d="M76 4.6v3.8c.9-.3 1.4-1.1 1.4-1.9s-.5-1.6-1.4-1.9z" fill-opacity=".45"/></svg></i></div></div></div></div>
-        <div class="shot-bd"><div class="cap"><h3>Score reveal</h3><button type="button" data-replay="score">Replay</button></div>
-        <p class="desc">After "I'm up": the ring fills, the number counts up with a numeric transition and the stat cards stagger in.</p>
+        <div class="plate"><div class="phone"><div class="screen dz dz-sleep" id="s-allset">
+          <div class="dz-night"></div><div id="stars2"></div>
+          <img class="as-moon" data-ap="0" src="/motion/dozy-onballsetmoon.png" alt="">
+          <img class="as-branch" data-ap="0" src="/motion/dozy-onballsetbranch.svg" alt="">
+          <div class="as-slothw" data-ap="0"><img class="as-sloth" src="/motion/dozy-onballsetsloth.svg" alt=""></div>
+          <div class="as-copy"><h4 data-ap="1">Night night, Alex</h4><p data-ap="2">Here's your first night card. It fills in with your score when you wake up.</p></div>
+          <div class="as-card" id="as-card"><div class="as-art"><img src="/motion/dozy-onballsetcardart.png" alt=""></div><div class="as-ct"><b>Night <strong>1</strong> of 7</b><span>Build your first week of better sleep</span></div></div>
+          <div class="as-bottom"><div class="as-sum" data-ap="4"><div class="as-row"><div><small>Bedtime</small><b>11:00 PM</b></div><i>→</i><div><small>Wake up</small><b>7:30 AM</b></div></div><p>Goal 8h 30m, smart wake-up on</p></div><div class="dz-b1" data-ap="5">Start my first night</div></div>
+          <div class="island"></div><div class="sbar" style="color:#231942"><span>7:25</span><i><svg width="78" height="13" viewBox="0 0 78 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3.2" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.2" height="7" rx="1"/><rect x="10" y="3" width="3.2" height="9.5" rx="1"/><rect x="15" y=".5" width="3.2" height="12" rx="1"/><path d="M31 3.2a11 11 0 0 1 14.6 0l-1.4 1.5a9 9 0 0 0-11.8 0z M33.4 5.8a7.4 7.4 0 0 1 9.8 0l-1.5 1.5a5.2 5.2 0 0 0-6.8 0z M35.9 8.4a3.8 3.8 0 0 1 4.8 0l-2.4 2.6z"/><rect x="51.5" y=".8" width="23" height="11.4" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="53.5" y="2.8" width="17" height="7.4" rx="2"/><path d="M76 4.6v3.8c.9-.3 1.4-1.1 1.4-1.9s-.5-1.6-1.4-1.9z" fill-opacity=".45"/></svg></i></div></div></div></div>
+        <div class="shot-bd"><div class="cap"><h3>First night card</h3><button type="button" data-replay="allset">Replay</button></div>
+        <p class="desc">The end of onboarding: the moon floats in, the sloth breathes on its branch and the first night card drops in from a steep tilt and settles.</p>
         <!--note:score-->
-        <details><summary>DozyMotion.swift</summary><pre>// Every Dozy screen enters in a stagger: index * step.
-header.dozyAppear(1, step: 0.09)
-Text(score.formatted())
-    .contentTransition(.numericText())
-    .animation(DozyMotion.snappy, value: score)</pre></details></div>
+        <details><summary>OnboardingAllSetView.swift</summary><pre>// The first night card drops in from a steeper tilt
+// and settles at the design's -1.69 degrees.
+.scaleEffect(landed ? 1 : 0.9)
+.rotationEffect(.degrees(landed ? -1.69 : 7))
+.offset(y: landed ? 0 : 36)
+withAnimation(.spring(duration: 0.8, bounce: 0.35).delay(0.22)) { landed = true }
+
+Image("OnbAllSetMoon").dozyFloat(distance: 4, duration: 3.8)
+// Sleeping sloth on the branch: slow breathing from its belly.
+Image("OnbAllSetSloth").dozyBreathing(amount: 0.025, duration: 3.0, anchor: .bottom)</pre></details></div>
       </figure>
     </div>
   </section>
@@ -135,27 +142,37 @@ Text(phase.label)
       </figure>
 
       <figure class="shot" style="margin:0">
-        <div class="plate"><div class="phone"><div class="screen rt" id="s-done">
-          <div class="rt-done">
-            <div class="rt-art" id="dn-art"><div class="sun" id="dn-sun"></div><div class="hz"></div></div>
-            <div class="rt-hand rt-cheer rt-rv" data-rv="0">up on time!</div>
-            <div class="rt-serif rt-hl rt-rv" data-rv="1">Up at 6:58.</div>
-            <div class="rt-fact rt-rv" data-rv="2">That's 13 early mornings in a row.</div>
-            <div class="rt-stats"><div class="rt-stat rt-rv" data-rv="3"><b>13 days</b><span>streak, kept</span></div><div class="rt-stat rt-rv" data-rv="4"><b>2 of 4</b><span>rituals today</span></div></div>
+        <div class="plate"><div class="phone"><div class="screen rt" id="s-wakeroom">
+          <div class="wr-top"><span class="wr-x">✕</span><div><div class="rt-hand">morning ritual</div><h4 class="rt-serif">Wake up on time</h4></div><span></span></div>
+          <div class="wr-art" id="wr-art">
+            <img class="wr-l" id="wr-glow" src="/motion/ritual-wake_glow.png" alt="">
+            <div class="wr-l" id="wr-sun"><img class="wr-l" src="/motion/ritual-wake_sun.png" alt=""><img class="wr-l" id="wr-fs" src="/motion/ritual-wake_face_sleep.png" alt=""><img class="wr-l" id="wr-fa" src="/motion/ritual-wake_face_awake.png" alt=""></div>
+            <div class="wr-l wr-cl" id="wr-cl"><img src="/motion/ritual-wake_clouds.png" alt=""></div>
+            <div class="wr-l wr-cr" id="wr-cr"><img src="/motion/ritual-wake_clouds.png" alt=""></div>
+            <img class="wr-l" src="/motion/ritual-wake_hills.png" alt="">
+            <div class="wr-hint rt-hand" id="wr-hint">drag the sun up when you're up</div>
+            <div class="wr-goal">goal 7:00</div>
           </div>
-          <div class="rt-btn">Back to today</div>
-        <div class="island"></div><div class="sbar" style="color:#2B231D"><span>6:58</span><i><svg width="78" height="13" viewBox="0 0 78 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3.2" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.2" height="7" rx="1"/><rect x="10" y="3" width="3.2" height="9.5" rx="1"/><rect x="15" y=".5" width="3.2" height="12" rx="1"/><path d="M31 3.2a11 11 0 0 1 14.6 0l-1.4 1.5a9 9 0 0 0-11.8 0z M33.4 5.8a7.4 7.4 0 0 1 9.8 0l-1.5 1.5a5.2 5.2 0 0 0-6.8 0z M35.9 8.4a3.8 3.8 0 0 1 4.8 0l-2.4 2.6z"/><rect x="51.5" y=".8" width="23" height="11.4" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="53.5" y="2.8" width="17" height="7.4" rx="2"/><path d="M76 4.6v3.8c.9-.3 1.4-1.1 1.4-1.9s-.5-1.6-1.4-1.9z" fill-opacity=".45"/></svg></i></div></div></div></div>
-        <div class="shot-bd"><div class="cap"><h3>Done moment</h3><button type="button" data-replay="done">Replay</button></div>
-        <p class="desc">The art lands like a stamp on paper (with a haptic thump), then the words settle in one by one.</p>
+          <div class="wr-read"><div class="rt-serif wr-time" id="wr-time">6:58</div><div class="wr-cap" id="wr-cap">2 minutes early</div></div>
+          <div class="rt-btn" id="wr-btn">I'm up</div>
+          <div class="island"></div><div class="sbar" style="color:#2B231D"><span>6:58</span><i><svg width="78" height="13" viewBox="0 0 78 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3.2" height="4.5" rx="1"/><rect x="5" y="5.5" width="3.2" height="7" rx="1"/><rect x="10" y="3" width="3.2" height="9.5" rx="1"/><rect x="15" y=".5" width="3.2" height="12" rx="1"/><path d="M31 3.2a11 11 0 0 1 14.6 0l-1.4 1.5a9 9 0 0 0-11.8 0z M33.4 5.8a7.4 7.4 0 0 1 9.8 0l-1.5 1.5a5.2 5.2 0 0 0-6.8 0z M35.9 8.4a3.8 3.8 0 0 1 4.8 0l-2.4 2.6z"/><rect x="51.5" y=".8" width="23" height="11.4" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="53.5" y="2.8" width="17" height="7.4" rx="2"/><path d="M76 4.6v3.8c.9-.3 1.4-1.1 1.4-1.9s-.5-1.6-1.4-1.9z" fill-opacity=".45"/></svg></i></div></div></div></div>
+        <div class="shot-bd"><div class="cap"><h3>Wake-up room</h3><button type="button" data-replay="wakeroom">Replay</button></div>
+        <p class="desc">Drag the sun up when you are up. It snores while it peeks, the clouds part, it overshoots, squashes, wakes up and starts to glow. Try dragging it yourself.</p>
         <!--note:done-->
-        <details><summary>DoneMoment.swift</summary><pre>withAnimation(.spring(duration: 0.9, bounce: 0.4).delay(0.15)) { on = true }
-// The art lands like a stamp on paper: feel it.
-DispatchQueue.main.asyncAfter(deadline: .now() + 0.42) { Haptics.land() }
+        <details><summary>RoomsCheck.swift</summary><pre>// Idle: the peeking sun bobs like it is snoring.
+let bob = asleep ? 3 * checkWave(t, 2.4) : 0
+// Done: the glow turns (rays repeat every 30 degrees) and breathes.
+let spin = awake ? (t * 6).truncatingRemainder(dividingBy: 30) : 0
 
-Text(copy.headline).reveal(1, after: 0.35)
-
-// reveal(): fade + lift, staggered 0.07s per sibling
-static let settle = Animation.spring(duration: 0.55, bounce: 0.28)</pre></details></div>
+private func up() {
+    // overshoot about 8 pt above the resting spot, then settle
+    withAnimation(.spring(duration: 0.35, bounce: 0.1)) { rise = 1 + 8.0 / 76.0 }
+    withAnimation(.spring(duration: 0.5, bounce: 0.2)) { parted = false }
+    after(0.3) { withAnimation(.spring(duration: 0.8, bounce: 0.35)) { rise = 1 }
+                 withAnimation(.easeOut(duration: 0.12)) { squash = true } }
+    after(0.42) { withAnimation(.spring(duration: 0.35, bounce: 0.5)) { squash = false }
+                  awake = true; Haptics.land() }
+}</pre></details></div>
       </figure>
 
       <figure class="shot" style="margin:0">
