@@ -1,0 +1,216 @@
+---
+// Site submissions for the YouTube "I redesign your SaaS site" videos.
+// The form posts to the Supabase "roast" function: it saves to public.roast_submissions, emails Dom and confirms to the sender.
+// Same look as /audit (global Nav, Footer, buttons). No dashes in copy.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Mark from '../components/home/Mark.astro';
+import { site } from '../data/site';
+import '../styles/faq.css';
+
+const ENDPOINT = 'https://iasgepbkdqyhjoxjfkrh.supabase.co/functions/v1/roast';
+const ticks = ['Free, no call and no strings', 'You see what I would change and why', 'Picked sites get the redesign as a Figma file'];
+const stages = ['Not launched yet', 'Live, no revenue yet', 'Paying customers', 'Growing fast'];
+const how = [
+  { title: 'Send your site', text: 'The link, one line on what it does, and what you want fixed.' },
+  { title: 'I pick a few for each video', text: 'I go through every submission and email you if yours is in.' },
+  { title: 'Watch it get fixed', text: 'The video shows what is costing you signups and the redesign. You get the Figma file.' },
+];
+const faq = [
+  { q: 'Is it really free?', a: 'Yes. The video is the content for my channel, and you get the feedback and the file. Nothing to buy.' },
+  { q: 'Will you be harsh?', a: 'Honest, never mean. I talk about the site and the decisions behind it, never about you or your team.' },
+  { q: 'What sites do you pick?', a: 'SaaS and software products, live or about to launch. A site with obvious problems is a good pick, because it teaches the most.' },
+  { q: 'What if mine is not picked?', a: 'It stays on the list for the next videos. If you want feedback now, the free audit gets you a private video walkthrough within 2 days.' },
+  { q: 'Can I take it out later?', a: 'Yes. Email dominik@fackt.io and I remove it from the list and from any video that is not out yet.' },
+];
+const ld = [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }];
+const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+---
+<Base image="/og/audit.jpg" title="Get your SaaS site redesigned on YouTube | Fackt" description="Send your SaaS website and Dom may redesign it in a YouTube video: what is costing you signups, what to change, and the Figma file. Free." schema={ld}>
+  <div class="m-page">
+    <Nav />
+    <main>
+      <section class="hero">
+        <div class="in">
+          <div class="intro">
+            <span class="tag"><Mark size={13} />Live redesigns on YouTube</span>
+            <h1>Send your SaaS site. I'll redesign it on camera.</h1>
+            <p class="lede">For each video I pick sites from this list and fix them on screen: what is costing you signups, what I would change, and the redesign. If yours is picked, the Figma file is yours.</p>
+            <ul class="tick">{ticks.map((t) => <li><Fragment set:html={CK} />{t}</li>)}</ul>
+            <a class="m-btn dk jump" href="#roast-form">Send my site &#8595;</a>
+            <p class="alt">Want private feedback instead? <a class="lnk" href="/audit">Get a free audit</a></p>
+          </div>
+
+          <section class="form" id="roast-form" aria-labelledby="roast-form-title">
+            <div class="fh"><h2 id="roast-form-title">Send your site</h2><span class="tag k">For the next video</span></div>
+            <form method="POST" action="/roast?sent=1" data-roast data-endpoint={ENDPOINT} novalidate>
+              <p class="hp"><label>Leave this empty <input name="hp" tabindex="-1" autocomplete="off" /></label></p>
+              <div class="g">
+                <label class="f"><span>Name</span><input name="name" required autocomplete="name" /></label>
+                <label class="f"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+                <label class="f wd"><span>Your site</span><input name="url" required placeholder="yourproduct.com" autocomplete="url" inputmode="url" /></label>
+                <label class="f wd"><span>What does it do, in one line?</span><input name="product" required placeholder="Invoicing for freelance designers" maxlength="300" /></label>
+                <label class="f wd"><span>Where is it now?</span>
+                  <select name="stage" required><option value="" disabled selected>Pick one</option>{stages.map((o) => <option>{o}</option>)}</select>
+                </label>
+                <label class="f wd"><span>What do you want fixed? <em>(optional)</em></span>
+                  <textarea name="ask" rows="3" placeholder="People visit but don't sign up, the hero feels generic, pricing confuses people"></textarea>
+                </label>
+                <label class="ok wd"><input type="checkbox" name="consent" required /><span>I'm fine with my site being shown and critiqued in a public YouTube video.</span></label>
+              </div>
+              <button class="m-btn dk go" type="submit" data-roast-btn>Send my site</button>
+              <p class="sm" role="status" data-roast-status>Free. I email you if yours is picked.</p>
+            </form>
+            <div class="done" hidden data-roast-done>
+              <span class="pm" aria-hidden="true"><b>RECEIVED</b><small>FACKT, {site.location.toUpperCase()}</small></span>
+              <p>Got it. Check your inbox for a confirmation. I'll email you if your site makes the video.</p>
+              <a class="m-btn lt" href="https://www.youtube.com/@kcinimodm">Watch the channel</a>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="wrap how">
+        <span class="eb">How it works</span>
+        <h2 class="h2">Three steps. You just send the link.</h2>
+        <div class="row3">
+          {how.map((s, i) => <div class="st"><span class="n">0{i + 1}</span><b>{s.title}</b><p>{s.text}</p></div>)}
+        </div>
+      </section>
+
+      <section class="wrap faqw">
+        <div><span class="eb">Questions</span><h2 class="h2">Before you send it.</h2></div>
+        <div class="faq">
+          {faq.map((f, i) => <details open={i === 0} data-faq={i}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<style>
+  .wrap { width: min(960px, 100% - 32px); margin: 0 auto; }
+  .tag { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; padding: 4px 9px; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; background: #fff; white-space: nowrap; }
+  .tag.k { background: #111; color: #fff; box-shadow: none; }
+  .eb { font-size: 12.5px; color: #8a8a86; display: block; margin-bottom: 10px; }
+  .h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.15; letter-spacing: -.01em; }
+  .lnk { color: #111; font-weight: 500; text-decoration: none; border-bottom: 1px solid #111; }
+
+  .hero { background: #f2f2f0; border-bottom: 1px solid #dcdcd8; }
+  .hero .in { width: min(960px, 100% - 32px); margin: 0 auto; padding: 56px 0 64px; display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 56px; align-items: start; }
+  h1 { margin: 18px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 56px; line-height: 1.06; letter-spacing: -.02em; }
+  .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16.5px; max-width: 520px; }
+  .tick { list-style: none; margin: 28px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; }
+  .tick li { display: flex; gap: 10px; align-items: center; }
+  .tick :global(svg) { flex-shrink: 0; }
+  .alt { margin: 26px 0 0; font-size: 13.5px; color: #6a6a66; }
+  .jump { display: none; }
+
+  .form { position: sticky; top: 92px; background: #fff; box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; border-radius: 3px; padding: 24px 24px 22px; scroll-margin-top: 88px; }
+  .fh { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid #ececea; }
+  .fh h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 22px; }
+  .hp { position: absolute; left: -9999px; }
+  .g { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; margin-top: 16px; }
+  .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .wd { grid-column: 1 / -1; }
+  .f span { font-size: 12.5px; font-weight: 500; color: #3f3f3f; }
+  .f em { font-style: normal; font-weight: 400; color: #8a8a86; }
+  .f input, .f select, .f textarea { font: 14px Geist, system-ui, sans-serif; color: #111; background: #f6f6f4; border: 0; border-radius: 2px; box-shadow: inset 0 0 0 1px #dcdcd8; padding: 0 12px; height: 42px; width: 100%; outline: 0; }
+  .f select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5L5 6.5L8 3.5' fill='none' stroke='%23111' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+  .f select:invalid { color: #a3a3a0; }
+  .f textarea { height: 76px; padding: 10px 12px; resize: vertical; line-height: 1.45; }
+  .f input::placeholder, .f textarea::placeholder { color: #a3a3a0; }
+  .f input:focus, .f select:focus, .f textarea:focus { box-shadow: inset 0 0 0 1.5px #111; background: #fff; }
+  .f.bad input, .f.bad select { box-shadow: inset 0 0 0 1.5px #c43b1d; }
+  .ok { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #3f3f3f; cursor: pointer; }
+  .ok input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: #111; flex-shrink: 0; }
+  .ok.bad span { color: #c43b1d; }
+  .go { margin-top: 18px; width: 100%; height: 46px; font-size: 15px; }
+  .go[disabled] { opacity: .7; cursor: default; }
+  .sm { margin: 10px 0 0; font-size: 12px; color: #8a8a86; text-align: center; min-height: 1em; }
+  .done { padding: 28px 4px 8px; text-align: center; }
+  .done[hidden] { display: none; }
+  .pm { display: inline-block; transform: rotate(-8deg); border: 2px solid #111; border-radius: 2px; padding: 6px 14px; font-family: 'Geist Mono', monospace; }
+  .pm b { display: block; font-size: 20px; font-weight: 500; letter-spacing: .14em; }
+  .pm small { display: block; font-size: 9px; letter-spacing: .08em; margin-top: 2px; }
+  .done p { margin: 22px auto 18px; max-width: 320px; font-size: 15px; }
+
+  .how { padding: 64px 0 40px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 28px; border-top: 1px solid #dcdcd8; }
+  .st { padding: 24px 24px 4px 0; }
+  .st + .st { padding-left: 24px; border-left: 1px solid #ececea; }
+  .st .n { font-size: 12px; color: #8a8a86; font-variant-numeric: tabular-nums; }
+  .st b { display: block; margin-top: 12px; font-weight: 500; font-size: 16px; }
+  .st p { margin: 6px 0 0; font-size: 14px; color: #6a6a66; }
+  .faqw { display: grid; grid-template-columns: 300px 1fr; gap: 56px; padding: 40px 0 72px; }
+  .faq { border-top: 1px solid #dcdcd8; }
+  .faq details { border-bottom: 1px solid #ececea; padding: 18px 0; }
+  .faq summary { list-style: none; display: flex; justify-content: space-between; gap: 20px; font-weight: 500; font-size: 15px; cursor: pointer; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq p { margin: 10px 0 0; color: #6a6a66; font-size: 14px; max-width: 640px; }
+
+  @media (max-width: 960px) {
+    .hero .in { grid-template-columns: 1fr; gap: 28px; padding: 32px 0 40px; }
+    .form { position: static; }
+    .jump { display: inline-flex; margin-top: 20px; height: 42px; }
+  }
+  @media (max-width: 720px) {
+    h1 { font-size: 36px; }
+    .lede { font-size: 14.5px; }
+    .h2 { font-size: 26px; }
+    .tick { margin-top: 18px; gap: 6px; font-size: 13.5px; }
+    .alt { display: none; }
+    .form { padding: 20px 16px 18px; }
+    .g { grid-template-columns: 1fr; gap: 12px; }
+    .f input, .f select, .f textarea { font-size: 16px; }
+    .how { padding: 32px 0 8px; }
+    .row3 { grid-template-columns: 1fr; margin-top: 16px; }
+    .st, .st + .st { display: grid; grid-template-columns: 28px 1fr; column-gap: 8px; padding: 12px 0; border-left: 0; border-bottom: 1px solid #ececea; }
+    .st b { margin: 0; font-size: 14.5px; }
+    .st p { grid-column: 2; font-size: 13px; margin-top: 2px; }
+    .faqw { grid-template-columns: 1fr; gap: 12px; padding: 28px 0 40px; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-roast]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-roast-btn]');
+  const done = document.querySelector<HTMLElement>('[data-roast-done]');
+  const status = document.querySelector<HTMLElement>('[data-roast-status]');
+  const q = new URLSearchParams(location.search);
+  const utm = Object.fromEntries(['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].filter((k) => q.get(k)).map((k) => [k, q.get(k)!]));
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!btn || !status) return;
+    // Mark empty required fields instead of the browser bubbles, so the form keeps its look.
+    let first: HTMLElement | null = null;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((el) => {
+      const bad = el.type === 'checkbox' ? !(el as HTMLInputElement).checked : !el.checkValidity() || !el.value.trim();
+      el.closest('.f, .ok')?.classList.toggle('bad', bad);
+      if (bad && !first) first = el;
+    });
+    if (first) { (first as HTMLElement).focus(); status.textContent = 'Fill in the marked fields, and tick the box to send it.'; return; }
+    const fd = new FormData(form);
+    const body = { ...Object.fromEntries(fd.entries()), consent: fd.get('consent') === 'on', source: utm.utm_source || 'direct', utm: Object.keys(utm).length ? utm : null };
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const res = await fetch(form.dataset.endpoint!, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || !j.ok) throw new Error(j.error || String(res.status));
+      form.hidden = true;
+      if (done) { done.hidden = false; done.querySelector('a')?.focus(); }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = label;
+      const m = String((err as Error).message);
+      status.textContent = m === 'url' ? 'That site link does not look right. Try yourproduct.com.' : m === 'email' ? 'Check your email address.' : 'That did not go through. Try again, or email dominik@fackt.io.';
+    }
+  });
+  form?.addEventListener('input', (e) => (e.target as HTMLElement).closest('.f, .ok')?.classList.remove('bad'));
+  if (matchMedia('(max-width: 720px)').matches) document.querySelectorAll('[data-faq]').forEach((d) => d.removeAttribute('open'));
+</script>
+<script>
+  import '../scripts/faq';
+</script>
