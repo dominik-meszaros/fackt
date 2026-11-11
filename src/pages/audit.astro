@@ -41,6 +41,8 @@ const finds = [
 ];
 const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 import '../styles/faq.css';
+import SecHead from '../components/sections/SecHead.astro';
+import SketchSteps from '../components/sections/SketchSteps.astro';
 ---
 <Base image="/og/audit.jpg" title="Free product audit | Fackt" description="A free audit of your SaaS product or website: a video walkthrough and a written list of fixes, ordered by impact, within 2 days." schema={auditLd}>
   <div class="m-page">
@@ -132,11 +134,8 @@ import '../styles/faq.css';
       </section>
 
       <section class="wrap how">
-        <span class="eb">How it works</span>
-        <h2 class="h2">Three steps, no call needed.</h2>
-        <div class="row3">
-          {how.map((s, i) => <div class="st"><span class="n">0{i + 1}</span><b>{s.title}</b>{s.text && <p>{s.text}</p>}</div>)}
-        </div>
+        <SecHead icon="process" eyebrow="How it works" title="Three steps, no call needed." />
+        <SketchSteps steps={how.map((s, i) => ({ label: `Step 0${i + 1}`, title: s.title, text: s.text, icon: (['deliver', 'audit', 'play'] as const)[i % 3] }))} />
       </section>
 
       {faq.length > 0 && (

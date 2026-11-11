@@ -20,6 +20,8 @@ const svcLd = [{ '@context': 'https://schema.org', '@type': 'ItemList', name: 'F
   item: { '@type': 'Service', name: s.title, description: s.text, url: `https://fackt.io/services/${s.slug}`, provider: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' } } })) }];
 const short = (t: string) => t.split(' &')[0].toLowerCase();
 const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+import { icons } from '../../data/icons';
+import '../../styles/icons.css';
 ---
 <Base
   image="/og/services.jpg"
@@ -39,7 +41,7 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
 
       <section class="wrap list">
         {items.map((s, i) => (
-          <a class="row" href={`/services/${s.slug}`}>
+          <a class="row ih" href={`/services/${s.slug}`}>
             <Fragment set:html={icon(s.slug)} />
             <div class="tx">
               <span class="n">0{i + 1}</span>
@@ -47,7 +49,7 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
               <p>{s.page.lede}</p>
               <span class="lnk">See {short(s.title)} &#8594;</span>
             </div>
-            <ul>{s.page.deliverables.slice(0, 5).map((d) => <li><Fragment set:html={CK} />{d.title}</li>)}</ul>
+            <ul>{s.page.deliverables.slice(0, 5).map((d) => <li><Fragment set:html={icons[d.icon]} />{d.title}</li>)}</ul>
             <div class="ex">
               <span class="exl">Recent project</span>
               {s.recent ? (
@@ -161,4 +163,5 @@ const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><
     .h2 { font-size: 26px; }
     .both { grid-template-columns: 1fr; }
   }
+  .list ul :global(.ico) { width: 30px; height: 30px; flex: none; margin: -4px 2px -4px -4px; }
 </style>

@@ -23,6 +23,7 @@ const first = work[t0.pick];
 const data = { teams: teams.map(({ id, pick, start, does }) => ({ id, pick, start, does: does.slice(0, 3) })), industries: industries.map(({ id, work: w, mobile }) => ({ id, work: w, mobile })), work };
 const CK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 const pad = (n: number) => String(n).padStart(2, '0');
+import sketch from '../generated/sketch.json';
 ---
 <Base
   title="Who we work with: SaaS founders, teams and agencies | Fackt"
@@ -109,7 +110,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <script is:inline>(function(){var k="fackt_ab_who",q=new URLSearchParams(location.search).get("v"),v=null,f=false;if(q==="a2"||q==="a4"){v=q;f=true}else{try{v=localStorage.getItem(k)}catch(e){}if(v!=="a2"&&v!=="a4"){v=Math.random()<.5?"a2":"a4";try{localStorage.setItem(k,v)}catch(e){}}}window.__abWho={v:v,forced:f};var el=document.querySelector('[data-ab="'+v+'"]');if(el)el.hidden=false;})();</script>
       <!-- 2. Teams -->
       <section class="wrap tags-sec">
-        <div class="sh"><span class="eb">The teams</span><h2>Four kinds of teams, one studio.</h2></div>
+        <div class="sh"><Fragment set:html={sketch.sections.people.replace('class="sk"', 'class="sh-sk"')} /><span class="eb">The teams</span><h2>Four kinds of teams, one studio.</h2></div>
         <div class="rail" aria-hidden="true"></div>
         <div class="tags">
           {teams.map((t, i) => (
@@ -127,7 +128,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
       <!-- 3. Industries -->
       <section class="wrap idx-sec" id="industries">
-        <div class="sh"><span class="eb">Industries</span><h2>Where we have shipped.</h2></div>
+        <div class="sh"><Fragment set:html={sketch.sections.work.replace('class="sk"', 'class="sh-sk"')} /><span class="eb">Industries</span><h2>Where we have shipped.</h2></div>
         <ol class="idx" data-idx>
           {inds.map((g, i) => (
             <li class="ir" id={g.id} data-img={g.items[0]?.img}>
@@ -317,6 +318,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   /* 2. Teams: tags hanging from a rail */
   .tags-sec { position: relative; padding: 24px 0 40px; }
+  .sh :global(.sh-sk) { display: block; width: 72px; height: 72px; margin: 0 0 10px; overflow: visible; }
   .sh h2 { margin: 8px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 36px; line-height: 1.12; letter-spacing: -.01em; }
   .rail { height: 2px; margin-top: 36px; background: #111; border-radius: 2px; }
   .tags { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
