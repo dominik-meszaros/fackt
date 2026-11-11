@@ -1,0 +1,19 @@
+---
+// A bordered grid of sketch icons with a title and a line each (icons animate on hover).
+import { icons, type IconKey } from '../../data/icons';
+import '../../styles/icons.css';
+interface Props { items: { icon: IconKey; title: string; text: string }[] }
+const { items } = Astro.props;
+---
+<div class="ig" style={`--n:${Math.min(items.length, 3)}`}>
+  {items.map((d) => (<div class="ih" tabindex="0"><Fragment set:html={icons[d.icon]} /><b>{d.title}</b><p>{d.text}</p></div>))}
+</div>
+<style>
+  .ig { display: grid; grid-template-columns: repeat(var(--n), 1fr); margin-top: 36px; border-top: 1px solid #e6e6e2; border-left: 1px solid #e6e6e2; text-align: left; }
+  .ig div { padding: 26px 24px; border-right: 1px solid #e6e6e2; border-bottom: 1px solid #e6e6e2; outline: none; transition: background .2s; }
+  .ig div:hover, .ig div:focus-visible { background: #fafaf8; }
+  .ig :global(.ico) { margin: 0 0 14px -4px; }
+  b { display: block; font-weight: 500; font-size: 15px; }
+  p { margin: 6px 0 0; font-size: 13.5px; color: #6a6a66; }
+  @media (max-width: 720px) { .ig { grid-template-columns: 1fr; } .ig div { padding: 20px 18px; } .ig :global(.ico) { width: 52px; height: 52px; } }
+</style>

@@ -13,9 +13,15 @@ export interface Niche {
   hero: { work: string; caption: string; image?: string };
   logos: string[];
   results: { value: string; label: string; source: string; href: string }[];
-  fixTitle: string;
-  fixLede: string;
-  fixes: { art: FixArt; title: string; text: string }[];
+  fixTitle?: string;
+  fixLede?: string;
+  fixes?: { art: FixArt; title: string; text: string }[];
+  // optional, for city pages: a day ruler (their hours above ours) and reasons with icons
+  local?: {
+    title: string; sub: string; city: string; home: string; diff: number;
+    bands: { from: number; to: number; label: string; kind: 'call' | 'work' }[];
+    reasonsTitle: string; reasonsSub: string; reasons: { icon: IconKey; title: string; text: string }[];
+  };
   casesTitle: string;
   cases: { work: string; line: string }[];
   stepsTitle: string;
@@ -279,5 +285,67 @@ export const niches: Niche[] = [
     ],
     note: { slug: 'framer-vs-webflow-saas-landing-page', title: 'Framer vs Webflow for a SaaS website: how to pick', text: 'The honest comparison, from building in both.' },
     endTitle: "Let's talk about your website.",
+  },
+  {
+    slug: 'design-agency-san-francisco',
+    seoTitle: 'SaaS Design Agency for San Francisco Startups | Fackt',
+    seoDescription: 'Product and web design for San Francisco SaaS startups. Calls in your morning, design while you sleep, USD invoices from our US company. From $5,000.',
+    crumb: [{ label: 'Services', href: '/services' }],
+    current: 'San Francisco',
+    h1: 'SaaS design for San Francisco startups',
+    lede: 'For SF founders who need to ship design faster than a local hire allows. We talk in your morning, design while you sleep, and bill in USD through our US company.',
+    hero: { work: 'floxy', caption: 'Floxy, proxy dashboard' },
+    logos: ['Algrow', 'FireCut', 'Communi', 'Viewmax', 'ClickUp'],
+    results: [
+      { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
+      { value: '12 → 1', label: 'flat grid of tools turned into one clear starting point', source: 'FireCut case study', href: '/work/firecut' },
+      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+    ],
+    local: {
+      title: 'Nine hours apart, on purpose',
+      sub: 'We are a studio in Slovakia, 9 hours ahead of San Francisco. Your morning is our late afternoon, so we talk then and design while you sleep.',
+      city: 'San Francisco', home: 'Slovakia', diff: 9,
+      bands: [
+        { from: 0, to: 8, label: 'We design while you sleep', kind: 'work' },
+        { from: 8, to: 10, label: 'Call window', kind: 'call' },
+      ],
+      reasonsTitle: 'Why SF founders work with us',
+      reasonsSub: 'The parts of working with a studio abroad that founders ask about first.',
+      reasons: [
+        { icon: 'call', title: 'Calls in your morning', text: 'Reviews happen between 8 and 10 AM your time. You leave feedback by evening and wake up to the next version.' },
+        { icon: 'handoff', title: 'USD invoices from a US company', text: 'You contract and pay Fackt Labs LLC, our US company. No foreign invoices or currency surprises.' },
+        { icon: 'apps', title: 'One team for product, web and motion', text: 'Dashboard, onboarding, marketing site and launch video from the same people, in one style.' },
+      ],
+    },
+    compare: {
+      title: 'What a few weeks of design changes', sub: "Drag to compare FireCut's tool grid with the redesign.",
+      before: '/uploads/firecut-tools-before.webp', after: '/uploads/firecut-tools-after.webp',
+      beforeAlt: 'FireCut before: twelve AI tools in one flat grid', afterAlt: 'FireCut after the redesign: saved tools first, then a workflow',
+      beforeCap: '12 tools in one flat grid, nothing stands out.', afterCap: 'Saved tools first, then a workflow.',
+    },
+    casesTitle: 'Recent SaaS work',
+    cases: [
+      { work: 'communi', line: 'A creator command center, desktop to mobile' },
+      { work: 'floxy', line: 'A proxy dashboard that stays readable at scale' },
+      { work: 'firecut', line: 'Twelve AI tools turned into one clear flow' },
+    ],
+    stepsTitle: 'From call to handoff in 2 to 6 weeks',
+    steps: [
+      { when: 'Week 0', title: 'A 30 minute call', text: 'In your morning. We find the screen that matters most.' },
+      { when: 'Week 1', title: 'Audit and flows', text: 'What to fix first, ranked by impact on your users.' },
+      { when: 'Week 2 to 3', title: 'First screens', text: 'New versions land overnight, ready for your morning.' },
+      { when: 'Week 4 to 6', title: 'Full design and handoff', text: 'States, specs and Figma files your engineers build from.' },
+    ],
+    price: { title: 'Projects from $5,000', text: 'A fixed project, invoiced in USD. Ongoing design is $6,900 a month, pause any time.' },
+    faqTitle: 'Working with us from San Francisco, answered',
+    faq: [
+      { q: 'Do you have an office in San Francisco?', a: 'No. We are a design studio in Slovakia that works with US teams remotely. Contracts and invoices come from Fackt Labs LLC, our US company.' },
+      { q: 'How do the time zones work?', a: 'We are 9 hours ahead of San Francisco. Calls happen in your morning, which is our late afternoon, and we design during your night, so new screens are waiting when you start your day.' },
+      { q: 'How much does it cost?', a: 'Most projects are a fixed price from $5,000, done in 2 to 6 weeks. Ongoing design is $6,900 a month and you can pause any time.' },
+      { q: 'Why not hire a designer in San Francisco?', a: 'Hiring takes months and a single designer covers one skill. With us you start this week and get product, web and motion design from one team. Many founders start with us and hire later.' },
+      { q: 'Can you start with an audit?', a: 'Yes. Send your product and within 2 days you get a video walkthrough and a written list of fixes, ordered by impact.' },
+    ],
+    note: { slug: 'design-agency-vs-freelancer-vs-in-house', title: 'Design agency vs freelancer vs in-house', text: 'How to choose, and what each one costs you in time.' },
+    endTitle: "Let's talk in your morning.",
   },
 ];

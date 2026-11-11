@@ -11,6 +11,8 @@ import SecHead from '../components/sections/SecHead.astro';
 import SketchSteps from '../components/sections/SketchSteps.astro';
 import Teardown from '../components/sections/Teardown.astro';
 import Compare from '../components/sections/Compare.astro';
+import DayRuler from '../components/sections/DayRuler.astro';
+import IconGrid from '../components/sections/IconGrid.astro';
 import sketch from '../generated/sketch.json';
 import { niches } from '../data/niches';
 import { site } from '../data/site';
@@ -73,13 +75,25 @@ const ld = [
             <SecHead icon="design" eyebrow="What we fix" title={n.teardown.title} sub={n.teardown.sub} />
             <Teardown image={n.teardown.image} alt={n.teardown.alt} href={n.teardown.href} marks={n.teardown.marks} notes={n.teardown.notes} />
           </>
-        ) : (
+        ) : n.fixes ? (
           <>
-            <SecHead icon="design" eyebrow="What we fix" title={n.fixTitle} sub={n.fixLede} />
+            <SecHead icon="design" eyebrow="What we fix" title={n.fixTitle!} sub={n.fixLede} />
             <div class="fix">{n.fixes.map((f) => <FixCard {...f} />)}</div>
           </>
-        )}
+        ) : n.local ? (
+          <>
+            <SecHead icon="calendar" eyebrow="How the day works" title={n.local.title} sub={n.local.sub} />
+            <DayRuler city={n.local.city} home={n.local.home} diff={n.local.diff} bands={n.local.bands} />
+          </>
+        ) : null}
       </section>
+
+      {n.local && (
+        <section class="wrap sec">
+          <SecHead icon="people" eyebrow="Why us" title={n.local.reasonsTitle} sub={n.local.reasonsSub} />
+          <IconGrid items={n.local.reasons} />
+        </section>
+      )}
 
       {n.compare && (
         <section class="wrap sec">
