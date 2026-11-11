@@ -7,6 +7,11 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SketchDefs from '../components/home/SketchDefs.astro';
 import FixCard from '../components/niche/FixCard.astro';
+import SecHead from '../components/sections/SecHead.astro';
+import SketchSteps from '../components/sections/SketchSteps.astro';
+import Teardown from '../components/sections/Teardown.astro';
+import Compare from '../components/sections/Compare.astro';
+import sketch from '../generated/sketch.json';
 import { niches } from '../data/niches';
 import { site } from '../data/site';
 import { homeSettings } from '../data/settings';
@@ -63,18 +68,31 @@ const ld = [
       </section>
 
       <section class="wrap sec">
-        <span class="eb">What we fix</span>
-        <h2>{n.fixTitle}</h2>
-        <p class="sl">{n.fixLede}</p>
-        <div class="fix">{n.fixes.map((f) => <FixCard {...f} />)}</div>
+        {n.teardown ? (
+          <>
+            <SecHead icon="design" eyebrow="What we fix" title={n.teardown.title} sub={n.teardown.sub} />
+            <Teardown image={n.teardown.image} alt={n.teardown.alt} href={n.teardown.href} marks={n.teardown.marks} notes={n.teardown.notes} />
+          </>
+        ) : (
+          <>
+            <SecHead icon="design" eyebrow="What we fix" title={n.fixTitle} sub={n.fixLede} />
+            <div class="fix">{n.fixes.map((f) => <FixCard {...f} />)}</div>
+          </>
+        )}
       </section>
 
+      {n.compare && (
+        <section class="wrap sec">
+          <SecHead icon="work" eyebrow="Before and after" title={n.compare.title} sub={n.compare.sub} />
+          <Compare before={n.compare.before} after={n.compare.after} beforeAlt={n.compare.beforeAlt} afterAlt={n.compare.afterAlt} beforeCap={n.compare.beforeCap} afterCap={n.compare.afterCap} />
+        </section>
+      )}
+
       <section class="wrap sec">
-        <span class="eb">Work</span>
-        <h2>{n.casesTitle}</h2>
+        <SecHead icon="apps" eyebrow="Work" title={n.casesTitle} />
         <div class="cases">
-          {cases.map((c) => (
-            <a href={`/work/${c.slug}`} data-journey={tag(`case study ${c.slug}`)}>
+          {cases.map((c, i) => (
+            <a class:list={[{ big: i === 0 }]} href={`/work/${c.slug}`} data-journey={tag(`case study ${c.slug}`)}>
               <div class="im"><img src={c.card ?? c.preview ?? c.image} alt={`${c.name}, ${c.service.toLowerCase()} by Fackt`} loading="lazy" decoding="async" /></div>
               <b>{c.name}</b><span>{c.line}</span><em>View case study &#8594;</em>
             </a>
@@ -83,9 +101,8 @@ const ld = [
       </section>
 
       <section class="wrap sec">
-        <span class="eb">How it runs</span>
-        <h2>{n.stepsTitle}</h2>
-        <ol class="steps">{n.steps.map((s) => <li><i>{s.when}</i><b>{s.title}</b><span>{s.text}</span></li>)}</ol>
+        <SecHead icon="process" eyebrow="How it runs" title={n.stepsTitle} />
+        <div class="stp"><SketchSteps steps={n.steps.map((s) => ({ label: s.when, title: s.title, text: s.text, icon: s.icon }))} /></div>
         <div class="pr">
           <div><strong>{n.price.title}</strong><span>{n.price.text}</span></div>
           <a class="m-btn" href={site.bookPage} data-journey={tag('book call (price)')}>Book a 30 minute call</a>
@@ -93,8 +110,7 @@ const ld = [
       </section>
 
       <section class="wrap sec">
-        <span class="eb">Questions</span>
-        <h2>{n.faqTitle}</h2>
+        <SecHead eyebrow="Questions" title={n.faqTitle} />
         <div class="faq">
           {n.faq.map((f, i) => (<details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>))}
         </div>
@@ -104,6 +120,7 @@ const ld = [
       </section>
 
       <section class="wrap end">
+        <Fragment set:html={sketch.sections.calendar.replace('class="sk"', 'class="end-sk"')} />
         <h2>{n.endTitle}</h2>
         <p>30 minutes with Dom. You leave with clear next steps, whether we work together or not.</p>
         <div class="ct">
@@ -148,10 +165,14 @@ const ld = [
   h2 { margin: 10px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1.12; letter-spacing: -.01em; }
   .sl { margin: 10px auto 0; max-width: 520px; color: #6a6a66; }
   .fix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
-  .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; text-align: left; }
+  .cases { display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: auto auto; gap: 20px 16px; margin-top: 36px; text-align: left; }
+  .cases .big { grid-row: span 2; }
+  .cases .big .im { height: 386px; }
+  .stp { text-align: left; }
+  .end :global(.end-sk) { display: block; width: 84px; height: 84px; margin: 0 auto 12px; overflow: visible; }
   .cases a { color: inherit; text-decoration: none; }
   .cases .im { height: 180px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #e2e2de; background: #f2f2f0; }
-  .cases img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--m-ease); }
+  .cases img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .6s var(--m-ease); }
   .cases a:hover img { transform: scale(1.04); }
   .cases b { display: block; margin-top: 12px; font-weight: 500; font-size: 14.5px; }
   .cases span { display: block; margin-top: 3px; font-size: 13.5px; color: #6f6f6f; }
@@ -177,10 +198,10 @@ const ld = [
   .rel b { display: block; font-weight: 500; font-size: 14.5px; }
   .rel span { font-size: 13px; color: #8a8a86; }
   .rel em { margin-left: auto; font-style: normal; font-size: 13px; border-bottom: 1px solid #111; white-space: nowrap; }
-  .end { margin-top: 96px; padding: 56px 0 72px; border-top: 1px solid #ececea; text-align: center; }
+  .end { margin-top: 96px; padding: 56px 0 72px; text-align: center; }
   .end p { margin: 10px 0 0; color: #6a6a66; }
   .end .ct { justify-content: center; }
-  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 28px; } .fix, .cases { grid-template-columns: 1fr; } .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 28px; } .fix, .cases { grid-template-columns: 1fr; } .cases .big { grid-row: auto; } .cases .big .im { height: 220px; } .steps { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 720px) {
     .crumb { padding-top: 24px; }
     h1 { font-size: 36px; } .lede { font-size: 15px; }

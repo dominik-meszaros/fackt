@@ -1,3 +1,4 @@
+import type { IconKey } from './icons';
 // Long-form content for each service page at /services/<slug>.
 // The short card text on the homepage lives in site.ts → services.
 
@@ -11,8 +12,10 @@ export interface ServicePage {
   // Case studies to show, by file name in src/content/work (first two also appear in the hero).
   // Leave empty to hide the work section; the hero then shows an animated glass composition.
   work: string[];
-  deliverables: { title: string; text: string }[];
-  process: { title: string; text: string }[];
+  deliverables: { title: string; text: string; icon: IconKey }[];
+  process: { title: string; text: string; icon?: IconKey }[];
+  // Hero: three real screens, fanned (work slug links to the case study).
+  fan: { image: string; label: string; work: string }[];
   tools: string[];
   // Index into site.ts → reviews.
   review: number;
@@ -30,15 +33,16 @@ export const servicePages: ServicePage[] = [
       'Product design for SaaS and tech companies: UX audits, user flows, high fidelity UI, design systems, prototypes and mobile apps, handed off ready for development.',
     headline: 'Product design that grows activation and retention.',
     lede: 'We find where users get stuck or leave, then design the flows, dashboards and mobile apps that fix it, from the first user flow to dev-ready UI.',
+    fan: [{ image: '/uploads/viewmax-screen.webp', label: 'Viewmax', work: 'viewmax' }, { image: '/uploads/promote-app-screen.webp', label: 'Promote', work: 'promote-app' }, { image: '/uploads/glowtify-screen.webp', label: 'Glowtify', work: 'glowtify' }],
     tint: 'blue',
     work: ['communi', 'floxy', 'glowtify', 'promote-app', 'viewmax', 'earntask'],
     deliverables: [
-      { title: 'UX audit', text: 'A clear review of where users get stuck, with prioritised fixes.' },
-      { title: 'User flows and structure', text: 'Onboarding, core workflows and navigation mapped before any pixels.' },
-      { title: 'High fidelity UI', text: 'Every screen and every state: empty, loading, error and success.' },
-      { title: 'Design systems', text: 'Components, tokens and documentation your team can build on.' },
-      { title: 'Interactive prototypes', text: 'Clickable flows to test with users, investors or your team.' },
-      { title: 'Mobile and desktop apps', text: 'Native feeling iOS, Android and desktop interfaces.' },
+      { title: 'UX audit', text: 'A clear review of where users get stuck, with prioritised fixes.', icon: 'audit' },
+      { title: 'User flows and structure', text: 'Onboarding, core workflows and navigation mapped before any pixels.', icon: 'flows' },
+      { title: 'High fidelity UI', text: 'Every screen and every state: empty, loading, error and success.', icon: 'ui' },
+      { title: 'Design systems', text: 'Components, tokens and documentation your team can build on.', icon: 'system' },
+      { title: 'Interactive prototypes', text: 'Clickable flows to test with users, investors or your team.', icon: 'proto' },
+      { title: 'Mobile and desktop apps', text: 'Native feeling iOS, Android and desktop interfaces.', icon: 'apps' },
     ],
     process: [
       { title: 'Strategy call', text: 'We map your users, goals and the screens that matter most.' },
@@ -62,21 +66,22 @@ export const servicePages: ServicePage[] = [
       'Website design and development for SaaS and tech: landing pages, marketing sites and redesigns that turn visitors into signups, built in Framer, Webflow or custom code.',
     headline: 'Websites for SaaS and tech that turn visitors into signups.',
     lede: 'From pre-launch landing pages to complete marketing site redesigns, we design and build sites that explain your product fast and make the next step obvious.',
+    fan: [{ image: '/uploads/viewmax-website.webp', label: 'Viewmax', work: 'viewmax' }, { image: '/uploads/tradox-screen.webp', label: 'TradoxVPS', work: 'tradox' }, { image: '/uploads/earntask-screen.webp', label: 'EarnTask', work: 'earntask' }],
     tint: 'peach',
     work: ['viewmax', 'story-story', 'tradox', 'earntask'],
     deliverables: [
-      { title: 'Landing pages', text: 'Focused pages for launches, campaigns and paid traffic.' },
-      { title: 'Marketing site redesigns', text: 'Structure, messaging hierarchy and visuals rebuilt around your product.' },
-      { title: 'No-code or code builds', text: 'Framer and Webflow sites your team can edit without a developer, or a custom coded build when you need more.' },
-      { title: 'CMS setup', text: 'Blog, changelog, case studies and careers you can update yourself.' },
-      { title: 'Interactions and animation', text: 'Motion that guides attention instead of distracting from it.' },
-      { title: 'SEO-ready structure', text: 'Clean headings, metadata and performance from day one.' },
+      { title: 'Landing pages', text: 'Focused pages for launches, campaigns and paid traffic.', icon: 'landing' },
+      { title: 'Marketing site redesigns', text: 'Structure, messaging hierarchy and visuals rebuilt around your product.', icon: 'redesign' },
+      { title: 'No-code or code builds', text: 'Framer and Webflow sites your team can edit without a developer, or a custom coded build when you need more.', icon: 'build' },
+      { title: 'CMS setup', text: 'Blog, changelog, case studies and careers you can update yourself.', icon: 'cms' },
+      { title: 'Interactions and animation', text: 'Motion that guides attention instead of distracting from it.', icon: 'interactions' },
+      { title: 'SEO-ready structure', text: 'Clean headings, metadata and performance from day one.', icon: 'seo' },
     ],
     process: [
       { title: 'Strategy call', text: 'Goals, audience and what the site needs to convert.' },
-      { title: 'Structure', text: 'Sitemap and page wireframes agreed before visual design.' },
-      { title: 'Design', text: 'High fidelity pages for desktop, tablet and mobile.' },
-      { title: 'Build and launch', text: 'Built in Framer, Webflow or code, tested and launched with you.' },
+      { title: 'Structure', text: 'Sitemap and page wireframes agreed before visual design.', icon: 'structure' },
+      { title: 'Design', text: 'High fidelity pages for desktop, tablet and mobile.', icon: 'screens' },
+      { title: 'Build and launch', text: 'Built in Framer, Webflow or code, tested and launched with you.', icon: 'launch' },
     ],
     tools: ['Figma', 'Framer', 'Webflow', 'Rive', 'Code'],
     review: 0,
@@ -95,21 +100,22 @@ export const servicePages: ServicePage[] = [
       'Motion design for SaaS and tech products: product animations, interaction design, interactive Rive assets, web animation and 3D.',
     headline: 'Motion that sells the product and shows how it works.',
     lede: 'We use animation and interaction to guide attention, communicate state, and make every action in your product and on your site feel satisfying.',
+    fan: [{ image: '/uploads/tradox-illustrations.webp', label: 'TradoxVPS', work: 'tradox' }, { image: '/uploads/promote-logo-motion.webp', label: 'Promote', work: 'promote' }, { image: '/uploads/tradox-assets.webp', label: 'TradoxVPS', work: 'tradox' }],
     tint: 'lilac',
     work: ['tradox'],
     deliverables: [
-      { title: 'Product animations', text: 'Short loops that show what your product does at a glance.' },
-      { title: 'Interaction design', text: 'Micro-interactions and transitions specified for your developers.' },
-      { title: 'Interactive Rive assets', text: 'Lightweight, state-driven animations that run in product and on the web.' },
-      { title: 'Web animation', text: 'Scroll and hover moments for landing pages and marketing sites.' },
-      { title: '3D design', text: 'Objects and scenes for hero sections, launches and social.' },
-      { title: 'Motion guidelines', text: 'Timing, easing and rules so motion stays consistent as you grow.' },
+      { title: 'Product animations', text: 'Short loops that show what your product does at a glance.', icon: 'play' },
+      { title: 'Interaction design', text: 'Micro-interactions and transitions specified for your developers.', icon: 'toggle' },
+      { title: 'Interactive Rive assets', text: 'Lightweight, state-driven animations that run in product and on the web.', icon: 'rive' },
+      { title: 'Web animation', text: 'Scroll and hover moments for landing pages and marketing sites.', icon: 'scroll' },
+      { title: '3D design', text: 'Objects and scenes for hero sections, launches and social.', icon: 'cube' },
+      { title: 'Motion guidelines', text: 'Timing, easing and rules so motion stays consistent as you grow.', icon: 'easing' },
     ],
     process: [
       { title: 'Strategy call', text: 'Where motion helps and where it should stay out of the way.' },
-      { title: 'Storyboard', text: 'Key frames and timing agreed before production.' },
-      { title: 'Animate', text: 'Production with review rounds along the way.' },
-      { title: 'Deliver', text: 'Files ready for your product, site or social channels.' },
+      { title: 'Storyboard', text: 'Key frames and timing agreed before production.', icon: 'storyboard' },
+      { title: 'Animate', text: 'Production with review rounds along the way.', icon: 'animate' },
+      { title: 'Deliver', text: 'Files ready for your product, site or social channels.', icon: 'deliver' },
     ],
     tools: ['Rive', 'Figma', 'Framer'],
     review: 1,
@@ -127,21 +133,22 @@ export const servicePages: ServicePage[] = [
       'Visual branding for SaaS, AI and tech startups: logo and wordmark, visual identity, brand systems and guidelines that carry into your product and website.',
     headline: 'Brand identities that make young tech products look established.',
     lede: 'We build the visual language, voice and feeling that makes you immediately recognisable, and make sure it works inside your product, not just on a logo sheet.',
+    fan: [{ image: '/uploads/nation-lockup.webp', label: 'Nation', work: 'nation' }, { image: '/uploads/floxy-brand-posters.webp', label: 'Floxy', work: 'floxy-brand' }, { image: '/uploads/promote-poster.webp', label: 'Promote', work: 'promote' }],
     tint: 'mint',
     work: ['promote', 'floxy-brand'],
     deliverables: [
-      { title: 'Logo and wordmark', text: 'A mark that works from app icon to billboard.' },
-      { title: 'Visual identity', text: 'Color, typography, imagery and graphic elements.' },
-      { title: 'Brand system', text: 'Rules and components that scale across teams and channels.' },
-      { title: 'Brand guidelines', text: 'A clear reference your team and partners can follow.' },
-      { title: 'Product and web application', text: 'The brand applied to your UI and website, not only to slides.' },
-      { title: 'Launch assets', text: 'Social, pitch deck and announcement visuals.' },
+      { title: 'Logo and wordmark', text: 'A mark that works from app icon to billboard.', icon: 'logo' },
+      { title: 'Visual identity', text: 'Color, typography, imagery and graphic elements.', icon: 'swatches' },
+      { title: 'Brand system', text: 'Rules and components that scale across teams and channels.', icon: 'system' },
+      { title: 'Brand guidelines', text: 'A clear reference your team and partners can follow.', icon: 'book' },
+      { title: 'Product and web application', text: 'The brand applied to your UI and website, not only to slides.', icon: 'brandscreen' },
+      { title: 'Launch assets', text: 'Social, pitch deck and announcement visuals.', icon: 'megaphone' },
     ],
     process: [
       { title: 'Strategy call', text: 'Positioning, audience and where the brand needs to show up.' },
-      { title: 'Directions', text: 'Distinct creative directions to choose from.' },
-      { title: 'Refine', text: 'One direction developed into a full identity.' },
-      { title: 'System and handoff', text: 'Guidelines, source files and assets ready to use.' },
+      { title: 'Directions', text: 'Distinct creative directions to choose from.', icon: 'directions' },
+      { title: 'Refine', text: 'One direction developed into a full identity.', icon: 'refine' },
+      { title: 'System and handoff', text: 'Guidelines, source files and assets ready to use.', icon: 'handoff' },
     ],
     tools: ['Figma', 'Rive', 'Framer'],
     review: 2,

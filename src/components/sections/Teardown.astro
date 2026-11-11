@@ -1,0 +1,55 @@
+---
+// A real screen with pencil rings and numbered pins, next to a numbered list of what each ring shows.
+// Ring and pin positions are percentages of the image, so they stay on target at every width.
+interface Mark { x: number; y: number; w: number; h: number; rot?: number }
+interface Note { title: string; text: string }
+interface Props { image: string; alt: string; marks: Mark[]; notes: Note[]; href?: string }
+const { image, alt, marks, notes, href } = Astro.props;
+const ring = 'M52 5C86 3 99 30 97 55C95 86 62 98 40 95C12 92 1 70 3 45C5 18 30 7 62 10';
+---
+<div class="td">
+  <figure class="scr">
+    <div class="pic">
+      <img src={image} alt={alt} loading="lazy" decoding="async" />
+      {marks.map((m, i) => (
+        <>
+          <svg class="ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style={`left:${m.x}%;top:${m.y}%;width:${m.w}%;height:${m.h}%;transform:rotate(${m.rot ?? -2}deg)`}><path d={ring} fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke" pathLength="1" /></svg>
+          <span class="pin" style={`left:${Math.min(m.x + m.w - 1.5, 95)}%;top:${m.y - 3}%`} aria-hidden="true">{i + 1}</span>
+        </>
+      ))}
+    </div>
+    {href && <figcaption><a href={href}>See the full case study &#8594;</a></figcaption>}
+  </figure>
+  <ol class="notes">
+    {notes.map((n, i) => (<li><span class="dot">{i + 1}</span><div><b>{n.title}</b><span>{n.text}</span></div></li>))}
+  </ol>
+</div>
+<style>
+  .td { text-align: left; display: grid; grid-template-columns: 600px 1fr; gap: 36px; align-items: start; margin-top: 36px; }
+  .scr { margin: 0; padding: 20px; border-radius: 4px; background: #f2f2f0; }
+  .pic { position: relative; }
+  .pic img { width: 100%; border-radius: 3px; box-shadow: 0 0 0 1px #e6e6e2; }
+  .ring { position: absolute; overflow: visible; }
+  .ring path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s cubic-bezier(.6, 0, .2, 1); }
+  .td:global(.in) .ring path { stroke-dashoffset: 0; }
+  .td:global(.in) .ring:nth-of-type(2) path { transition-delay: .25s; }
+  .td:global(.in) .ring:nth-of-type(3) path { transition-delay: .5s; }
+  .pin, .dot { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #111; color: #fff; font: 500 11.5px 'Geist Mono', ui-monospace, monospace; flex: none; }
+  .pin { position: absolute; }
+  figcaption { margin-top: 12px; font-size: 13px; }
+  figcaption a { color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .notes { list-style: none; margin: 0; padding: 0; }
+  .notes li { display: flex; gap: 12px; padding: 16px 0; border-top: 1px solid #ececea; }
+  .notes li:last-child { border-bottom: 1px solid #ececea; }
+  .notes b { display: block; font-weight: 500; font-size: 15px; }
+  .notes div span { display: block; margin-top: 4px; font-size: 13.5px; color: #6a6a66; }
+  @media (max-width: 960px) { .td { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .scr { padding: 10px; } .pin { width: 18px; height: 18px; font-size: 10px; } }
+  @media (prefers-reduced-motion: reduce) { .ring path { transition: none; stroke-dashoffset: 0; } }
+</style>
+<script>
+  // draw the rings once the teardown scrolls into view
+  const els = document.querySelectorAll<HTMLElement>('.td');
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.35 });
+  els.forEach((el) => io.observe(el));
+</script>

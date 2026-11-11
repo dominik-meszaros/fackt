@@ -9,6 +9,10 @@ import sketch from '../../generated/sketch.json';
 import audit from '../../content/settings/audit.json';
 import { services, site, reviews } from '../../data/site';
 import { servicePages } from '../../data/servicePages';
+import { icons } from '../../data/icons';
+import SecHead from '../../components/sections/SecHead.astro';
+import SketchSteps from '../../components/sections/SketchSteps.astro';
+import '../../styles/icons.css';
 
 export function getStaticPaths() {
   return servicePages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
@@ -22,7 +26,6 @@ const work = page.work
   .slice(0, 4)
   .map((e) => ({ slug: e!.id, ...e!.data }));
 const review = reviews[page.review];
-const art = ((sketch.services as Record<string, string>)[page.slug] ?? '').replace('class="sk"', 'class="art-i"');
 const sentence = card.title.charAt(0) + card.title.slice(1).toLowerCase();
 const auditLabel = page.slug === 'product-design' ? 'Get a free UX audit' : 'Get a free audit';
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -63,7 +66,14 @@ import '../../styles/faq.css';
               <a class="m-btn lt" href="/audit">{auditLabel}</a>
             </div>
           </div>
-          <div class="art" aria-hidden="true"><Fragment set:html={art} /></div>
+          <div class="fan">
+            {page.fan.map((f, i) => (
+              <a class={`s s${i}`} href={`/work/${f.work}`}>
+                <img src={f.image} alt={`${f.label}, ${card.title.toLowerCase()} by Fackt`} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                <span class="ft">{f.label}</span>
+              </a>
+            ))}
+          </div>
         </div>
 
         {work.length > 0 && (
@@ -81,23 +91,17 @@ import '../../styles/faq.css';
       </section>
 
       <section class="wrap sec">
-        <span class="eb">What you get</span>
-        <h2 class="h2">Everything included.</h2>
+        <SecHead icon="design" eyebrow="What you get" title="Everything included." />
         <div class="dlg">
-          {page.deliverables.map((d, i) => (
-            <div><i>{pad(i + 1)}</i><b>{d.title}</b><p>{d.text}</p></div>
+          {page.deliverables.map((d) => (
+            <div class="ih" tabindex="0"><Fragment set:html={icons[d.icon]} /><b>{d.title}</b><p>{d.text}</p></div>
           ))}
         </div>
       </section>
 
       <section class="wrap sec">
-        <span class="eb">How it works</span>
-        <h2 class="h2">{page.process.length} steps, short review cycles.</h2>
-        <ol class="proc">
-          {page.process.map((s, i) => (
-            <li><i>Step {pad(i + 1)}</i><b>{s.title}</b><p>{s.text}</p></li>
-          ))}
-        </ol>
+        <SecHead icon="process" eyebrow="How it works" title={`${page.process.length} steps, short review cycles.`} />
+        <SketchSteps steps={page.process.map((s, i) => ({ label: `Step ${pad(i + 1)}`, title: s.title, text: s.text, icon: s.icon }))} />
       </section>
 
       <section class="wrap sec2">
@@ -142,8 +146,14 @@ import '../../styles/faq.css';
   .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 560px; }
   .bs { display: flex; gap: 8px; margin-top: 24px; }
   .bs .m-btn, .band .m-btn { height: 44px; padding: 0 18px; font-size: 14.5px; }
-  .art { height: 300px; border-radius: 4px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #dcdcd8; display: grid; place-items: center; }
-  .art :global(.art-i) { display: block; width: 170px; height: 170px; overflow: visible; }
+  .fan { position: relative; height: 330px; }
+  .fan .s { position: absolute; width: 74%; border-radius: 4px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px #dcdcd8, 0 18px 36px -24px rgba(0, 0, 0, .35); transition: transform .5s var(--m-ease); }
+  .fan .s img { display: block; width: 100%; aspect-ratio: 1.6; object-fit: cover; }
+  .fan .s0 { left: 22%; top: 0; transform: rotate(3deg); }
+  .fan .s1 { left: 0; top: 30%; transform: rotate(-2deg); z-index: 1; }
+  .fan .s2 { left: 26%; top: 54%; transform: rotate(1.5deg); z-index: 2; }
+  .fan .s:hover { transform: rotate(0) translateY(-6px); z-index: 3; }
+  .ft { position: absolute; left: 10px; top: 10px; padding: 3px 8px; border-radius: 2px; background: #fff; box-shadow: inset 0 0 0 1px #dcdcd8; font-size: 12px; font-weight: 500; color: #111; }
 
   .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 48px; }
   .strip a { color: inherit; text-decoration: none; }
@@ -155,44 +165,17 @@ import '../../styles/faq.css';
   .strip b { font-weight: 500; }
   .mu { color: #8a8a86; }
 
-  .sec { padding-top: 64px; }
+  .sec { padding-top: 96px; }
   .eb { font-size: 12.5px; color: #8a8a86; display: block; margin-bottom: 10px; }
   .h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.15; letter-spacing: -.01em; }
-  .dlg { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 28px; border-top: 1px solid #dcdcd8; }
-  .dlg div { padding: 22px 22px 22px 0; border-bottom: 1px solid #ececea; }
-  .dlg div:not(:nth-child(3n+1)) { padding-left: 22px; border-left: 1px solid #ececea; }
-  .dlg i, .proc i { font-style: normal; font-size: 12px; color: #8a8a86; }
-  .dlg b { display: block; margin-top: 8px; font-weight: 500; font-size: 15px; }
-  .dlg p, .proc p { margin: 6px 0 0; font-size: 13.5px; color: #6a6a66; }
+  .dlg { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 36px; border-top: 1px solid #e6e6e2; border-left: 1px solid #e6e6e2; }
+  .dlg div { padding: 26px 24px; border-right: 1px solid #e6e6e2; border-bottom: 1px solid #e6e6e2; outline: none; transition: background .2s; }
+  .dlg div:hover, .dlg div:focus-visible { background: #fafaf8; }
+  .dlg :global(.ico) { margin: 0 0 14px -4px; }
+  .dlg i { font-style: normal; font-size: 12px; color: #8a8a86; }
+  .dlg b { display: block; font-weight: 500; font-size: 15px; }
+  .dlg p { margin: 6px 0 0; font-size: 13.5px; color: #6a6a66; }
 
-  /* process: a bar fills left to right and each step lights up as it passes */
-  .proc { list-style: none; margin: 28px 0 0; padding: 0; position: relative; display: grid; grid-template-columns: repeat(4, 1fr); }
-  .proc li { position: relative; padding: 18px 18px 0 0; border-top: 2px solid #dcdcd8; }
-  .proc::after { content: ''; position: absolute; left: 0; top: 0; height: 2px; width: 0; background: #111; animation: pbar 8s linear infinite; }
-  .proc li::before { content: ''; position: absolute; left: 0; top: -7px; width: 12px; height: 12px; background: #fff; box-shadow: inset 0 0 0 2px #111; z-index: 1; }
-  .proc li:nth-child(1)::before { animation: pd1 8s linear infinite; }
-  .proc li:nth-child(2)::before { animation: pd2 8s linear infinite; }
-  .proc li:nth-child(3)::before { animation: pd3 8s linear infinite; }
-  .proc li:nth-child(4)::before { animation: pd4 8s linear infinite; }
-  .proc li:nth-child(1) b { animation: pt1 8s linear infinite; }
-  .proc li:nth-child(2) b { animation: pt2 8s linear infinite; }
-  .proc li:nth-child(3) b { animation: pt3 8s linear infinite; }
-  .proc li:nth-child(4) b { animation: pt4 8s linear infinite; }
-  .proc b { display: block; margin-top: 6px; font-weight: 500; }
-  @keyframes pbar { 0% { width: 0; opacity: 1 } 85% { width: 100%; opacity: 1 } 96% { width: 100%; opacity: 0 } 100% { width: 0; opacity: 0 } }
-  @keyframes pd1 { 0% { background: #111; transform: scale(1.3) } 4% { transform: scale(1) } 92% { background: #111 } 100% { background: #fff } }
-  @keyframes pd2 { 0%, 20% { background: #fff; transform: scale(1) } 21% { background: #111; transform: scale(1.3) } 25% { transform: scale(1) } 92% { background: #111 } 100% { background: #fff } }
-  @keyframes pd3 { 0%, 41% { background: #fff; transform: scale(1) } 42% { background: #111; transform: scale(1.3) } 46% { transform: scale(1) } 92% { background: #111 } 100% { background: #fff } }
-  @keyframes pd4 { 0%, 63% { background: #fff; transform: scale(1) } 64% { background: #111; transform: scale(1.3) } 68% { transform: scale(1) } 92% { background: #111 } 100% { background: #fff } }
-  @keyframes pt1 { 0%, 92% { color: #111 } 100% { color: #a3a3a0 } }
-  @keyframes pt2 { 0%, 20% { color: #a3a3a0 } 21%, 92% { color: #111 } 100% { color: #a3a3a0 } }
-  @keyframes pt3 { 0%, 41% { color: #a3a3a0 } 42%, 92% { color: #111 } 100% { color: #a3a3a0 } }
-  @keyframes pt4 { 0%, 63% { color: #a3a3a0 } 64%, 92% { color: #111 } 100% { color: #a3a3a0 } }
-  @media (prefers-reduced-motion: reduce) {
-    .proc::after { animation: none; width: 100%; }
-    .proc li::before, .proc li b { animation: none; }
-    .proc li::before { background: #111; }
-  }
 
   .sec2 { padding-top: 56px; }
   .quote { margin: 0; padding: 28px 32px; border-radius: 4px; background: #f4f4f2; }
@@ -212,11 +195,10 @@ import '../../styles/faq.css';
 
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: 28px; }
-    .art { height: 220px; }
+    .fan { height: 300px; max-width: 520px; }
     .strip { grid-template-columns: repeat(2, 1fr); }
     .dlg { grid-template-columns: 1fr 1fr; }
-    .dlg div:not(:nth-child(3n+1)) { padding-left: 0; border-left: 0; }
-    .dlg div:nth-child(2n) { padding-left: 22px; border-left: 1px solid #ececea; }
+
     .faqs { grid-template-columns: 1fr; gap: 16px; }
   }
   @media (max-width: 720px) {
@@ -224,17 +206,15 @@ import '../../styles/faq.css';
     h1 { font-size: 34px; }
     .lede { font-size: 14.5px; }
     .bs { flex-direction: column; }
-    .art { height: 180px; }
-    .art :global(.art-i) { width: 110px; height: 110px; }
+    .fan { height: 230px; }
     .strip { margin-top: 32px; }
     .im { height: 110px; }
     .im.ph img { width: 54px; top: 14px; }
-    .sec { padding-top: 48px; }
+    .sec { padding-top: 64px; }
     .h2 { font-size: 26px; }
     .dlg { grid-template-columns: 1fr; }
-    .dlg div, .dlg div:nth-child(2n) { padding: 16px 0; border-left: 0; }
-    .proc { grid-template-columns: 1fr; gap: 18px; }
-    .proc::after { display: none; }
+    .dlg div { padding: 20px 18px; }
+    .dlg :global(.ico) { width: 52px; height: 52px; }
     .quote { padding: 22px 20px; }
     .quote blockquote { font-size: 17px; }
     .band { flex-direction: column; align-items: flex-start; }

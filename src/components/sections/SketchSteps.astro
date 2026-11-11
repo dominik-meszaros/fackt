@@ -1,0 +1,35 @@
+---
+// Process steps with a sketch icon each, joined by a dotted pencil path that runs from one icon to the next
+// and stops at the last one. Icons animate on hover (styles/icons.css).
+import { icons, stepIcons, type IconKey } from '../../data/icons';
+import '../../styles/icons.css';
+interface Step { label: string; title: string; text: string; icon?: IconKey }
+interface Props { steps: Step[] }
+const { steps } = Astro.props;
+---
+<ol class="ss" style={`--n:${steps.length}`}>
+  {steps.map((s, i) => (
+    <li class="ih">
+      <Fragment set:html={icons[s.icon ?? stepIcons[i % stepIcons.length]]} />
+      {i < steps.length - 1 && (
+        <svg class="ss-path" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6Q25 1 50 6T100 6" fill="none" stroke="#3f3f3f" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="1 6" vector-effect="non-scaling-stroke" /></svg>
+      )}
+      <i>{s.label}</i><b>{s.title}</b><span>{s.text}</span>
+    </li>
+  ))}
+</ol>
+<style>
+  .ss { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 24px; }
+  li { position: relative; }
+  li :global(.ico) { margin: 0 0 14px -6px; }
+  /* from the right edge of this icon to the left edge of the next one */
+  .ss-path { position: absolute; left: 66px; width: calc(100% - 66px + 18px); top: 26px; height: 12px; overflow: visible; }
+  i { display: block; font: 500 11.5px 'Geist Mono', ui-monospace, monospace; font-style: normal; color: #8a8a86; }
+  b { display: block; margin-top: 6px; font-weight: 500; font-size: 15px; }
+  span { display: block; margin-top: 4px; font-size: 13.5px; color: #6a6a66; }
+  @media (max-width: 720px) {
+    .ss { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
+    .ss-path { display: none; }
+    li :global(.ico) { width: 52px; height: 52px; margin-bottom: 10px; }
+  }
+</style>

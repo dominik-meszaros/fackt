@@ -1,4 +1,5 @@
 // SEO niche pages (service x niche), e.g. fackt.io/saas-dashboard-design. Design: canvas boards PNiche / PNicheM / PNicheMap.
+import type { IconKey } from './icons';
 // One entry = one page. Only real facts: numbers come from case studies or Contra; never invent results.
 export type FixArt = 'weight' | 'context' | 'empty' | 'paywall' | 'firstrun' | 'store' | 'nudge' | 'fold' | 'proof' | 'cta' | 'cms' | 'speed';
 export interface Niche {
@@ -18,7 +19,11 @@ export interface Niche {
   casesTitle: string;
   cases: { work: string; line: string }[];
   stepsTitle: string;
-  steps: { when: string; title: string; text: string }[];
+  steps: { when: string; title: string; text: string; icon?: IconKey }[];
+  // optional: a real screen with pencil rings (positions in % of the image), shown instead of the fix cards
+  teardown?: { title: string; sub: string; image: string; alt: string; href: string; marks: { x: number; y: number; w: number; h: number; rot?: number }[]; notes: { title: string; text: string }[] };
+  // optional: before and after slider
+  compare?: { title: string; sub: string; before: string; after: string; beforeAlt: string; afterAlt: string; beforeCap: string; afterCap: string };
   price: { title: string; text: string };
   faqTitle: string;
   faq: { q: string; a: string }[];
@@ -35,7 +40,7 @@ export const niches: Niche[] = [
     current: 'SaaS dashboards',
     h1: 'SaaS dashboard design',
     lede: 'For SaaS teams whose dashboard shows data instead of answers. We redesign it so users find the one number they came for, in seconds.',
-    hero: { work: 'floxy', caption: 'Floxy, proxy dashboard' },
+    hero: { work: 'communi', caption: 'Communi, creator command center', image: '/uploads/communi-desktop.webp' },
     logos: ['Algrow', 'FireCut', 'Communi', 'Viewmax', 'ClickUp'],
     results: [
       { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
@@ -49,6 +54,23 @@ export const niches: Niche[] = [
       { art: 'context', title: 'Numbers without context', text: 'Is 2,340 good or bad? We add the change since last week and the limit, so a number becomes an answer.' },
       { art: 'empty', title: 'An empty first screen', text: 'New accounts see a wall of zeros. We design the empty state that explains what appears here and gives one first action.' },
     ],
+    teardown: {
+      title: 'Three reasons dashboards lose users',
+      sub: "We see the same three in almost every audit. Here is how they look fixed, on Floxy's proxy dashboard.",
+      image: '/uploads/floxy-screen.webp', alt: 'Floxy proxy dashboard designed by Fackt, with the balance, data left and one action per card circled', href: '/work/floxy',
+      marks: [{ x: 20.5, y: 18.5, w: 11, h: 10.5, rot: -3 }, { x: 60, y: 17, w: 18.5, h: 18, rot: 2 }, { x: 20.8, y: 29.2, w: 78.6, h: 6.4, rot: -.5 }],
+      notes: [
+        { title: 'One number, biggest on the screen', text: 'Balance is what people check on every visit, so it leads. Everything else steps back.' },
+        { title: 'Context next to every number', text: '14.35GB left, of 20GB, with a bar and a percentage. A number becomes an answer.' },
+        { title: 'One clear action per card', text: 'Add balance, purchase a plan, generate a proxy. No hunting through menus.' },
+      ],
+    },
+    compare: {
+      title: 'Twelve tools, one clear starting point', sub: "Drag to compare FireCut's tool grid with the redesign.",
+      before: '/uploads/firecut-tools-before.webp', after: '/uploads/firecut-tools-after.webp',
+      beforeAlt: 'FireCut before: twelve AI tools in one flat grid', afterAlt: 'FireCut after the redesign: saved tools first, then a workflow',
+      beforeCap: '12 tools in one flat grid, nothing stands out.', afterCap: 'Saved tools first, then a workflow.',
+    },
     casesTitle: 'Recent dashboard work',
     cases: [
       { work: 'floxy', line: 'A proxy dashboard that stays readable at scale' },
@@ -104,9 +126,9 @@ export const niches: Niche[] = [
     stepsTitle: 'From idea to the App Store',
     steps: [
       { when: 'Week 0', title: 'A 30 minute call', text: 'What the app must do on day one, and what can wait.' },
-      { when: 'Week 1', title: 'Flows and brand', text: 'Name, icon and the core flows, in Figma first.' },
-      { when: 'Week 2 onward', title: 'Design and build', text: 'Screens, then SwiftUI, with TestFlight builds as we go.' },
-      { when: 'Launch', title: 'App Store ready', text: 'Paywall, analytics, screenshots and listing.' },
+      { when: 'Week 1', title: 'Flows and brand', text: 'Name, icon and the core flows, in Figma first.', icon: 'flows' },
+      { when: 'Week 2 onward', title: 'Design and build', text: 'Screens, then SwiftUI, with TestFlight builds as we go.', icon: 'apps' },
+      { when: 'Launch', title: 'App Store ready', text: 'Paywall, analytics, screenshots and listing.', icon: 'launch' },
     ],
     price: { title: 'App projects from $5,000', text: 'Design, or design and SwiftUI build, as a fixed project. Ongoing design is $6,900 a month, pause any time.' },
     faqTitle: 'iOS app design, answered',
@@ -197,9 +219,9 @@ export const niches: Niche[] = [
     stepsTitle: 'From call to live page in 2 to 6 weeks',
     steps: [
       { when: 'Week 0', title: 'A 30 minute call', text: 'Who the page is for and what they should do.' },
-      { when: 'Week 1', title: 'Message and wireframe', text: 'The headline, the proof and the order of sections.' },
+      { when: 'Week 1', title: 'Message and wireframe', text: 'The headline, the proof and the order of sections.', icon: 'structure' },
       { when: 'Week 2 to 3', title: 'Design', text: 'The full page on desktop and mobile.' },
-      { when: 'Week 4 to 6', title: 'Build and launch', text: 'In Framer or Webflow, ready for your team to edit.' },
+      { when: 'Week 4 to 6', title: 'Build and launch', text: 'In Framer or Webflow, ready for your team to edit.', icon: 'launch' },
     ],
     price: { title: 'Landing pages from $5,000', text: 'Design and build as a fixed project. Ongoing design is $6,900 a month, pause any time.' },
     faqTitle: 'SaaS landing page design, answered',
@@ -243,9 +265,9 @@ export const niches: Niche[] = [
     stepsTitle: 'From call to live site in 2 to 6 weeks',
     steps: [
       { when: 'Week 0', title: 'A 30 minute call', text: 'What the site must say and what your team will edit.' },
-      { when: 'Week 1', title: 'Structure and message', text: 'Pages, sections and the headline, before visuals.' },
+      { when: 'Week 1', title: 'Structure and message', text: 'Pages, sections and the headline, before visuals.', icon: 'structure' },
       { when: 'Week 2 to 3', title: 'Design', text: 'Desktop and mobile, in Figma first.' },
-      { when: 'Week 4 to 6', title: 'Framer build and handoff', text: 'CMS, SEO settings and a short video on editing.' },
+      { when: 'Week 4 to 6', title: 'Framer build and handoff', text: 'CMS, SEO settings and a short video on editing.', icon: 'cms' },
     ],
     price: { title: 'Framer sites from $5,000', text: 'Design and build as a fixed project. Ongoing design is $6,900 a month, pause any time.' },
     faqTitle: 'Framer for SaaS, answered',
