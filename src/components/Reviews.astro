@@ -3,7 +3,7 @@ import { reviews, rating } from '../data/site';
 const tints = ['#dfe3ff', '#ffe1d6', '#d8f1e6', '#efe3ff'];
 ---
 <section class="container section" aria-labelledby="reviews-h">
-  <div class="head" data-reveal><p class="kicker">Reviews</p><h2 class="h2" id="reviews-h">Rated {rating.value} out of 5 on {rating.source}.</h2></div>
+  <div class="head" data-reveal><p class="kicker">Reviews</p><h2 class="h2" id="reviews-h">Rated {rating.value} on {rating.source}.</h2></div>
   <div class="grid">
     {reviews.map((r, i) => (
       <figure class:list={['rev', { lead: i === 0 }]} data-reveal style={`transition-delay:${i * 60}ms`}>
@@ -19,7 +19,7 @@ const tints = ['#dfe3ff', '#ffe1d6', '#d8f1e6', '#efe3ff'];
     <div class="score tint-blue" data-reveal>
       <div class="glass inner">
         <span class="lbl lift">{rating.source} rating</span>
-        <span class="num lift">{rating.value}<small> / 5</small></span>
+        <span class="num lift">{rating.value.replace('/5', '')}<small> / 5</small></span>
         <a class="lift" href={rating.href} target="_blank" rel="noopener">Read all reviews →</a>
       </div>
     </div>

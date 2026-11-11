@@ -13,6 +13,8 @@ import Teardown from '../components/sections/Teardown.astro';
 import Compare from '../components/sections/Compare.astro';
 import DayRuler from '../components/sections/DayRuler.astro';
 import IconGrid from '../components/sections/IconGrid.astro';
+import LaunchPath from '../components/sections/LaunchPath.astro';
+import Contrast from '../components/sections/Contrast.astro';
 import sketch from '../generated/sketch.json';
 import { niches } from '../data/niches';
 import { site } from '../data/site';
@@ -80,6 +82,11 @@ const ld = [
             <SecHead icon="design" eyebrow="What we fix" title={n.fixTitle!} sub={n.fixLede} />
             <div class="fix">{n.fixes.map((f) => <FixCard {...f} />)}</div>
           </>
+        ) : n.path ? (
+          <>
+            <SecHead icon="process" eyebrow="The path" title={n.path.title} sub={n.path.sub} />
+            <LaunchPath stages={n.path.stages} />
+          </>
         ) : n.local ? (
           <>
             <SecHead icon="calendar" eyebrow="How the day works" title={n.local.title} sub={n.local.sub} />
@@ -87,6 +94,34 @@ const ld = [
           </>
         ) : null}
       </section>
+
+      {n.contrast && (
+        <section class="wrap sec">
+          <SecHead icon="design" eyebrow="Approach" title={n.contrast.title} sub={n.contrast.sub} />
+          <Contrast left={n.contrast.left} right={n.contrast.right} rows={n.contrast.rows} />
+        </section>
+      )}
+
+      {n.skip && (
+        <section class="wrap sec">
+          <SecHead icon="pricing" eyebrow="Save your runway" title={n.skip.title} sub={n.skip.sub} />
+          <IconGrid items={n.skip.items} />
+        </section>
+      )}
+
+      {n.spotlight && (
+        <section class="wrap sec" id="spotlight">
+          <div class="spot">
+            <div class="spt">
+              <span class="eb">Client spotlight</span>
+              <b>{n.spotlight.name}</b><small>{n.spotlight.meta}</small>
+              <h3>{n.spotlight.title}</h3>
+              <p>{n.spotlight.text}</p>
+            </div>
+            {n.spotlight.image && <div class="spi"><img src={n.spotlight.image} alt={`${n.spotlight.name} launch video by Fackt`} loading="lazy" decoding="async" /></div>}
+          </div>
+        </section>
+      )}
 
       {n.local && (
         <section class="wrap sec">
@@ -115,8 +150,12 @@ const ld = [
       </section>
 
       <section class="wrap sec">
-        <SecHead icon="process" eyebrow="How it runs" title={n.stepsTitle} />
-        <div class="stp"><SketchSteps steps={n.steps.map((s) => ({ label: s.when, title: s.title, text: s.text, icon: s.icon }))} /></div>
+        {!n.path && (
+          <>
+            <SecHead icon="process" eyebrow="How it runs" title={n.stepsTitle} />
+            <div class="stp"><SketchSteps steps={n.steps.map((s) => ({ label: s.when, title: s.title, text: s.text, icon: s.icon }))} /></div>
+          </>
+        )}
         <div class="pr">
           <div><strong>{n.price.title}</strong><span>{n.price.text}</span></div>
           <a class="m-btn" href={site.bookPage} data-journey={tag('book call (price)')}>Book a 30 minute call</a>
@@ -227,6 +266,14 @@ const ld = [
     .rel em { display: none; }
     .end { margin-top: 64px; padding: 44px 0 56px; }
   }
+  .spot { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center; padding: 36px 40px; border: 1px solid #111; border-radius: 4px; box-shadow: 4px 4px 0 #111; text-align: left; }
+  .spot:has(.spi) { grid-template-columns: 1fr 1.1fr; }
+  .spt b { display: block; margin-top: 14px; font-family: var(--m-serif); font-weight: 400; font-size: 44px; line-height: 1; letter-spacing: -.02em; }
+  .spt small { display: block; margin-top: 6px; font-size: 13px; color: #8a8a86; }
+  .spt h3 { margin: 20px 0 0; font-weight: 500; font-size: 17px; }
+  .spt p { margin: 6px 0 0; max-width: 560px; font-size: 15px; color: #3f3f3f; }
+  .spi img { width: 100%; border-radius: 4px; box-shadow: 0 0 0 1px #e6e6e2; }
+  @media (max-width: 720px) { .spot, .spot:has(.spi) { grid-template-columns: 1fr; padding: 24px 20px; } .spt b { font-size: 34px; } }
 </style>
 
 <script>

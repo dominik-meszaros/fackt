@@ -1,0 +1,53 @@
+---
+// The seed-stage launch path: a vertical dotted line with one stage per row. Each stage says what we decide,
+// what we ship and where it has been done before. Icons animate on hover (styles/icons.css).
+import { icons, type IconKey } from '../../data/icons';
+import '../../styles/icons.css';
+interface Stage { weeks: string; icon: IconKey; title: string; why: string; decide: string; ship: string; proof?: { label: string; href: string } }
+interface Props { stages: Stage[] }
+const { stages } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<ol class="lp">
+  {stages.map((s, i) => (
+    <li class="ih" tabindex="0" data-play>
+      <div class="rail"><Fragment set:html={icons[s.icon]} /></div>
+      <div class="card">
+        <div class="top"><i>{pad(i + 1)} &middot; {s.weeks}</i>{s.proof && <a href={s.proof.href}>{s.proof.label} &#8594;</a>}</div>
+        <h3>{s.title}</h3>
+        <p class="why">{s.why}</p>
+        <div class="two"><div><span>We decide</span><p>{s.decide}</p></div><div><span>We ship</span><p>{s.ship}</p></div></div>
+      </div>
+    </li>
+  ))}
+</ol>
+<style>
+  .lp { list-style: none; margin: 40px auto 0; padding: 0; max-width: 820px; text-align: left; position: relative; }
+  li { display: grid; grid-template-columns: 76px 1fr; gap: 20px; position: relative; outline: none; }
+  li + li { margin-top: 18px; }
+  /* dotted pencil line from this icon down to the next one */
+  li:not(:last-child)::before { content: ''; position: absolute; left: 31px; top: 72px; bottom: -18px; border-left: 2px dotted #3f3f3f; opacity: .7; }
+  .rail :global(.ico) { width: 64px; height: 64px; }
+  .card { border: 1px solid #e6e6e2; border-radius: 4px; padding: 20px 22px; background: #fff; transition: box-shadow .25s, transform .25s; }
+  li:hover .card, li:focus-visible .card { box-shadow: 3px 3px 0 #111; transform: translate(-1px, -1px); border-color: #111; }
+  .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .top i { font: 500 11.5px 'Geist Mono', ui-monospace, monospace; font-style: normal; color: #8a8a86; }
+  .top a { font-size: 12.5px; color: #111; text-decoration: none; border-bottom: 1px solid #111; white-space: nowrap; }
+  h3 { margin: 6px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 24px; line-height: 1.15; }
+  .why { margin: 6px 0 0; font-size: 14.5px; color: #3f3f3f; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #ececea; }
+  .two span { display: block; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; }
+  .two p { margin: 4px 0 0; font-size: 13.5px; color: #6a6a66; }
+  @media (max-width: 720px) {
+    li { grid-template-columns: 48px 1fr; gap: 12px; }
+    .rail :global(.ico) { width: 48px; height: 48px; }
+    li:not(:last-child)::before { left: 23px; top: 54px; }
+    .two { grid-template-columns: 1fr; gap: 10px; }
+    .top { flex-direction: column; gap: 4px; }
+  }
+</style>
+<script>
+  // play each stage's icon animation once as it scrolls into view
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('play'); io.unobserve(e.target); } }), { threshold: 0.6 });
+  document.querySelectorAll('.lp [data-play]').forEach((el) => io.observe(el));
+</script>

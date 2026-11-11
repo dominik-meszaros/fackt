@@ -30,6 +30,11 @@ export interface Niche {
   teardown?: { title: string; sub: string; image: string; alt: string; href: string; marks: { x: number; y: number; w: number; h: number; rot?: number }[]; notes: { title: string; text: string }[] };
   // optional: before and after slider
   compare?: { title: string; sub: string; before: string; after: string; beforeAlt: string; afterAlt: string; beforeCap: string; afterCap: string };
+  // optional, strategy pages: a staged launch path (shown instead of steps), a contrast table, things to skip, a client spotlight
+  path?: { title: string; sub: string; stages: { weeks: string; icon: IconKey; title: string; why: string; decide: string; ship: string; proof?: { label: string; href: string } }[] };
+  contrast?: { title: string; sub: string; left: string; right: string; rows: { them: string; us: string }[] };
+  skip?: { title: string; sub: string; items: { icon: IconKey; title: string; text: string }[] };
+  spotlight?: { name: string; meta: string; title: string; text: string; image?: string; href?: string };
   price: { title: string; text: string };
   faqTitle: string;
   faq: { q: string; a: string }[];
@@ -51,7 +56,7 @@ export const niches: Niche[] = [
     results: [
       { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
       { value: '12 → 1', label: 'flat grid of tools turned into one clear starting point', source: 'FireCut case study', href: '/work/firecut' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     fixTitle: 'Three reasons dashboards lose users',
     fixLede: 'We see the same three in almost every audit.',
@@ -114,7 +119,7 @@ export const niches: Niche[] = [
     results: [
       { value: '28k', label: 'lines of SwiftUI in Dozy, designed and built by us', source: 'Dozy case study', href: '/work/dozy' },
       { value: '4', label: 'Ritual releases in about a week after a native rebuild', source: 'Ritual case study', href: '/work/ritual' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     fixTitle: 'Three places apps lose people',
     fixLede: 'Most apps do not fail on features. They fail in the first minute, on the paywall and on the App Store page.',
@@ -161,7 +166,7 @@ export const niches: Niche[] = [
     results: [
       { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
       { value: '13', label: 'onboarding steps in Ritual, every one tracked in analytics', source: 'Ritual case study', href: '/work/ritual' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     fixTitle: 'Three reasons new users leave',
     fixLede: 'We find at least one of these in almost every onboarding we audit.',
@@ -207,7 +212,7 @@ export const niches: Niche[] = [
     results: [
       { value: '2 weeks', label: 'EarnTask landing page, from brief to design', source: 'EarnTask case study', href: '/work/earntask' },
       { value: '12', label: 'Polar ad variants built on one grid to test message angles', source: 'Polar case study', href: '/work/polar' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     fixTitle: 'Three reasons visitors leave',
     fixLede: 'Most landing pages lose people in the first screen.',
@@ -253,7 +258,7 @@ export const niches: Niche[] = [
     results: [
       { value: '2 weeks', label: 'EarnTask landing page, from brief to design', source: 'EarnTask case study', href: '/work/earntask' },
       { value: '3D', label: 'custom hardware illustrations and Lottie animations on the Tradox site', source: 'Tradox case study', href: '/work/tradox' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     fixTitle: 'Why SaaS teams move to Framer',
     fixLede: 'The site should move as fast as the product does.',
@@ -299,7 +304,7 @@ export const niches: Niche[] = [
     results: [
       { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
       { value: '12 → 1', label: 'flat grid of tools turned into one clear starting point', source: 'FireCut case study', href: '/work/firecut' },
-      { value: '4.96', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
     ],
     local: {
       title: 'Nine hours apart, on purpose',
@@ -347,5 +352,83 @@ export const niches: Niche[] = [
     ],
     note: { slug: 'design-agency-vs-freelancer-vs-in-house', title: 'Design agency vs freelancer vs in-house', text: 'How to choose, and what each one costs you in time.' },
     endTitle: "Let's talk in your morning.",
+  },
+  {
+    slug: 'design-for-seed-stage-startups',
+    seoTitle: 'Design for Seed-Stage Startups: The Launch Path | Fackt',
+    seoDescription: 'At seed, design is about order, not polish: story, launch video, landing page, onboarding, product, paywall. The path we run with founders, from $5,000.',
+    crumb: [{ label: 'Services', href: '/services' }],
+    current: 'Seed-stage startups',
+    h1: 'Design for seed-stage startups',
+    lede: 'At seed, design is not about polished screens. It is about doing things in the right order: the story first, then the launch video, the landing page, onboarding, and only then the product polish.',
+    hero: { work: 'glowtify', caption: 'Glowtify, AI marketing platform, now seed funded', image: '/uploads/glowtify-preview.webp' },
+    logos: ['Algrow', 'FireCut', 'Communi', 'Viewmax', 'ClickUp'],
+    results: [
+      { value: '7 weeks', label: 'from discovery to developer handoff for Communi', source: 'Communi case study', href: '/work/communi' },
+      { value: '68 / 100', label: 'FireCut cancellation reasons traced to design, then redesigned', source: 'FireCut case study', href: '/work/firecut' },
+      { value: '4.96/5', label: 'average rating from clients on Contra', source: 'Contra reviews', href: 'https://contra.com/dominik_meszaros_bpbjfgt0' },
+    ],
+    path: {
+      title: 'The seed-stage launch path',
+      sub: 'Six moves, in this order. Each one makes the next one cheaper. Most founders do them backwards.',
+      stages: [
+        { weeks: 'Week 0 to 1', icon: 'refine', title: 'Story', why: 'If you cannot say who it is for in one sentence, no screen will fix it.', decide: 'Who the first users are, the one promise, and what proves it.', ship: 'The headline, the pitch narrative and the words every later page reuses.' },
+        { weeks: 'Week 1 to 3', icon: 'play', title: 'Launch video', why: 'People believe what they see working. A 60 to 90 second video sells before anyone signs up.', decide: 'The three flows that show the product best, and the order to show them in.', ship: 'A product video with animated flows, cut for your site, X and LinkedIn.', proof: { label: 'CaseWize', href: '#spotlight' } },
+        { weeks: 'Week 2 to 4', icon: 'landing', title: 'Landing page', why: 'One promise, one proof, one action. Everything else waits until people ask for it.', decide: 'Waitlist, demo or self serve signup, and the proof above the fold.', ship: 'A Framer or Webflow page your team can edit, with the video built in.', proof: { label: 'Viewmax', href: '/work/viewmax' } },
+        { weeks: 'Week 4 to 6', icon: 'proto', title: 'Onboarding', why: 'Signups are not users. The first minutes decide who stays.', decide: 'What the first win is, and the shortest way to reach it.', ship: 'First run, empty states, nudges and the events to track every step.', proof: { label: 'Ritual', href: '/work/ritual' } },
+        { weeks: 'Week 6 to 10', icon: 'apps', title: 'Core product', why: 'Now polish pays off, because you know what people actually use.', decide: 'The one screen people come back for, and what it must answer.', ship: 'Core screens, states and a small design system your engineers build from.', proof: { label: 'Floxy', href: '/work/floxy' } },
+        { weeks: 'Week 8 to 12', icon: 'seo', title: 'Paywall and growth', why: 'Pricing is a guess until you test it. Make testing cheap from day one.', decide: 'Free versus paid, the paywall moment and the loops that bring people back.', ship: 'Paywall layouts you can switch remotely, share moments and recap emails.', proof: { label: 'Dozy', href: '/work/dozy' } },
+      ],
+    },
+    contrast: {
+      title: 'The order matters more than the pixels',
+      sub: 'What we see most often at seed, and what we do instead.',
+      left: 'What most seed teams do', right: 'What we do instead',
+      rows: [
+        { them: 'Polish the dashboard before anyone uses it', us: 'Write the story first, then design what proves it' },
+        { them: 'Launch with a feature list', us: 'Launch with a 60 second video of the product working' },
+        { them: 'Ask for 14 fields before anything happens', us: 'Get people to their first win, then ask' },
+        { them: 'Guess one price and hard code it', us: 'Ship paywalls you can switch without an update' },
+        { them: 'Add analytics after users start leaving', us: 'Track every onboarding step from the first build' },
+      ],
+    },
+    skip: {
+      title: 'What to skip at seed',
+      sub: 'Things that feel productive and are not, yet.',
+      items: [
+        { icon: 'book', title: 'A 60 page brand book', text: 'A logo, two colors, one typeface and a voice is enough until people know your name.' },
+        { icon: 'system', title: 'A full design system', text: 'Build the 12 components you use. The rest can wait until a second designer joins.' },
+        { icon: 'redesign', title: 'A 20 page website', text: 'One landing page that converts beats a site map nobody reads. Add pages when people ask.' },
+      ],
+    },
+    spotlight: {
+      name: 'CaseWize', meta: 'AI litigation intelligence, San Francisco',
+      title: 'A launch video that shows the product working',
+      text: 'CaseWize helps plaintiff-side law firms make sense of their cases. We made a launch video with three animated product flows, so firms see what it does before they ever log in.',
+    },
+    casesTitle: 'Early-stage products we designed',
+    cases: [
+      { work: 'glowtify', line: 'An AI marketing platform, before its seed round' },
+      { work: 'communi', line: 'A creator platform, from discovery to handoff in 7 weeks' },
+      { work: 'shredder', line: 'A ski and snowboard app, from a logo sketch to a relaunch' },
+    ],
+    stepsTitle: 'From call to launch',
+    steps: [
+      { when: 'Week 0', title: 'A 30 minute call', text: 'We find where you are on the path.' },
+      { when: 'Week 1', title: 'Story and plan', text: 'The order of moves for your product.' },
+      { when: 'Week 2 to 6', title: 'First moves shipped', text: 'Video, landing page and onboarding.' },
+      { when: 'Week 6 and on', title: 'Product and growth', text: 'Core screens, paywall and loops.' },
+    ],
+    price: { title: 'Launch projects from $5,000', text: 'Start with one move, or run the whole path on a retainer at $6,900 a month, pause any time.' },
+    faqTitle: 'Design at seed stage, answered',
+    faq: [
+      { q: 'We are pre-launch. Where do we start?', a: 'With the story and the launch video. They are the cheapest to change and they shape everything after them: the landing page, the onboarding and the pitch.' },
+      { q: 'Do we need a designer before product market fit?', a: 'You need design decisions, not a full time designer. A studio covers the whole path in a few months, and many founders hire in house later.' },
+      { q: 'How much does it cost?', a: 'Single moves are fixed projects from $5,000. The whole path runs best on a retainer at $6,900 a month, which you can pause any time.' },
+      { q: 'Can you work with our engineers?', a: 'Yes. We hand off Figma files, states and specs your team builds from, and stay on for questions while they build.' },
+      { q: 'Can you start with an audit?', a: 'Yes. Send your product or prototype and within 2 days you get a video walkthrough and a written list of fixes, ordered by impact.' },
+    ],
+    note: { slug: 'design-agency-vs-freelancer-vs-in-house', title: 'Design agency vs freelancer vs in-house', text: 'How to choose at seed, and what each one costs you in time.' },
+    endTitle: 'Where are you on the path?',
   },
 ];

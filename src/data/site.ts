@@ -91,7 +91,7 @@ export const testimonials = [
 ];
 
 // TODO before launch: confirm the current Contra rating.
-export const rating = { value: '4.96', source: 'Contra', href: 'https://contra.com/dominik_meszaros_bpbjfgt0?referralExperimentNid=DEFAULT_REFERRAL_PROGRAM&referrerUsername=dominik_meszaros_bpbjfgt0' };
+export const rating = { value: '4.96/5', source: 'Contra', href: 'https://contra.com/dominik_meszaros_bpbjfgt0?referralExperimentNid=DEFAULT_REFERRAL_PROGRAM&referrerUsername=dominik_meszaros_bpbjfgt0' };
 
 export const reviews = [
   {
