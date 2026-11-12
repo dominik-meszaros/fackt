@@ -30,7 +30,7 @@ export const site = {
 export const nav = [
   { label: 'Work', href: '/#work' },
   { label: 'Services', href: '/services' },
-  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Recent work', href: '/recent' },
   { label: 'Testimonials', href: '/#testimonials' },
 ];
 

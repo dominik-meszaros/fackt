@@ -11,10 +11,19 @@ import { servicePages } from '../../data/servicePages';
 
 const all = await getCollection('work');
 const icon = (slug: string) => ((sketch.services as Record<string, string>)[slug] ?? '').replace('class="sk"', 'class="si"');
+// Recent project shown on each service row: a screen where the work reads at thumbnail size, from a project that is
+// mainly that service. Falls back to the first case study listed for the service page.
+const picks: Record<string, { slug: string; image: string; label: string }> = {
+  'product-design': { slug: 'firecut', image: '/uploads/firecut-home.webp', label: 'Product design' },
+  'web-design-development': { slug: 'isend', image: '/uploads/isend-11.webp', label: 'Landing page design' },
+  'motion-design': { slug: 'meridian', image: '/uploads/meridian-05.webp', label: 'Scroll motion, art drawn in code' },
+  'visual-branding': { slug: 'flashloop', image: '/uploads/flashloop-10.webp', label: 'Brand identity' },
+};
 const items = services.map((s) => {
   const page = servicePages.find((p) => p.slug === s.slug)!;
-  const w = page.work.map((k) => all.find((e) => e.id === k)).find(Boolean);
-  return { ...s, page, recent: w ? { slug: w.id, ...w.data } : null };
+  const p = picks[s.slug];
+  const w = p ? all.find((e) => e.id === p.slug) : page.work.map((k) => all.find((e) => e.id === k)).find(Boolean);
+  return { ...s, page, recent: w ? { slug: w.id, ...w.data, ...(p ? { preview: p.image, service: p.label } : {}) } : null };
 });
 const svcLd = [{ '@context': 'https://schema.org', '@type': 'ItemList', name: 'Fackt services', itemListElement: items.map((s, i) => ({ '@type': 'ListItem', position: i + 1,
   item: { '@type': 'Service', name: s.title, description: s.text, url: `https://fackt.io/services/${s.slug}`, provider: { '@type': 'Organization', name: 'Fackt', url: 'https://fackt.io' } } })) }];
@@ -83,7 +92,6 @@ import '../../styles/icons.css';
             <p>Fixed scope, milestones over 2 to 6 weeks.</p>
           </div>
         </div>
-        <a class="lnk more" href="/#pricing">Compare plans &#8594;</a>
       </section>
 
       <SvcCta />
@@ -103,7 +111,7 @@ import '../../styles/icons.css';
   .lede { margin: 14px 0 0; color: #6a6a66; font-size: 16px; max-width: 560px; }
 
   .list { padding-top: 36px; }
-  .row { display: grid; grid-template-columns: 72px 1fr 260px 180px; gap: 28px; align-items: start; padding: 32px 0; border-top: 1px solid #dcdcd8; color: inherit; text-decoration: none; }
+  .row { display: grid; grid-template-columns: 72px 1fr 230px 300px; gap: 28px; align-items: start; padding: 32px 0; border-top: 1px solid #dcdcd8; color: inherit; text-decoration: none; }
   .row:last-child { border-bottom: 1px solid #dcdcd8; }
   .row :global(.si) { display: block; width: 64px; height: 64px; overflow: visible; }
   .n { font-size: 12px; color: #8a8a86; display: block; margin-bottom: 6px; }
@@ -118,7 +126,7 @@ import '../../styles/icons.css';
   li :global(svg) { flex-shrink: 0; }
   .ex { display: flex; flex-direction: column; }
   .exl { font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #8a8a86; margin-bottom: 8px; }
-  .exi { position: relative; display: block; height: 112px; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; overflow: hidden; }
+  .exi { position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 3px; background: #f2f2f0; box-shadow: inset 0 0 0 1px #e2e2de; overflow: hidden; }
   .exi img { position: absolute; left: 16px; top: 16px; width: 200px; border-radius: 2px; box-shadow: 0 0 0 1px #111; transition: transform .4s var(--m-ease); }
   .row:hover .exi img { transform: translateY(-3px); }
   .exi.ph img { left: 50%; width: 62px; translate: -50% 0; border-radius: 8px; }
@@ -156,7 +164,6 @@ import '../../styles/icons.css';
     .row { grid-template-columns: 1fr; gap: 14px; padding: 24px 0; }
     .row :global(.si) { width: 56px; height: 56px; }
     .ex { grid-column: auto; max-width: none; }
-    .exi { height: 150px; }
     .exi img { width: 280px; }
     .exi.ph img { width: 84px; border-radius: 12px; }
     .pr { padding-top: 40px; }

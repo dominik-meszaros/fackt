@@ -19,7 +19,7 @@ const hasBlog = (await publishedPosts()).length > 0;
 const left = [
   { label: 'Work', href: '/#work', id: 'work' },
   { label: 'Services', href: '/#services', id: 'services' },
-  { label: 'Pricing', href: '/#pricing', id: 'pricing' },
+  { label: 'Recent work', href: '/recent', id: 'recent' },
   hasBlog ? { label: 'Blog', href: '/blog', id: 'blog' } : { label: 'Reviews', href: '/#reviews', id: 'reviews' },
 ];
 const menu = [
@@ -28,7 +28,7 @@ const menu = [
   { label: 'Services', href: '/#services', id: 'services' },
   { label: 'How we work', href: '/#process', id: 'process' },
   { label: 'Reviews', href: '/#reviews', id: 'reviews' },
-  { label: 'Pricing', href: '/#pricing', id: 'pricing' },
+  { label: 'Recent work', href: '/recent', id: 'recent' },
   ...(hasBlog ? [{ label: 'Blog', href: '/blog', id: 'blog' }] : []),
 ];
 ---
@@ -187,7 +187,7 @@ const menu = [
   // Homepage versions (worker cookie fackt_hv) don't all have every section: version D has no services or
   // pricing. Point each "/#section" link at something that exists, so no nav link is a dead click.
   const HAS: Record<string, string[]> = { d: ['work', 'reviews', 'book'] };
-  const ELSE: Record<string, string> = { services: '/services', pricing: '/services', process: '/services', who: '/who-we-work-with', work: '/work' };
+  const ELSE: Record<string, string> = { services: '/services', pricing: '/recent', process: '/services', who: '/who-we-work-with', work: '/work' };
   const onHome = location.pathname === '/' || location.pathname.startsWith('/home-');
   const hv = (document.cookie.match(/(?:^|;\s*)fackt_hv=([a-z])\b/) || [])[1];
   document.querySelectorAll<HTMLAnchorElement>('[data-nav] a[href^="/#"], #menu a[href^="/#"]').forEach((a) => {
