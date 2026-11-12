@@ -184,6 +184,37 @@ const menu = [
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // Homepage versions (worker cookie fackt_hv) don't all have every section: version D has no services or
+  // pricing. Point each "/#section" link at something that exists, so no nav link is a dead click.
+  const HAS: Record<string, string[]> = { d: ['work', 'reviews', 'book'] };
+  const ELSE: Record<string, string> = { services: '/services', pricing: '/services', process: '/services', who: '/who-we-work-with', work: '/work' };
+  const onHome = location.pathname === '/' || location.pathname.startsWith('/home-');
+  const hv = (document.cookie.match(/(?:^|;\s*)fackt_hv=([a-z])\b/) || [])[1];
+  document.querySelectorAll<HTMLAnchorElement>('[data-nav] a[href^="/#"], #menu a[href^="/#"]').forEach((a) => {
+    const id = a.getAttribute('href')!.slice(2);
+    const there = onHome ? !!document.getElementById(id) : !(hv && HAS[hv]) || HAS[hv].includes(id);
+    if (there) { if (onHome) a.setAttribute('href', `#${id}`); return; }
+    if (ELSE[id]) a.setAttribute('href', ELSE[id]); else a.style.display = 'none';
+  });
+
+  // Landing on /#section: images above it load after the jump and push it away, so keep it in place
+  // until the page settles or the visitor scrolls.
+  function hold() {
+    const t = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    if (!t) return;
+    let off = false;
+    const quit = () => { off = true; ro.disconnect(); };
+    const fix = () => { if (!off) t.scrollIntoView({ behavior: 'instant' as ScrollBehavior, block: 'start' }); };
+    let first = true; // skip the call observe() makes right away, so in-page clicks keep their smooth scroll
+    const ro = new ResizeObserver(() => { if (first) { first = false; return; } fix(); });
+    ro.observe(document.body);
+    ['wheel', 'touchstart', 'keydown'].forEach((e) => addEventListener(e, quit, { once: true, passive: true }));
+    addEventListener('load', fix, { once: true });
+    setTimeout(quit, 4000);
+  }
+  hold();
+  addEventListener('hashchange', hold);
+
   function openMenu() {
     if (!menu) return;
     menu.hidden = false; menu.classList.add('in');
