@@ -8,6 +8,7 @@ import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import { existsSync } from 'node:fs';
 const poster = (c: string) => (existsSync(`public/uploads/${c}.webp`) ? `/uploads/${c}.webp` : undefined);
+const isClip = (c: string) => existsSync(`public/uploads/${c}.mp4`);
 
 const work = await getCollection('work');
 const w = (slug: string) => work.find((x) => x.id === slug)!.data;
@@ -16,8 +17,8 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     title: 'Product design',
     sub: 'Dashboards and apps, designed end to end and then kept growing.',
     items: [
-      { slug: 'engain', line: 'A Reddit lead discovery dashboard: the core product, an AI agent and a sidebar cut from 16 items to 7.', clips: ['engain-03', 'engain-24', 'engain-25'] },
-      { slug: 'firecut', line: 'An AI editing plugin for Premiere Pro, from a flat grid of 12 tools to one clear flow.', clips: ['firecut-flow', 'firecut-hero'] },
+      { slug: 'engain', line: 'A Reddit lead discovery dashboard: the core product, an AI agent and a sidebar cut from 16 items to 7.', clips: ['engain-01', 'engain-03', 'engain-24', 'engain-25', 'engain-09', 'engain-11', 'engain-13', 'engain-19', 'engain-28'] },
+      { slug: 'firecut', line: 'An AI editing plugin for Premiere Pro, from a flat grid of 12 tools to one clear flow.', clips: ['firecut-hero', 'firecut-flow', 'firecut-ia', 'firecut-presets', 'firecut-responses', 'firecut-review'] },
       { slug: 'shredder', line: 'A ski and snowboard app, from a logo sketch and a mascot to a relaunch as a dating app.', clips: ['shredder-01', 'shredder-09'] },
     ],
   },
@@ -26,14 +27,14 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     sub: 'Pages that explain a lot of product in one scroll.',
     items: [
       { slug: 'isend', line: 'An AI sales agent page: a painted sky, and a paper plane that draws the route through the whole page.', clips: ['isend-12', 'isend-15', 'isend-16'] },
-      { slug: 'exitliquidity', line: 'A German crypto trading community, from a bright course site to a dark syndicate in nine rounds.', clips: ['exitliquidity-01', 'exitliquidity-09'] },
+      { slug: 'exitliquidity', line: 'A German crypto trading community, from a bright course site to a dark syndicate in nine rounds.', clips: ['exitliquidity-01', 'exitliquidity-03', 'exitliquidity-09', 'exitliquidity-15', 'exitliquidity-20', 'exitliquidity-27'] },
     ],
   },
   {
     title: 'Brand and motion',
     sub: 'Identities and ads that move.',
     items: [
-      { slug: 'flashloop', line: 'An AI video app brand in two takes: a loop mark, then a ghost with a clapperboard.', clips: ['flashloop-01', 'flashloop-18'] },
+      { slug: 'flashloop', line: 'An AI video app brand in two takes: a loop mark, then a ghost with a clapperboard.', clips: ['flashloop-01', 'flashloop-10', 'flashloop-18', 'flashloop-21', 'flashloop-05', 'flashloop-13', 'flashloop-14', 'flashloop-15', 'flashloop-16'] },
       { slug: 'polar', line: 'Ads for an AI browser: one grid, one copper accent, four message angles.', clips: ['polar-hero', 'polar-ab'] },
     ],
   },
@@ -61,9 +62,11 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
                 <p>{it.line}</p>
                 <a href={`/work/${it.slug}`}>See the case study &#8594;</a>
               </div>
-              <div class:list={['clips', `n${it.clips.length}`]}>
-                {it.clips.map((c) => (
+              <div class:list={['clips', `n${Math.min(it.clips.length, 3)}`]}>
+                {it.clips.map((c) => isClip(c) ? (
                   <video muted loop playsinline preload="none" data-clip src={`/uploads/${c}.mp4`} poster={poster(c)} aria-label={`${d.name}, animated board`}></video>
+                ) : (
+                  <img src={`/uploads/${c}.webp`} alt={`${d.name}, design board`} loading="lazy" decoding="async" />
                 ))}
               </div>
             </article>
@@ -98,7 +101,7 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
   .meta a { display: inline-block; margin-top: 12px; font-size: 13px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
   .clips { display: grid; gap: 10px; }
   .clips.n2 { grid-template-columns: 1fr 1fr; } .clips.n3 { grid-template-columns: 1fr 1fr 1fr; }
-  video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #f2f2f0; box-shadow: 0 0 0 1px #e6e6e2; display: block; }
+  video, .clips img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #f2f2f0; box-shadow: 0 0 0 1px #e6e6e2; display: block; }
   .end { margin-top: 96px; padding: 56px 0 24px; text-align: center; }
   .end h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
   .end p { margin: 10px auto 0; max-width: 480px; color: #6a6a66; }
@@ -107,11 +110,15 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     h1 { font-size: 38px; }
     .gh { flex-direction: column; gap: 4px; } .gh h2 { font-size: 28px; }
     .it { grid-template-columns: 1fr; gap: 16px; }
-    .clips.n2, .clips.n3 { grid-template-columns: 1fr; }
+    .clips.n2, .clips.n3 { grid-template-columns: 1fr 1fr; }
   }
 </style>
 <script>
   // play clips only while they are on screen
   const io = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target as HTMLVideoElement; if (e.isIntersecting) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause(); }), { threshold: 0.35 });
-  document.querySelectorAll('[data-clip]').forEach((v) => io.observe(v));
+  document.querySelectorAll<HTMLVideoElement>('[data-clip]').forEach((v) => {
+    // many clips fade in from an empty frame, so start a second in
+    v.addEventListener('loadedmetadata', () => { if (v.currentTime < 0.5) v.currentTime = Math.min(1, v.duration / 4); }, { once: true });
+    io.observe(v);
+  });
 </script>
