@@ -2,7 +2,7 @@
 name: iSend
 service: Landing page design
 category: web
-summary: A landing page for an AI sales agent that talks to every customer, taken from two moodboards and grey wireframes to a painted sky with a paper plane that carries the story.
+summary: A landing page for an AI sales agent that talks to every customer, from two moodboards and grey wireframes to a painted sky with a paper plane carrying the story.
 seoTitle: "AI sales agent landing page design | iSend"
 keywords: [isend, ai sales agent, ai salesperson, imessage, landing page, web design, saas landing page, art direction, illustration, paper plane, clouds, dashboard, testimonials, responsive design, ecommerce]
 image: /uploads/isend-01.webp

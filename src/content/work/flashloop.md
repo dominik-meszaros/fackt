@@ -2,7 +2,7 @@
 name: Flashloop
 service: Brand identity
 category: branding
-summary: "A brand identity for an AI video app, shot in two takes: a geometric loop mark first, then a ghost holding a clapperboard that works from a billboard down to a 16 pixel favicon."
+summary: "A brand identity for an AI video app in two takes: a geometric loop mark, then a ghost with a clapperboard that works from a billboard down to a 16 pixel favicon."
 seoTitle: "AI video app brand identity and mascot | Flashloop"
 keywords: [flashloop, ai video, video app, tiktok, reels, shorts, brand identity, logo design, mascot, ghost, wordmark, app icon, favicon, brand guidelines, social templates, figtree]
 image: /uploads/flashloop-01.webp

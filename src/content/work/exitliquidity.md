@@ -2,7 +2,7 @@
 name: ExitLiquidity
 service: Landing page design
 category: web
-summary: A landing page for a German crypto trading community, designed over nine rounds from a bright course site to a dark syndicate, then onboarding, pricing and a German launch.
+summary: A landing page for a German crypto trading community, taken over nine rounds from a bright course site to a dark syndicate, then onboarding, pricing and launch.
 seoTitle: "Crypto trading community landing page | ExitLiquidity"
 keywords: [exitliquidity, crypto, crypto trading, trading community, discord, landing page, web design, german, pricing card, bento grid, onboarding, dark mode, 3d illustration, responsive design, fintech]
 image: /uploads/exitliquidity-01.webp

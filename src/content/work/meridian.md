@@ -2,7 +2,7 @@
 name: Meridian
 service: Web design and Framer development
 category: web
-summary: "A marketing site for an edge network in 310 cities: thirteen pages designed in Figma and built in Framer, with every piece of art drawn in code and every page given its own move."
+summary: "A site for an edge network in 310 cities: thirteen pages designed in Figma and built in Framer, every piece of art drawn in code and every page given its own move."
 seoTitle: "Edge network website, Figma to Framer | Meridian"
 keywords: [meridian, edge network, cdn website, developer infrastructure, framer, framer development, figma, web design, saas website, dithering, bayer dither, generative art, canvas animation, motion design, responsive design, design system]
 image: /uploads/meridian-01.webp
