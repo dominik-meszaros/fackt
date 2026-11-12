@@ -17,9 +17,9 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     title: 'Product design',
     sub: 'Dashboards and apps, designed end to end and then kept growing.',
     items: [
-      { slug: 'engain', line: 'A Reddit lead discovery dashboard: the core product, an AI agent and a sidebar cut from 16 items to 7.', clips: ['engain-01', 'engain-03', 'engain-24', 'engain-25', 'engain-09', 'engain-11', 'engain-13', 'engain-19', 'engain-28'] },
-      { slug: 'firecut', line: 'An AI editing plugin for Premiere Pro, from a flat grid of 12 tools to one clear flow.', clips: ['firecut-hero', 'firecut-flow', 'firecut-ia', 'firecut-presets', 'firecut-responses', 'firecut-review'] },
-      { slug: 'shredder', line: 'A ski and snowboard app, from a logo sketch and a mascot to a relaunch as a dating app.', clips: ['shredder-01', 'shredder-09'] },
+      { slug: 'engain', line: 'A Reddit lead discovery dashboard: the core product, an AI agent and a sidebar cut from 16 items to 7.', clips: ['engain-03', 'engain-11', 'engain-24', 'engain-25', 'engain-13', 'engain-14', 'engain-19', 'engain-23', 'engain-28'] },
+      { slug: 'firecut', line: 'An AI editing plugin for Premiere Pro, from a flat grid of 12 tools to one clear flow.', clips: ['firecut-before-after', 'firecut-home', 'firecut-tools', 'firecut-depth', 'firecut-search', 'firecut-directions', 'firecut-titles', 'firecut-concepts', 'firecut-presets'] },
+      { slug: 'shredder', line: 'A ski and snowboard app, from a logo sketch and a mascot to a relaunch as a dating app.', clips: ['shredder-08', 'shredder-11', 'shredder-24', 'shredder-09', 'shredder-10', 'shredder-12', 'shredder-15', 'shredder-25', 'shredder-26', 'shredder-27', 'shredder-23'] },
     ],
   },
   {
@@ -27,7 +27,7 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     sub: 'Pages that explain a lot of product in one scroll.',
     items: [
       { slug: 'isend', line: 'An AI sales agent page: a painted sky, and a paper plane that draws the route through the whole page.', clips: ['isend-12', 'isend-15', 'isend-16'] },
-      { slug: 'exitliquidity', line: 'A German crypto trading community, from a bright course site to a dark syndicate in nine rounds.', clips: ['exitliquidity-01', 'exitliquidity-03', 'exitliquidity-09', 'exitliquidity-15', 'exitliquidity-20', 'exitliquidity-27'] },
+      { slug: 'exitliquidity', line: 'A German crypto trading community, from a bright course site to a dark syndicate in nine rounds.', clips: ['exitliquidity-01', 'exitliquidity-03', 'exitliquidity-09', 'exitliquidity-15', 'exitliquidity-20', 'exitliquidity-27', 'exitliquidity-21', 'exitliquidity-28'] },
     ],
   },
   {
@@ -35,7 +35,7 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     sub: 'Identities and ads that move.',
     items: [
       { slug: 'flashloop', line: 'An AI video app brand in two takes: a loop mark, then a ghost with a clapperboard.', clips: ['flashloop-01', 'flashloop-10', 'flashloop-18', 'flashloop-21', 'flashloop-05', 'flashloop-13', 'flashloop-14', 'flashloop-15', 'flashloop-16'] },
-      { slug: 'polar', line: 'Ads for an AI browser: one grid, one copper accent, four message angles.', clips: ['polar-hero', 'polar-ab'] },
+      { slug: 'polar', line: 'Ads for an AI browser: one grid, one copper accent, four message angles.', clips: ['polar-hero', 'polar-ab', 'polar-anatomy'] },
     ],
   },
 ];
@@ -62,11 +62,11 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
                 <p>{it.line}</p>
                 <a href={`/work/${it.slug}`}>See the case study &#8594;</a>
               </div>
-              <div class:list={['clips', `n${Math.min(it.clips.length, 3)}`]}>
+              <div class="clips">
                 {it.clips.map((c) => isClip(c) ? (
-                  <video muted loop playsinline preload="none" data-clip src={`/uploads/${c}.mp4`} poster={poster(c)} aria-label={`${d.name}, animated board`}></video>
+                  <button class="tile" type="button" data-full={`/uploads/${c}.mp4`} aria-label={`Open ${d.name} animation full size`}><video muted loop playsinline preload="none" data-clip src={`/uploads/${c}.mp4`} poster={poster(c)} aria-hidden="true"></video></button>
                 ) : (
-                  <img src={`/uploads/${c}.webp`} alt={`${d.name}, design board`} loading="lazy" decoding="async" />
+                  <button class="tile" type="button" data-full={`/uploads/${c}.webp`} aria-label={`Open ${d.name} screen full size`}><img src={`/uploads/${c}.webp`} alt={`${d.name}, design by Fackt`} loading="lazy" decoding="async" /></button>
                 ))}
               </div>
             </article>
@@ -81,6 +81,7 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
       <div class="ct"><a class="m-btn dk" href="/audit">Get a free audit</a><a class="m-btn lt" href="/book">Book a 30 minute call</a></div>
     </section>
   </main>
+  <dialog class="lb" data-lb aria-label="Full size view"><button class="x" type="button" data-lbx aria-label="Close">&#215;</button><div class="lbin" data-lbin></div></dialog>
   <Footer />
 </Base>
 <style>
@@ -94,14 +95,21 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
   .gh { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-bottom: 14px; border-bottom: 1px solid #111; }
   .gh h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
   .gh p { margin: 0; font-size: 14px; color: #6a6a66; }
-  .it { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding: 28px 0; border-bottom: 1px solid #ececea; }
-  .meta b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
-  .svc { display: block; margin-top: 4px; font-size: 12.5px; color: #8a8a86; }
-  .meta p { margin: 12px 0 0; font-size: 14px; color: #3f3f3f; }
-  .meta a { display: inline-block; margin-top: 12px; font-size: 13px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
-  .clips { display: grid; gap: 10px; }
-  .clips.n2 { grid-template-columns: 1fr 1fr; } .clips.n3 { grid-template-columns: 1fr 1fr 1fr; }
-  video, .clips img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #f2f2f0; box-shadow: 0 0 0 1px #e6e6e2; display: block; }
+  .it { padding: 32px 0 40px; border-bottom: 1px solid #ececea; }
+  .meta { display: grid; grid-template-columns: 300px 1fr auto; gap: 8px 28px; align-items: baseline; }
+  .meta b { font-family: var(--m-serif); font-weight: 400; font-size: 30px; line-height: 1.1; }
+  .svc { grid-column: 1; grid-row: 2; font-size: 12.5px; color: #8a8a86; }
+  .meta p { grid-column: 2; grid-row: 1 / span 2; margin: 0; font-size: 15px; color: #3f3f3f; max-width: 560px; }
+  .meta a { grid-column: 3; grid-row: 1; font-size: 13px; color: #111; text-decoration: none; border-bottom: 1px solid #111; white-space: nowrap; }
+  .clips { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+  .tile { all: unset; display: block; cursor: zoom-in; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px #e6e6e2; background: #f2f2f0; transition: box-shadow .2s, transform .2s; }
+  .tile:hover, .tile:focus-visible { box-shadow: 0 0 0 1px #111, 3px 3px 0 #111; transform: translate(-1px, -1px); }
+  .clips > .tile:first-child { grid-column: 1 / -1; }
+  video, .tile img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .lb { width: min(1600px, 96vw); max-height: 94vh; padding: 0; border: 0; border-radius: 6px; background: #111; overflow: auto; }
+  .lb::backdrop { background: rgba(10, 10, 10, .82); }
+  .lbin img, .lbin video { display: block; width: 100%; height: auto; }
+  .x { position: sticky; top: 10px; float: right; margin: 10px 10px -46px 0; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff; font-size: 20px; cursor: pointer; }
   .end { margin-top: 96px; padding: 56px 0 24px; text-align: center; }
   .end h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
   .end p { margin: 10px auto 0; max-width: 480px; color: #6a6a66; }
@@ -109,8 +117,9 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
   @media (max-width: 860px) {
     h1 { font-size: 38px; }
     .gh { flex-direction: column; gap: 4px; } .gh h2 { font-size: 28px; }
-    .it { grid-template-columns: 1fr; gap: 16px; }
-    .clips.n2, .clips.n3 { grid-template-columns: 1fr 1fr; }
+    .meta { grid-template-columns: 1fr; }
+    .svc, .meta p, .meta a { grid-column: 1; grid-row: auto; }
+    .clips { grid-template-columns: 1fr; gap: 10px; }
   }
 </style>
 <script>
@@ -121,4 +130,14 @@ const groups: { title: string; sub: string; items: { slug: string; line: string;
     v.addEventListener('loadedmetadata', () => { if (v.currentTime < 0.5) v.currentTime = Math.min(1, v.duration / 4); }, { once: true });
     io.observe(v);
   });
+  // click a tile to see it full size
+  const lb = document.querySelector<HTMLDialogElement>('[data-lb]')!, inner = document.querySelector<HTMLElement>('[data-lbin]')!;
+  document.querySelectorAll<HTMLElement>('[data-full]').forEach((t) => t.addEventListener('click', () => {
+    const src = t.dataset.full!;
+    inner.innerHTML = src.endsWith('.mp4') ? `<video src="${src}" autoplay muted loop playsinline controls></video>` : `<img src="${src}" alt="">`;
+    lb.showModal();
+  }));
+  document.querySelector('[data-lbx]')!.addEventListener('click', () => lb.close());
+  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', () => { inner.innerHTML = ''; });
 </script>
