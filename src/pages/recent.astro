@@ -1,0 +1,117 @@
+---
+// Unlisted: fackt.io/recent. Recent client work as moving clips, for sharing by link with partners and
+// prospects (not in the nav or sitemap, noindex). Each project: name, one line, 2 or 3 clips from its case study.
+// Clips play only while on screen. To add a project, add an entry to `groups` with clips from /public/uploads.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import { existsSync } from 'node:fs';
+const poster = (c: string) => (existsSync(`public/uploads/${c}.webp`) ? `/uploads/${c}.webp` : undefined);
+
+const work = await getCollection('work');
+const w = (slug: string) => work.find((x) => x.id === slug)!.data;
+const groups: { title: string; sub: string; items: { slug: string; line: string; clips: string[] }[] }[] = [
+  {
+    title: 'Product design',
+    sub: 'Dashboards and apps, designed end to end and then kept growing.',
+    items: [
+      { slug: 'engain', line: 'A Reddit lead discovery dashboard: the core product, an AI agent and a sidebar cut from 16 items to 7.', clips: ['engain-03', 'engain-24', 'engain-25'] },
+      { slug: 'firecut', line: 'An AI editing plugin for Premiere Pro, from a flat grid of 12 tools to one clear flow.', clips: ['firecut-flow', 'firecut-hero'] },
+      { slug: 'shredder', line: 'A ski and snowboard app, from a logo sketch and a mascot to a relaunch as a dating app.', clips: ['shredder-01', 'shredder-09'] },
+    ],
+  },
+  {
+    title: 'Landing pages',
+    sub: 'Pages that explain a lot of product in one scroll.',
+    items: [
+      { slug: 'isend', line: 'An AI sales agent page: a painted sky, and a paper plane that draws the route through the whole page.', clips: ['isend-12', 'isend-15', 'isend-16'] },
+      { slug: 'exitliquidity', line: 'A German crypto trading community, from a bright course site to a dark syndicate in nine rounds.', clips: ['exitliquidity-01', 'exitliquidity-09'] },
+    ],
+  },
+  {
+    title: 'Brand and motion',
+    sub: 'Identities and ads that move.',
+    items: [
+      { slug: 'flashloop', line: 'An AI video app brand in two takes: a loop mark, then a ghost with a clapperboard.', clips: ['flashloop-01', 'flashloop-18'] },
+      { slug: 'polar', line: 'Ads for an AI browser: one grid, one copper accent, four message angles.', clips: ['polar-hero', 'polar-ab'] },
+    ],
+  },
+];
+---
+<Base title="Recent work | Fackt" description="Recent product design, landing pages, brand and motion work from Fackt." noindex>
+  <Nav />
+  <main class="rc">
+    <header class="top">
+      <span class="eb">Recent work</span>
+      <h1>What we shipped lately.</h1>
+      <p>Product design, landing pages, brand and motion from the last few weeks. Every clip is from a real project, and each one links to the full case study.</p>
+      <a class="mo" href="/motion">Plus: interactive animations from our own iOS apps &#8594;</a>
+    </header>
+
+    {groups.map((g) => (
+      <section class="grp">
+        <div class="gh"><h2>{g.title}</h2><p>{g.sub}</p></div>
+        {g.items.map((it) => {
+          const d = w(it.slug);
+          return (
+            <article class="it">
+              <div class="meta">
+                <b>{d.name}</b><span class="svc">{d.service}</span>
+                <p>{it.line}</p>
+                <a href={`/work/${it.slug}`}>See the case study &#8594;</a>
+              </div>
+              <div class:list={['clips', `n${it.clips.length}`]}>
+                {it.clips.map((c) => (
+                  <video muted loop playsinline preload="none" data-clip src={`/uploads/${c}.mp4`} poster={poster(c)} aria-label={`${d.name}, animated board`}></video>
+                ))}
+              </div>
+            </article>
+          );
+        })}
+      </section>
+    ))}
+
+    <section class="end">
+      <h2>Something like this for your product?</h2>
+      <p>Send it over and we will show you what we would change, for free, within 2 days.</p>
+      <div class="ct"><a class="m-btn dk" href="/audit">Get a free audit</a><a class="m-btn lt" href="/book">Book a 30 minute call</a></div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+<style>
+  .rc { width: min(1120px, 100% - 32px); margin: 0 auto; padding-bottom: 40px; }
+  .top { padding: 56px 0 8px; max-width: 640px; }
+  .eb { display: block; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; }
+  h1 { margin: 10px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.04; letter-spacing: -.02em; }
+  .top p { margin: 14px 0 0; font-size: 17px; color: #3f3f3f; }
+  .mo { display: inline-block; margin-top: 16px; font-size: 14px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .grp { padding-top: 80px; }
+  .gh { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-bottom: 14px; border-bottom: 1px solid #111; }
+  .gh h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
+  .gh p { margin: 0; font-size: 14px; color: #6a6a66; }
+  .it { display: grid; grid-template-columns: 260px 1fr; gap: 28px; padding: 28px 0; border-bottom: 1px solid #ececea; }
+  .meta b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
+  .svc { display: block; margin-top: 4px; font-size: 12.5px; color: #8a8a86; }
+  .meta p { margin: 12px 0 0; font-size: 14px; color: #3f3f3f; }
+  .meta a { display: inline-block; margin-top: 12px; font-size: 13px; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .clips { display: grid; gap: 10px; }
+  .clips.n2 { grid-template-columns: 1fr 1fr; } .clips.n3 { grid-template-columns: 1fr 1fr 1fr; }
+  video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; background: #f2f2f0; box-shadow: 0 0 0 1px #e6e6e2; display: block; }
+  .end { margin-top: 96px; padding: 56px 0 24px; text-align: center; }
+  .end h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
+  .end p { margin: 10px auto 0; max-width: 480px; color: #6a6a66; }
+  .ct { display: flex; gap: 10px; justify-content: center; margin-top: 22px; }
+  @media (max-width: 860px) {
+    h1 { font-size: 38px; }
+    .gh { flex-direction: column; gap: 4px; } .gh h2 { font-size: 28px; }
+    .it { grid-template-columns: 1fr; gap: 16px; }
+    .clips.n2, .clips.n3 { grid-template-columns: 1fr; }
+  }
+</style>
+<script>
+  // play clips only while they are on screen
+  const io = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target as HTMLVideoElement; if (e.isIntersecting) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause(); }), { threshold: 0.35 });
+  document.querySelectorAll('[data-clip]').forEach((v) => io.observe(v));
+</script>
