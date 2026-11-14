@@ -1,0 +1,327 @@
+---
+// Unlisted: fackt.io/desk. Selected work as printed boards on a dark desk, lit by a lamp that follows the cursor.
+// Shadows fall away from the lamp, prints can be dragged, and clicking one picks it up and flips it to show
+// the case study on its back. Touch: the lamp follows your finger, otherwise it rests mid-screen as you scroll.
+// Everything that moves per frame is a transform, so it stays on the compositor.
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const work = await getCollection('work');
+const w = (slug: string) => work.find((x) => x.id === slug)!.data;
+// x, y: centre of the print on a 1600 x 1000 desk (desktop) and an 800 x 2100 desk (portrait). r: rotation.
+const prints = [
+  { slug: 'firecut', img: 'firecut-home', result: ['68 / 100', 'cancellation reasons traced to design, then redesigned'], d: [330, 260, -4], m: [260, 250, -4] },
+  { slug: 'meridian', img: 'meridian-01', result: ['13', 'pages designed in Figma and built in Framer'], d: [780, 200, 3], m: [560, 520, 4] },
+  { slug: 'flashloop', img: 'flashloop-10', result: ['2', 'identity directions, a shape and a character'], d: [1250, 250, -2], m: [250, 800, -3] },
+  { slug: 'engain', img: 'engain-03', result: ['16 to 7', 'sidebar items, without removing a feature'], d: [1350, 600, 5], m: [560, 1060, 3] },
+  { slug: 'isend', img: 'isend-11', result: ['2', 'design directions, then one page that carries the whole story'], d: [250, 640, 3], m: [250, 1320, 2] },
+  { slug: 'promote', img: 'promote-preview', result: ['85%', 'of creators reported higher engagement'], d: [700, 560, -3], m: [550, 1580, -4] },
+  { slug: 'shredder', img: 'shredder-24', result: ['142', 'screens across two eras of the app'], d: [1020, 760, 2], m: [260, 1840, 3] },
+  { slug: 'exitliquidity', img: 'exitliquidity-01', result: ['9', 'rounds, from a bright course site to a dark syndicate'], d: [1430, 880, -5], m: [570, 2050, -2] },
+  { slug: 'glowtify', img: 'glowtify-preview', result: ['CA$3.4M', 'seed round raised after their pre-seed site'], d: [660, 905, -1], m: [300, 2290, -3] },
+  { slug: 'communi', img: 'communi-preview', result: ['7 weeks', 'from brief to a launched product'], d: [1020, 420, 6], m: [560, 260, 5] },
+].map((p, i) => ({ ...p, i, data: w(p.slug) }));
+---
+<Base title="Selected work, by lamplight | Fackt" description="Fackt's selected work as prints on a desk. Bring a light." noindex>
+  <div class="dk" data-desk>
+    <div class="desk" data-board>
+      {prints.map((p) => (
+        <>
+          <span class="sh" data-sh={p.i} aria-hidden="true"></span>
+          <button class="pr" type="button" data-pr={p.i} data-d={p.d.join(',')} data-m={p.m.join(',')} aria-label={`${p.data.name}: pick up the print`}>
+            <img src={`/uploads/${p.img}.webp`} alt={`${p.data.name}, ${p.data.service.toLowerCase()} by Fackt`} draggable="false" loading={p.i < 6 ? 'eager' : 'lazy'} decoding="async" />
+            <i class="grain" aria-hidden="true"></i><i class="spec" aria-hidden="true"></i>
+          </button>
+        </>
+      ))}
+    </div>
+
+    <div class="light" data-light aria-hidden="true"><i class="pool"></i><i class="warm"></i></div>
+    <div class="film" aria-hidden="true"></div>
+    <div class="dot" data-dot aria-hidden="true"></div>
+
+    <header class="top">
+      <a class="br" href="/"><i></i>Fackt</a>
+      <nav><a href="/work">All work</a><a href="/recent">Recent work</a><a href="/audit">Free audit</a><a class="bk" href="/book">Book a call</a></nav>
+    </header>
+    <div class="cap">
+      <span class="eb">Fackt &#183; Selected work</span>
+      <h1>Bring a light.</h1>
+      <p data-hint>Move around the desk. Drag prints, pick one up to see what it moved.</p>
+    </div>
+    <button class="sw" type="button" data-switch aria-pressed="true">Switch the lamp off</button>
+  </div>
+
+  <!-- the picked-up print: front is the work, back is the case study -->
+  <div class="hand" data-hand hidden>
+    <div class="veil" data-veil></div>
+    <div class="card" data-card role="dialog" aria-modal="true" aria-labelledby="bk-name">
+      <div class="face front"><img data-front alt="" /><i class="grain"></i></div>
+      <div class="face back">
+        <i class="grain"></i>
+        <div class="bi">
+          <div class="bh"><span class="eb">Back of the print</span><span class="stamp">Shipped</span></div>
+          <b id="bk-name" data-name></b><span class="svc" data-svc></span>
+          <p class="sum" data-sum></p>
+          <div class="res"><span class="eb">What it moved</span><strong data-rv></strong><span data-rl></span></div>
+          <div class="bf"><a class="go" data-go href="#">Open the case study &#8594;</a><button class="put" type="button" data-put>put it back</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="desk-data" set:html={JSON.stringify(prints.map((p) => ({ slug: p.slug, img: p.img, name: p.data.name, service: p.data.service, summary: p.data.summary, result: p.result })))} />
+</Base>
+
+<style>
+  :global(html), :global(body) { background: #0d0a08; }
+  :global(body) { overscroll-behavior: none; }
+  .dk { position: relative; height: 100vh; height: 100svh; overflow: hidden; color: #efe8dc; cursor: none; --ease: cubic-bezier(.2, .8, .2, 1); }
+  .desk { position: absolute; z-index: 0; isolation: isolate; left: 0; top: 0; width: 100%; height: 100%; background: #1b130d url(/uploads/desk-wood.webp) center / cover; touch-action: none; }
+
+  /* prints: positioned with transforms only (set by the script) */
+  .pr { all: unset; position: absolute; left: 0; top: 0; width: var(--pw, 340px); padding: calc(var(--pw, 340px) * .024); background: #f2efe8; box-sizing: border-box;
+        transform-origin: 50% 50%; will-change: transform; cursor: none; border-radius: 1px; }
+  .pr img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; pointer-events: none; user-select: none; }
+  .pr:focus-visible { outline: 2px solid #ffd9a0; outline-offset: 4px; }
+  .grain { position: absolute; inset: 0; background: url(/uploads/paper-grain.png); mix-blend-mode: multiply; opacity: .18; pointer-events: none; }
+  /* the lamp's highlight on the paper, moved per print by the script */
+  .spec { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: var(--so, 0);
+          background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(255, 236, 210, .32) 0, rgba(255, 236, 210, 0) 45%); }
+  .pr::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(170deg, rgba(255,255,255,.08), rgba(0,0,0,0) 40%, rgba(0,0,0,.08)); }
+  .sh { position: absolute; left: 0; top: 0; width: var(--pw, 340px); aspect-ratio: 1 / .584; background: #000; border-radius: 3px; filter: blur(12px);
+        opacity: var(--sa, .6); will-change: transform; pointer-events: none; }
+
+  /* the lamp: one oversized gradient layer, moved with a transform */
+  .light { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform; z-index: 5; opacity: 0; }
+  .light i { position: absolute; left: -150vmax; top: -150vmax; width: 300vmax; height: 300vmax; }
+  .pool { background: radial-gradient(circle, rgba(0,0,0,0) 0, rgba(6,4,3,.10) 9vmax, rgba(6,4,3,.55) 20vmax, rgba(5,4,3,.90) 32vmax, rgba(4,3,2,.96) 52vmax); }
+  .warm { background: radial-gradient(circle, rgba(255,196,128,.22) 0, rgba(255,180,110,.08) 14vmax, rgba(255,180,110,0) 28vmax); mix-blend-mode: soft-light; }
+  .dk.off .light { opacity: .985 !important; }
+  .dk.off .pool { background: rgba(4,3,2,.94); } .dk.off .warm { opacity: 0; }
+  .film { position: absolute; inset: -50%; z-index: 6; pointer-events: none; background: url(/uploads/film-grain.png); opacity: .05; animation: grain 1.2s steps(4) infinite; }
+  @keyframes grain { 0% { transform: translate(0, 0); } 33% { transform: translate(-3%, 2%); } 66% { transform: translate(2%, -3%); } 100% { transform: translate(0, 0); } }
+  .dot { position: absolute; left: 0; top: 0; z-index: 7; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 1.5px solid rgba(255,226,186,.85);
+         box-shadow: 0 0 16px 3px rgba(255,200,140,.35); pointer-events: none; will-change: transform; transition: width .25s var(--ease), height .25s var(--ease), margin .25s var(--ease); }
+  .dk.grab .dot { width: 30px; height: 30px; margin: -15px 0 0 -15px; }
+  @media (pointer: coarse) { .dot { display: none; } .dk, .pr { cursor: auto; } }
+
+  .top { position: absolute; left: 0; right: 0; top: 0; z-index: 8; display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; font-size: 13px; }
+  .top a { color: #bdb4a6; text-decoration: none; cursor: pointer; } .top a:hover { color: #fff; }
+  .br { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 15px; color: #efe8dc !important; } .br i { width: 15px; height: 15px; background: #efe8dc; border-radius: 2px; }
+  .top nav { display: flex; gap: 20px; align-items: center; }
+  .top .bk { background: #efe8dc; color: #111 !important; padding: 9px 14px; border-radius: 3px; font-weight: 500; }
+  .cap { position: absolute; left: 28px; bottom: 28px; z-index: 8; pointer-events: none; max-width: 520px; }
+  .eb { display: block; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #8f8779; }
+  .cap h1 { margin: 8px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 1; letter-spacing: -.02em; }
+  .cap p { margin: 10px 0 0; font-size: 14px; color: #a69e90; }
+  .sw { position: absolute; right: 28px; bottom: 28px; z-index: 8; all: unset; position: absolute; right: 28px; bottom: 28px; z-index: 8; cursor: pointer; font-size: 12.5px; color: #bdb4a6;
+        border: 1px solid rgba(239,232,220,.3); border-radius: 999px; padding: 7px 14px; }
+  .sw:hover { color: #fff; border-color: rgba(239,232,220,.7); }
+
+  /* picked-up print */
+  .hand { position: fixed; inset: 0; z-index: 50; perspective: 1800px; }
+  .hand[hidden] { display: none; }
+  .veil { position: absolute; inset: 0; background: rgba(5,4,3,.55); opacity: 0; transition: opacity .6s var(--ease, ease); }
+  .hand.on .veil { opacity: 1; }
+  .card { position: absolute; left: 0; top: 0; transform-style: preserve-3d; will-change: transform; }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #f2efe8; overflow: hidden;
+          box-shadow: 0 2px 3px rgba(0,0,0,.45), 0 50px 90px -20px rgba(0,0,0,.85); border-radius: 1px; }
+  .front { padding: 2.4%; } .front img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .back { transform: rotateY(180deg); color: #111; }
+  .bi { position: absolute; inset: 14px; border: 1px solid #cfc8ba; padding: clamp(18px, 3vw, 30px); display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+  .bh { display: flex; justify-content: space-between; align-items: center; }
+  .stamp { border: 2px solid #111; border-radius: 3px; padding: 3px 10px; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transform: rotate(-6deg); opacity: .8; }
+  .bi b { margin-top: 6px; font-family: var(--m-serif); font-weight: 400; font-size: clamp(30px, 3.6vw, 46px); line-height: 1; }
+  .svc { font-size: 13.5px; color: #6a6a66; }
+  .sum { margin: 6px 0 0; font-size: 14.5px; line-height: 1.5; color: #3f3f3f; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .res { margin-top: auto; padding-top: 14px; border-top: 1px solid #cfc8ba; display: grid; grid-template-columns: auto 1fr; column-gap: 16px; align-items: baseline; }
+  .res .eb { grid-column: 1 / -1; color: #8a8a86; margin-bottom: 4px; }
+  .res strong { font-family: var(--m-serif); font-weight: 400; font-size: clamp(34px, 4vw, 52px); line-height: 1; }
+  .res span:last-child { font-size: 14px; color: #3f3f3f; line-height: 1.4; }
+  .bf { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid #cfc8ba; }
+  .go { font-size: 14px; font-weight: 500; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+  .put { all: unset; cursor: pointer; font-family: var(--m-serif); font-style: italic; font-size: 16px; color: #6a6a66; } .put:hover { color: #111; }
+  @media (max-width: 720px) {
+    .dk { height: auto; min-height: 100svh; overflow: visible; }
+    .desk { position: relative; touch-action: pan-y; }
+    .light, .film { position: fixed; } .film { inset: -50%; }
+    .top { position: fixed; padding: 14px 16px; } .top nav a:not(.bk) { display: none; }
+    .cap { position: fixed; left: 16px; bottom: 18px; } .sw { position: fixed; right: 16px; bottom: 18px; }
+    .sum { -webkit-line-clamp: 4; }
+  }
+  @media (prefers-reduced-motion: reduce) { .film { animation: none; } }
+</style>
+
+<script>
+  type P = { slug: string; img: string; name: string; service: string; summary: string; result: [string, string] };
+  const data: P[] = JSON.parse(document.getElementById('desk-data')!.textContent!);
+  const dk = document.querySelector<HTMLElement>('[data-desk]')!;
+  const board = document.querySelector<HTMLElement>('[data-board]')!;
+  const light = document.querySelector<HTMLElement>('[data-light]')!;
+  const dot = document.querySelector<HTMLElement>('[data-dot]')!;
+  const prs = [...document.querySelectorAll<HTMLElement>('[data-pr]')];
+  const shs = [...document.querySelectorAll<HTMLElement>('[data-sh]')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const touch = matchMedia('(pointer: coarse)').matches;
+
+  // ---------- layout: desk coordinates to screen ----------
+  type St = { x: number; y: number; r: number; lift: number; liftT: number; z: number; hidden: boolean; moved: boolean };
+  const st: St[] = prs.map(() => ({ x: 0, y: 0, r: 0, lift: 0, liftT: 0, z: 1, hidden: false, moved: false }));
+  let W = 0, H = 0, pw = 340, portrait = false, deskH = 0;
+  function layout() {
+    W = innerWidth; H = innerHeight; portrait = W < 720;
+    const VW = portrait ? 800 : 1600, VH = portrait ? 2100 : 1000;
+    const s = portrait ? W / VW : Math.min(W / VW, H / VH) * 1.02;
+    deskH = portrait ? VH * s + 120 : H;
+    board.style.height = portrait ? `${deskH}px` : '100%';
+    pw = Math.round((portrait ? 380 : 340) * s);
+    dk.style.setProperty('--pw', `${pw}px`);
+    const ox = (W - VW * s) / 2, oy = portrait ? 70 : (H - VH * s) / 2;
+    prs.forEach((el, i) => {
+      if (st[i].moved) return; // a print the visitor moved stays where they left it
+      const [x, y, r] = (el.dataset[portrait ? 'm' : 'd'] as string).split(',').map(Number);
+      st[i].x = ox + x * s; st[i].y = oy + y * s; st[i].r = r;
+    });
+  }
+
+  // ---------- lamp ----------
+  const lamp = { x: 0, y: 0, tx: 0, ty: 0, on: !reduce ? 0 : 1 };
+  let pointerIn = false, last = performance.now();
+  function lampTarget(x: number, y: number) { lamp.tx = x; lamp.ty = y; }
+  addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || dragging) { pointerIn = true; lampTarget(e.clientX, e.clientY + (portrait ? scrollY : 0)); } }, { passive: true });
+  board.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) lampTarget(t.clientX, t.clientY + scrollY); }, { passive: true });
+  document.addEventListener('mouseleave', () => { pointerIn = false; });
+
+  // ---------- drag ----------
+  let dragging = false, dragI = -1, sx = 0, sy = 0, ox0 = 0, oy0 = 0, vx = 0, lastX = 0, moved = false, zTop = 10;
+  prs.forEach((el, i) => {
+    el.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      dragI = i; moved = false; sx = e.clientX; sy = e.clientY; ox0 = st[i].x; oy0 = st[i].y; lastX = e.clientX; vx = 0;
+      st[i].z = ++zTop; st[i].liftT = 1; dk.classList.add('grab');
+      if (e.pointerType === 'mouse') el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (dragI !== i) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) > (e.pointerType === 'mouse' ? 6 : 10)) { moved = true; dragging = e.pointerType === 'mouse'; }
+      if (!dragging) return;
+      st[i].x = ox0 + dx; st[i].y = oy0 + dy; st[i].moved = true;
+      vx = vx * .7 + (e.clientX - lastX) * .3; lastX = e.clientX;
+    });
+    const end = () => {
+      if (dragI !== i) return;
+      st[i].liftT = 0; dk.classList.remove('grab');
+      if (dragging) st[i].r += Math.max(-6, Math.min(6, vx * .4)); // a flick leaves it a little turned
+      const tap = !moved; dragging = false; dragI = -1;
+      if (tap) pickUp(i);
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', () => { dragI = -1; dragging = false; st[i].liftT = 0; dk.classList.remove('grab'); });
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickUp(i); } });
+    el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); lampTarget(r.left + r.width / 2, r.top + r.height / 2 + (portrait ? scrollY : 0)); });
+    el.addEventListener('mouseenter', () => { if (!dragging) st[i].liftT = .35; });
+    el.addEventListener('mouseleave', () => { if (dragI !== i) st[i].liftT = 0; });
+  });
+
+  // ---------- frame loop ----------
+  // only touch the DOM when a value actually changed, so a still lamp costs nothing
+  const cache = new WeakMap<HTMLElement, Record<string, string>>();
+  function set(el: HTMLElement, k: string, v: string) {
+    let c = cache.get(el); if (!c) cache.set(el, (c = {}));
+    if (c[k] === v) return; c[k] = v;
+    if (k.startsWith('--')) el.style.setProperty(k, v); else (el.style as unknown as Record<string, string>)[k] = v;
+  }
+  let lampOff = false;
+  function frame(now: number) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    const k = 1 - Math.exp(-dt * (dragging ? 18 : 9));
+    if (!pointerIn && !touch && !dragging) { // idle: the lamp rests over the middle of the desk
+      lampTarget(W * .5 + Math.sin(now / 2600) * W * .05, H * .48 + Math.cos(now / 3100) * H * .04);
+    }
+    if (touch && portrait && !dragging) { lampTarget(W * .5, scrollY + H * .45); }
+    lamp.x += (lamp.tx - lamp.x) * k; lamp.y += (lamp.ty - lamp.y) * k;
+    const ly = portrait ? lamp.y - scrollY : lamp.y;
+    set(light, 'transform', `translate3d(${lamp.x.toFixed(1)}px, ${ly.toFixed(1)}px, 0)`);
+    set(dot, 'transform', `translate3d(${lamp.tx.toFixed(1)}px, ${(portrait ? lamp.ty - scrollY : lamp.ty).toFixed(1)}px, 0)`);
+    const LH = Math.max(W, H) * .55; // lamp height above the desk
+    for (let i = 0; i < prs.length; i++) {
+      const s = st[i], el = prs[i], sh = shs[i];
+      s.lift += (s.liftT - s.lift) * (1 - Math.exp(-dt * 12));
+      const ph = pw * .584, cx = s.x, cy = s.y;
+      const dx = cx - lamp.x, dy = cy - lamp.y, dist = Math.hypot(dx, dy);
+      // a sheet curled 3px off the desk, or held up to 60px: its shadow is pushed away from the lamp
+      const h = 3 + s.lift * 57, f = h / Math.max(60, LH - h);
+      const offx = dx * f * 2.2, offy = dy * f * 2.2 + 2 + s.lift * 10;
+      const alpha = Math.max(.25, .78 - dist / 2600) * (1 - s.lift * .25);
+      const scale = 1 + s.lift * .035;
+      const tilt = dragging && dragI === i ? Math.max(-8, Math.min(8, vx * .5)) : 0;
+      set(el, 'transform', `translate3d(${(cx - pw / 2).toFixed(1)}px, ${(cy - ph / 2).toFixed(1)}px, 0) rotate(${(s.r + tilt).toFixed(2)}deg) scale(${scale.toFixed(4)})`);
+      set(el, 'zIndex', String(s.z));
+      // a lifted sheet throws a bigger, softer shadow: scale it up rather than re-blurring every frame
+      set(sh, 'transform', `translate3d(${(cx - pw / 2 + offx).toFixed(1)}px, ${(cy - ph / 2 + offy).toFixed(1)}px, 0) rotate(${(s.r + tilt).toFixed(2)}deg) scale(${(scale * (1 + s.lift * .08)).toFixed(4)})`);
+      set(sh, 'zIndex', String(s.z));
+      set(sh, '--sa', alpha.toFixed(2));
+      // highlight: where the lamp would glint on this sheet
+      const rad = (-(s.r + tilt) * Math.PI) / 180, lx = dx * Math.cos(rad) - dy * Math.sin(rad), lyy = dx * Math.sin(rad) + dy * Math.cos(rad);
+      set(el, '--sx', `${(50 - (lx / pw) * 100).toFixed(0)}%`); set(el, '--sy', `${(50 - (lyy / ph) * 100).toFixed(0)}%`);
+      set(el, '--so', (Math.max(0, 1 - dist / (Math.min(W, H) * .5)) * (lampOff ? 0 : 1)).toFixed(2));
+      set(el, 'visibility', s.hidden ? 'hidden' : ''); set(sh, 'visibility', s.hidden ? 'hidden' : '');
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- switch the lamp on ----------
+  function switchOn() {
+    if (reduce) { light.style.opacity = '1'; return; }
+    light.animate([{ opacity: 0 }, { opacity: .55, offset: .25 }, { opacity: .15, offset: .4 }, { opacity: .9, offset: .62 }, { opacity: .7, offset: .75 }, { opacity: 1 }],
+      { duration: 900, delay: 350, easing: 'linear', fill: 'forwards' });
+  }
+  const swb = document.querySelector<HTMLButtonElement>('[data-switch]')!;
+  swb.addEventListener('click', () => {
+    const off = dk.classList.toggle('off'); lampOff = off; swb.textContent = off ? 'Switch the lamp on' : 'Switch the lamp off'; swb.setAttribute('aria-pressed', String(!off));
+  });
+
+  // ---------- pick up and flip ----------
+  const hand = document.querySelector<HTMLElement>('[data-hand]')!, card = document.querySelector<HTMLElement>('[data-card]')!;
+  const q = <T extends HTMLElement>(s: string) => hand.querySelector<T>(s)!;
+  let open = -1, anim: Animation | null = null, from = '', mid = '', to = '';
+  function target() {
+    const cw = Math.min(W * (portrait ? .92 : .6), 780), ch = portrait ? Math.min(H * .78, cw * 1.35) : cw * .56;
+    return { cw, ch, x: (W - cw) / 2, y: (H - ch) / 2 };
+  }
+  function pickUp(i: number) {
+    if (open !== -1) return;
+    open = i; const p = data[i], el = prs[i], r = el.getBoundingClientRect(), s = st[i];
+    q<HTMLImageElement>('[data-front]').src = `/uploads/${p.img}.webp`;
+    q('[data-name]').textContent = p.name; q('[data-svc]').textContent = p.service; q('[data-sum]').textContent = p.summary;
+    q('[data-rv]').textContent = p.result[0]; q('[data-rl]').textContent = p.result[1]; q<HTMLAnchorElement>('[data-go]').href = `/work/${p.slug}`;
+    const t = target(); card.style.width = `${t.cw}px`; card.style.height = `${t.ch}px`;
+    // start exactly where the print lies (its unrotated box), scaled down to it
+    const sx0 = pw / t.cw, sy0 = (pw * .584) / t.ch;
+    from = `translate3d(${s.x - t.cw / 2}px, ${(portrait ? s.y - scrollY : s.y) - t.ch / 2}px, 0) rotateZ(${s.r}deg) rotateY(0deg) scale(${sx0}, ${sy0})`;
+    mid = `translate3d(${(s.x + t.x + t.cw / 2) / 2 - t.cw / 2}px, ${((portrait ? s.y - scrollY : s.y) + t.y + t.ch / 2) / 2 - t.ch / 2 - 60}px, 160px) rotateZ(${s.r / 2}deg) rotateY(90deg) scale(${(sx0 + 1) / 2 * 1.04})`;
+    to = `translate3d(${t.x}px, ${t.y}px, 0) rotateZ(-1.5deg) rotateY(180deg) scale(1)`;
+    s.hidden = true; hand.hidden = false; requestAnimationFrame(() => hand.classList.add('on'));
+    lampTarget(W / 2, (portrait ? scrollY : 0) + H / 2);
+    anim = card.animate([{ transform: from }, { transform: mid, offset: .45 }, { transform: to }], { duration: reduce ? 1 : 950, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
+    anim.finished.then(() => q<HTMLButtonElement>('[data-put]').focus({ preventScroll: true }));
+  }
+  function putBack() {
+    if (open === -1 || !anim) return;
+    const i = open; hand.classList.remove('on');
+    // it flips face up again on the way back down to the desk
+    const back = card.animate([{ transform: to }, { transform: mid, offset: .5 }, { transform: from }], { duration: reduce ? 1 : 800, easing: 'cubic-bezier(.5,0,.2,1)', fill: 'forwards' });
+    back.finished.then(() => { st[i].hidden = false; hand.hidden = true; anim?.cancel(); back.cancel(); open = -1; prs[i].focus({ preventScroll: true }); });
+  }
+  q('[data-put]').addEventListener('click', putBack);
+  q('[data-veil]').addEventListener('click', putBack);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') putBack(); });
+
+  layout(); lamp.x = lamp.tx = W / 2; lamp.y = lamp.ty = H * .48;
+  addEventListener('resize', layout);
+  requestAnimationFrame((t) => { last = t; frame(t); });
+  switchOn();
+  if (touch) document.querySelector('[data-hint]')!.textContent = 'Scroll the desk, or drag your finger to move the light. Tap a print to pick it up.';
+</script>
