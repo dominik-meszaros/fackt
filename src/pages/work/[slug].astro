@@ -18,11 +18,15 @@ export async function getStaticPaths() {
 const { entry, next } = Astro.props;
 const said = (await getCollection('videos')).map((v) => v.data).find((v) => v.video && v.company.toLowerCase() === entry.data.name.toLowerCase());
 const { Content } = await render(entry);
-const note = (await publishedPosts()).find((b) => b.data.related === entry.id);
+// The note shown under the case study: one written about this project, or else the closest note for its kind of work,
+// so every case study (these bring most of the search visits) passes readers on to a note.
+const notes = await publishedPosts();
+const noteByCat: Record<string, string> = { web: 'saas-landing-page-above-the-fold', product: 'saas-dashboard-audit-checklist', branding: 'branding-saas-before-series-a', mobile: 'ios-app-design-cost' };
+const note = notes.find((b) => b.data.related === entry.id) ?? notes.find((b) => b.id === noteByCat[entry.data.category]);
 const p = entry.data;
 // The service page this case study is proof for (by category, with a few hand picks), linked under the write-up.
 const svcFor: Record<string, string> = { firecut: 'saas-onboarding-design', 'promote-app': 'saas-dashboard-design', viewmax: 'saas-landing-page-design', nation: 'framer-agency-for-saas' };
-const svcByCat: Record<string, string> = { mobile: 'ios-app-design', web: 'saas-landing-page-design', product: 'saas-dashboard-design' };
+const svcByCat: Record<string, string> = { mobile: 'ios-app-design', web: 'saas-landing-page-design', product: 'saas-dashboard-design', branding: 'design-for-seed-stage-startups' };
 const svc = niches.find((n) => n.slug === (svcFor[entry.id] ?? svcByCat[p.category]));
 // Full-width presentation boards (kind: board) show edge to edge under the write-up; screens show in the column.
 const boards = p.gallery.filter((g) => g.kind === 'board');
