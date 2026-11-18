@@ -97,6 +97,11 @@ export default {
     if (pathname === '/api/form') {
       return request.method === 'POST' ? form.onRequestPost(ctxApi) : new Response('Method not allowed', { status: 405 });
     }
+    // Old .html addresses (still in Google's index) move permanently to the clean ones, so their rankings merge.
+    if (pathname.endsWith('.html') && (request.method === 'GET' || request.method === 'HEAD')) {
+      const clean = pathname.replace(/(\/index)?\.html$/, '') || '/';
+      return Response.redirect(new URL(clean + url.search, url).toString(), 301);
+    }
     const ua = request.headers.get('user-agent') || '';
     const isHome = pathname === '/' || pathname === '/index' || pathname === '/index.html';
     const human = !detect(ua) && !/bot|crawl|spider|slurp|preview|headless/i.test(ua);

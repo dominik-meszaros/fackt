@@ -2,8 +2,8 @@
 name: Floxy
 service: Brand identity
 category: branding
-summary: A pixel-built identity for a proxy infrastructure platform that communicates speed, trust and digital freedom without cybersecurity cliches.
-seoTitle: "Pixel brand identity for a proxy platform | Floxy"
+summary: "The Floxy brand: a pixel-built identity for a proxy infrastructure platform that shows speed, trust and digital freedom without cybersecurity cliches."
+seoTitle: "Floxy brand identity: pixel logo for a proxy platform"
 keywords: [branding, brand identity, logo, pixel, visual identity, proxy, infrastructure, guidelines, typography]
 image: /uploads/floxy-brand-tiles.webp
 preview: /uploads/floxy-brand-preview.webp
