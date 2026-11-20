@@ -1,0 +1,14 @@
+---
+// Hub for the industries pages (entries in src/data/niches.ts whose breadcrumb starts at Industries).
+import Hub from '../components/hub/Hub.astro';
+import { niches } from '../data/niches';
+import { getCollection } from 'astro:content';
+const work = new Map((await getCollection('work')).map((e) => [e.id, e.data]));
+const items = niches.filter((n) => n.crumb[0]?.href === '/industries').map((n) => ({ href: `/${n.slug}`, title: n.h1, text: n.lede, kicker: n.hero.caption, image: n.hero.image ?? work.get(n.hero.work)?.preview }));
+const extra = [
+  { href: '/design-for-seed-stage-startups', title: 'Seed-stage startups', text: 'The launch path we run with founders: story, video, landing page, onboarding, product.' },
+  { href: '/saas-dashboard-design', title: 'SaaS dashboards', text: 'Dashboards that answer a question instead of showing data.' },
+  { href: '/ios-app-design', title: 'iOS apps', text: 'Apps, paywalls and App Store pages, from our own apps and clients.' },
+];
+---
+<Hub title="Design for your kind of company" seoTitle="Industries we design for: devtools, AI, fintech, creators | Fackt" description="Website and product design by industry: devtools and infrastructure, AI startups, trading and fintech, creator and marketing tools. Real case studies from each." eyebrow="Industries" lede="Every space has its own skeptical buyer. These pages show the problems we see most in yours, and the work we have done there." items={items} extraTitle="Also by stage and product" extra={extra} />

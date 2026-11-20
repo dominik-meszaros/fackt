@@ -1,11 +1,12 @@
 ---
 // Two columns, row by row: what most teams do, and what we do instead.
-interface Props { left: string; right: string; rows: { them: string; us: string }[] }
-const { left, right, rows } = Astro.props;
+// neutral: a fair side by side (comparison pages), no crossing out, labels kept on phones.
+interface Props { left: string; right: string; rows: { them: string; us: string }[]; neutral?: boolean }
+const { left, right, rows, neutral = false } = Astro.props;
 ---
-<div class="ct2">
+<div class:list={["ct2", { neu: neutral }]}>
   <div class="hd"><span>{left}</span><span>{right}</span></div>
-  {rows.map((r) => (<div class="r"><p class="them">{r.them}</p><p class="us">{r.us}</p></div>))}
+  {rows.map((r) => (<div class="r"><p class="them" data-l={left}>{r.them}</p><p class="us" data-l={right}>{r.us}</p></div>))}
 </div>
 <style>
   .ct2 { margin: 36px auto 0; max-width: 860px; text-align: left; border-top: 1px solid #111; }
@@ -15,5 +16,7 @@ const { left, right, rows } = Astro.props;
   p { margin: 0; font-size: 15px; }
   .them { color: #8a8a86; text-decoration: line-through; text-decoration-color: #b8b8b4; }
   .us { color: #111; font-weight: 500; }
-  @media (max-width: 720px) { .hd { display: none; } .r { grid-template-columns: 1fr; gap: 4px; } }
+  .neu .them { color: #111; text-decoration: none; font-weight: 400; }
+  .neu .us { font-weight: 400; }
+  @media (max-width: 720px) { .hd { display: none; } .r { grid-template-columns: 1fr; gap: 4px; } .neu .r { gap: 10px; } .neu p::before { content: attr(data-l); display: block; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; margin-bottom: 2px; } }
 </style>

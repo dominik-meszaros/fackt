@@ -1,0 +1,13 @@
+---
+// Hub for the comparison pages (entries in src/data/niches.ts whose breadcrumb starts at Compare) and comparison posts.
+import Hub from '../components/hub/Hub.astro';
+import { niches } from '../data/niches';
+import { getCollection } from 'astro:content';
+const work = new Map((await getCollection('work')).map((e) => [e.id, e.data]));
+const items = niches.filter((n) => n.crumb[0]?.href === '/compare').map((n) => ({ href: `/${n.slug}`, title: n.h1, text: n.lede, image: n.hero.image ?? work.get(n.hero.work)?.preview }));
+const extra = [
+  { href: '/blog/design-agency-vs-freelancer-vs-in-house', title: 'Design agency vs freelancer vs in-house', text: 'The three-way choice, and what each one costs you in time.' },
+  { href: '/blog/framer-vs-webflow-saas-landing-page', title: 'Framer vs Webflow for a SaaS website', text: 'How to pick, from building in both.' },
+];
+---
+<Hub title="Compare your options" seoTitle="Design agency comparisons: subscription, in-house, freelancer | Fackt" description="Honest comparisons for founders hiring design: agency vs subscription, in-house designer vs agency, freelancer, and Framer vs Webflow." eyebrow="Compare" lede="Before you hire anyone for design, here is how the options really compare, from a studio that has been on every side of it." items={items} extraTitle="More comparisons" extra={extra} />

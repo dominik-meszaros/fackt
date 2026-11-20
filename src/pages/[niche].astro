@@ -71,7 +71,7 @@ const ld = [
         </div>
       </section>
 
-      <section class="wrap sec">
+      {(n.teardown || n.fixes || n.path || n.local) && <section class="wrap sec">
         {n.teardown ? (
           <>
             <SecHead icon="design" eyebrow="What we fix" title={n.teardown.title} sub={n.teardown.sub} />
@@ -93,12 +93,12 @@ const ld = [
             <DayRuler city={n.local.city} home={n.local.home} diff={n.local.diff} bands={n.local.bands} />
           </>
         ) : null}
-      </section>
+      </section>}
 
       {n.contrast && (
         <section class="wrap sec">
-          <SecHead icon="design" eyebrow="Approach" title={n.contrast.title} sub={n.contrast.sub} />
-          <Contrast left={n.contrast.left} right={n.contrast.right} rows={n.contrast.rows} />
+          <SecHead icon="design" eyebrow={n.contrast.neutral ? "Compare" : "Approach"} title={n.contrast.title} sub={n.contrast.sub} />
+          <Contrast left={n.contrast.left} right={n.contrast.right} rows={n.contrast.rows} neutral={n.contrast.neutral} />
         </section>
       )}
 

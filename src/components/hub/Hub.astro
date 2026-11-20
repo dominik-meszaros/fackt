@@ -1,0 +1,74 @@
+---
+// A simple hub page: a heading and a list of cards, each with a case study image. Used by /industries and /compare.
+import Base from '../../layouts/Base.astro';
+import Nav from '../Nav.astro';
+import Footer from '../Footer.astro';
+import { site } from '../../data/site';
+interface Item { href: string; title: string; text: string; image?: string; kicker?: string }
+interface Props { title: string; seoTitle: string; description: string; eyebrow: string; lede: string; items: Item[]; extraTitle?: string; extra?: Item[] }
+const { title, seoTitle, description, eyebrow, lede, items, extraTitle, extra = [] } = Astro.props;
+const url = new URL(Astro.url.pathname.replace(/\.html$/, ''), site.url).toString();
+const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, url, hasPart: [...items, ...extra].map((i) => ({ '@type': 'WebPage', name: i.title, url: new URL(i.href, site.url).toString() })) };
+---
+<Base title={seoTitle} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <Nav />
+  <main class="hb">
+    <header class="top">
+      <span class="eb">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p>{lede}</p>
+    </header>
+    <div class="grid">
+      {items.map((i) => (
+        <a class="card" href={i.href}>
+          {i.image && <img src={i.image} alt="" loading="lazy" decoding="async" width="1600" height="1000" />}
+          <div class="tx">{i.kicker && <small>{i.kicker}</small>}<b>{i.title}</b><p>{i.text}</p><span>Read more &#8594;</span></div>
+        </a>
+      ))}
+    </div>
+    {extra.length > 0 && (
+      <section class="more">
+        <h2>{extraTitle}</h2>
+        <ul>{extra.map((i) => <li><a href={i.href}><b>{i.title}</b><span>{i.text}</span></a></li>)}</ul>
+      </section>
+    )}
+    <section class="end">
+      <h2>Not sure where you fit?</h2>
+      <p>Send your site or product and get a video walkthrough and a written list of fixes, free, within 2 days.</p>
+      <div class="ct"><a class="m-btn dk" href="/audit">Get a free audit</a><a class="m-btn lt" href={site.bookPage}>Book a 30 minute call</a></div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+<style>
+  .hb { width: min(1120px, 100% - 32px); margin: 0 auto; padding-bottom: 40px; }
+  .top { padding: 56px 0 32px; max-width: 680px; }
+  .eb { display: block; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #8a8a86; }
+  h1 { margin: 10px 0 0; font-family: var(--m-serif); font-weight: 400; font-size: 52px; line-height: 1.04; letter-spacing: -.02em; }
+  .top p { margin: 14px 0 0; font-size: 17px; color: #3f3f3f; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .card { display: block; color: inherit; text-decoration: none; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px #e6e6e2; transition: box-shadow .2s, transform .2s; background: #fff; }
+  .card:hover, .card:focus-visible { box-shadow: 0 0 0 1px #111, 4px 4px 0 #111; transform: translate(-2px, -2px); }
+  .card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: #f2f2f0; }
+  .tx { padding: 18px 20px 22px; }
+  .tx small { display: block; font-size: 12px; color: #8a8a86; margin-bottom: 6px; }
+  .tx b { display: block; font-family: var(--m-serif); font-weight: 400; font-size: 26px; line-height: 1.15; }
+  .tx p { margin: 8px 0 12px; font-size: 15px; color: #3f3f3f; }
+  .tx span { font-size: 13px; border-bottom: 1px solid #111; }
+  .more { margin-top: 64px; }
+  .more h2, .end h2 { margin: 0; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
+  .more ul { list-style: none; margin: 16px 0 0; padding: 0; border-top: 1px solid #111; }
+  .more li a { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid #ececea; color: inherit; text-decoration: none; }
+  .more li a:hover b { text-decoration: underline; }
+  .more b { font-weight: 500; }
+  .more span { color: #6a6a66; font-size: 15px; }
+  .end { margin-top: 96px; padding: 56px 0 24px; text-align: center; }
+  .end p { margin: 10px auto 0; max-width: 480px; color: #6a6a66; }
+  .ct { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
+  @media (max-width: 860px) {
+    h1 { font-size: 38px; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .more li a { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
