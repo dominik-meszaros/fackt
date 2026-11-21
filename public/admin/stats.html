@@ -215,6 +215,17 @@
       <p class="none" style="margin-top:10px">The previews are the live pages, not counted. Change versions or traffic shares in <code>src/data/homeTest.json</code>.</p>
     </section>
 
+    <section class="seo" aria-label="Paid pages and funnels">
+      <h2>Paid pages and funnels <small>For the range picked above. Products: visitors, then buy clicks, then orders. Lead pages: visitors, then submitted. Conversion is orders or submissions per visitor. Template sales on the Webflow and Framer marketplaces are not on fackt.io, so they are not counted here.</small></h2>
+      <div class="kpis k4" data-fn-kpis></div>
+      <section class="card" style="margin-top:12px"><p class="eb">Products for sale</p><table><thead><tr><th>Page</th><th class="r">Visitors</th><th class="r">Read to end</th><th class="r">Clicked buy</th><th class="r">Orders</th><th class="r">Revenue</th><th class="r">Click rate</th><th class="r">Conversion</th></tr></thead><tbody data-fn-prod><tr><td colspan="8" class="none">Loading</td></tr></tbody></table></section>
+      <section class="card" style="margin-top:12px"><p class="eb">Lead pages</p><table><thead><tr><th>Page</th><th class="r">Visitors</th><th class="r">Read to end</th><th class="r">Avg time</th><th class="r">Submitted</th><th class="r">Conversion</th></tr></thead><tbody data-fn-lead></tbody></table></section>
+      <div class="g2">
+        <section class="card"><p class="eb">Free tools</p><table><thead><tr><th>Tool</th><th class="r">Visitors</th><th class="r">Read to end</th><th class="r">Went to audit or call</th></tr></thead><tbody data-fn-tools></tbody></table></section>
+        <section class="card"><p class="eb">Where buyers and leads come from</p><div class="rows" data-fn-src></div></section>
+      </div>
+    </section>
+
     <section class="seo" aria-label="Email list">
       <h2>Fackt notes email list <small>Free files on fackt.io/free: page views, then signups, then confirmed emails. The gaps show what to fix.</small></h2>
       <div class="kpis k4" data-list-kpis></div>
@@ -337,11 +348,44 @@
   var seoLoaded = false;
   function extras() {
     homeTest();
+    funnels();
     people();
     fetch(API.replace('/stats', '/crawlstats') + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (c) { if (c) renderCrawl(c); }).catch(function () {});
     if (!seoLoaded) fetch('/admin/aiseo.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (a) { if (a) { seoLoaded = true; renderAiSeo(a); } }).catch(function () {});
+  }
+  // Paid pages and funnels (Supabase "funnels"): products, lead pages and free tools, for the picked range.
+  function funnels() {
+    fetch(API.replace('/stats', '/funnels') + '?days=' + days, { headers: { 'x-stats-key': key }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (d) renderFunnels(d); }).catch(function () {});
+  }
+  function renderFunnels(d) {
+    var pct = function (a, b) { return b ? Math.round(a / b * 1000) / 10 + '%' : '0%'; };
+    var money = function (n) { return '$' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 0 }); };
+    var name = function (p) { return p.replace(/^\//, '').replace(/^tools\//, '').replace(/-/g, ' ') || 'home'; };
+    var P = d.products || [], L = d.leads || [], T = d.tools || [];
+    var pv = P.reduce(function (a, x) { return a + x.visitors; }, 0), po = P.reduce(function (a, x) { return a + x.orders; }, 0);
+    var rev = P.reduce(function (a, x) { return a + x.revenue; }, 0);
+    var lv = L.reduce(function (a, x) { return a + x.visitors; }, 0);
+    var ls = L.reduce(function (a, x) { return a + Math.max(x.done, x.submissions || 0); }, 0);
+    var dd = function (t) { return '<div class="d">' + t + '</div>'; };
+    $('[data-fn-kpis]').innerHTML = kp('Product visitors', num(pv), dd('on fackt.io/p pages')) + kp('Orders', num(po), dd(money(rev) + ' revenue')) +
+      kp('Product conversion', pct(po, pv), dd('orders per visitor')) + kp('Lead page conversion', pct(ls, lv), dd(num(ls) + ' of ' + num(lv) + ' visitors submitted'));
+    $('[data-fn-prod]').innerHTML = P.length ? P.map(function (x) {
+      return '<tr><td><a href="/p/' + esc(x.slug) + '" target="_blank">' + esc(x.slug) + '</a></td><td class="r">' + num(x.visitors) + '</td><td class="r">' + num(x.end) + '</td><td class="r">' + num(x.act) + '</td><td class="r">' + num(x.orders) + '</td><td class="r">' + money(x.revenue) + '</td><td class="r">' + pct(x.act, x.visitors) + '</td><td class="r"><b>' + pct(x.orders, x.visitors) + '</b></td></tr>';
+    }).join('') : '<tr><td colspan="8" class="none">No product page visits in this range</td></tr>';
+    $('[data-fn-lead]').innerHTML = L.map(function (x) {
+      var sub = Math.max(x.done, x.submissions || 0);
+      return '<tr><td><a href="' + esc(x.path) + '" target="_blank">' + esc(name(x.path)) + '</a></td><td class="r">' + num(x.visitors) + '</td><td class="r">' + pct(x.end, x.visitors) + '</td><td class="r">' + dur(x.avg) + '</td><td class="r">' + num(sub) + '</td><td class="r"><b>' + pct(sub, x.visitors) + '</b></td></tr>';
+    }).join('');
+    $('[data-fn-tools]').innerHTML = T.length ? T.map(function (x) {
+      return '<tr><td><a href="' + esc(x.path) + '" target="_blank">' + esc(name(x.path)) + '</a></td><td class="r">' + num(x.visitors) + '</td><td class="r">' + pct(x.end, x.visitors) + '</td><td class="r">' + num(x.act) + '</td></tr>';
+    }).join('') : '<tr><td colspan="4" class="none">No tool visits in this range</td></tr>';
+    var src = {};
+    P.concat(L).forEach(function (x) { (x.sources || []).forEach(function (s) { src[s.k] = (src[s.k] || 0) + s.v; }); });
+    var list = Object.keys(src).map(function (k) { return { k: k, v: src[k] }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 8);
+    $('[data-fn-src]').innerHTML = list.length ? rows(list) : '<p class="none">No visits yet</p>';
   }
   // Fackt notes subscribers (Supabase "listpeople"): every signup, all time, whatever range is picked.
   function people() {
