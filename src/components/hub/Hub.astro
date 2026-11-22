@@ -5,8 +5,8 @@ import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import { site } from '../../data/site';
 interface Item { href: string; title: string; text: string; image?: string; kicker?: string }
-interface Props { title: string; seoTitle: string; description: string; eyebrow: string; lede: string; items: Item[]; extraTitle?: string; extra?: Item[] }
-const { title, seoTitle, description, eyebrow, lede, items, extraTitle, extra = [] } = Astro.props;
+interface Props { title: string; seoTitle: string; description: string; eyebrow: string; lede: string; items: Item[]; extraTitle?: string; extra?: Item[]; guideTitle?: string; guide?: string[] }
+const { title, seoTitle, description, eyebrow, lede, items, extraTitle, extra = [], guideTitle, guide = [] } = Astro.props;
 const url = new URL(Astro.url.pathname.replace(/\.html$/, ''), site.url).toString();
 const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, url, hasPart: [...items, ...extra].map((i) => ({ '@type': 'WebPage', name: i.title, url: new URL(i.href, site.url).toString() })) };
 ---
@@ -31,6 +31,12 @@ const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 
       <section class="more">
         <h2>{extraTitle}</h2>
         <ul>{extra.map((i) => <li><a href={i.href}><b>{i.title}</b><span>{i.text}</span></a></li>)}</ul>
+      </section>
+    )}
+    {guide.length > 0 && (
+      <section class="guide">
+        <h2>{guideTitle}</h2>
+        {guide.map((g) => <p>{g}</p>)}
       </section>
     )}
     <section class="end">
@@ -63,6 +69,9 @@ const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 
   .more li a:hover b { text-decoration: underline; }
   .more b { font-weight: 500; }
   .more span { color: #6a6a66; font-size: 15px; }
+  .guide { margin-top: 64px; max-width: 720px; }
+  .guide h2 { margin: 0 0 12px; font-family: var(--m-serif); font-weight: 400; font-size: 34px; }
+  .guide p { margin: 0 0 14px; font-size: 16.5px; line-height: 1.65; color: #3f3f3f; }
   .end { margin-top: 96px; padding: 56px 0 24px; text-align: center; }
   .end p { margin: 10px auto 0; max-width: 480px; color: #6a6a66; }
   .ct { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }

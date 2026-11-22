@@ -1,7 +1,7 @@
 ---
 title: "A/B testing a SaaS homepage with little traffic: what our own test taught us in two weeks"
 seoTitle: "A/B testing a homepage with low traffic"
-description: "We split our own homepage four ways. After 176 visits, none of the versions has won, and the math says none can for months. Here is what a small site can still learn from a test, and how to set one up so it does."
+description: "We split our homepage four ways. After 176 visits, no version has won. What a small site can still learn from an A/B test, and how to set one up."
 category: Testing
 cover: /uploads/blog/cover-15.webp
 date: 2026-11-17

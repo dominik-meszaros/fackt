@@ -1,9 +1,9 @@
 ---
 slug: analytics-redesign
 title: "Google Analytics redesign"
-headline: "The Google Analytics redesign from the video, free in Figma"
+headline: "Google Analytics redesign, free in Figma"
 lede: "Every screen from the video: Overview, Conversions, Explore, traffic sources, pages, live view, goals and annotations, plus the process boards and the design system. Duplicate it in Figma and steal what you need for your own dashboard."
-description: "Get the Google Analytics redesign from the video as a free Figma file: 11 dashboard screens, interaction states, mobile, the design system and the process boards behind it."
+description: "The Google Analytics redesign from the video as a free Figma file: 11 dashboard screens, interaction states, mobile and the design system behind it."
 preview: /uploads/free/analytics-redesign.webp
 previewIsSketch: false
 inside:
