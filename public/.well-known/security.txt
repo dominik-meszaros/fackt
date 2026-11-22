@@ -1,0 +1,4 @@
+Contact: mailto:dominik@fackt.io
+Expires: 2027-11-22T00:00:00.000Z
+Preferred-Languages: en, sk, hu
+Canonical: https://fackt.io/.well-known/security.txt
