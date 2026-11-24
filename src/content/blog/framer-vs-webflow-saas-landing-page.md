@@ -98,4 +98,6 @@ Most teams pick the builder before they know what the site has to say. Then the 
 
 When we start a website project, the builder comes second. First we look at what a visitor has to understand in the first few seconds and what you will publish over the next year. For Story-Story, an influencer marketing platform, the hard part was not the tool: it was making four jobs clear on one page, which we solved with real product UI and one color per job. You can see it in the [Story-Story case study](/work/story-story).
 
+Already decided on Framer and moving an existing site? Here is how to [move your site to Framer without losing Google rankings](/blog/move-website-to-framer-without-losing-seo).
+
 If you are about to rebuild your site, the [free audit](/audit) covers how your current site comes across to a first-time visitor, within 2 days. Or book a call and we will tell you which builder fits your team, and why.
