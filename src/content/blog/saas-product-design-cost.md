@@ -49,7 +49,7 @@ You do not need perfect numbers. Rough ones are enough to see whether a project 
 
 Two things move the number most: scope and speed.
 
-**Scope.** The number of screens and flows matters, but so does everything around them. A dashboard is not one screen: it has empty states, loading states, errors, settings and a mobile view. Redesigning a product that already works also takes more care than starting fresh, because real users already rely on it. A sharp goal is the best way to keep scope honest.
+**Scope.** The number of screens and flows matters, but so does everything around them. A dashboard is not one screen: it has empty states, loading states, errors, settings and a mobile view. Redesigning a product that already works also takes more care than starting fresh, because real users already rely on it. We broke down redesign budgets by scope in [how much a SaaS UX redesign costs](/blog/saas-redesign-cost). A sharp goal is the best way to keep scope honest.
 
 **Speed.** A fixed launch date is fine. A very tight one means more work happens at the same time, with less room between rounds of feedback, and that takes more design time each week.
 

@@ -95,10 +95,10 @@ export const servicePages: ServicePage[] = [
   },
   {
     slug: 'motion-design',
-    seoTitle: 'Motion Design for SaaS | Product animation and Rive | Fackt',
+    seoTitle: 'Motion Design Agency for SaaS: animation and Rive | Fackt',
     seoDescription:
-      'Motion design for SaaS and tech products: product animations, interaction design, interactive Rive assets, web animation and 3D.',
-    headline: 'Motion that sells the product and shows how it works.',
+      'Fackt is a motion design agency for SaaS: product animations, interaction design, interactive Rive assets, web animation and 3D for tech products.',
+    headline: 'Motion design for SaaS that sells the product and shows how it works.',
     lede: 'We use animation and interaction to guide attention, communicate state, and make every action in your product and on your site feel satisfying.',
     fan: [{ image: '/uploads/tradox-illustrations.webp', label: 'TradoxVPS', work: 'tradox' }, { image: '/uploads/promote-logo-motion.webp', label: 'Promote', work: 'promote' }, { image: '/uploads/tradox-assets.webp', label: 'TradoxVPS', work: 'tradox' }],
     tint: 'lilac',
@@ -120,6 +120,7 @@ export const servicePages: ServicePage[] = [
     tools: ['Rive', 'Figma', 'Framer'],
     review: 1,
     faq: [
+      { q: 'What does a motion design agency for SaaS do?', a: 'It turns what your product does into motion people understand in seconds: product animations for the website and launches, micro-interactions inside the app, interactive Rive assets and motion guidelines your team can reuse. A SaaS specialist designs motion around real product screens and states, not around stock effects.' },
       { q: 'What is Rive and why use it?', a: 'Rive makes interactive, state-based animations that are much lighter than video and react to the user, so they work inside apps and websites.' },
       { q: 'Can you animate an interface we already designed?', a: 'Yes. Send us the Figma file and we animate the screens and interactions you want to show.' },
       { q: 'How fast is the turnaround?', a: 'On a retainer, requests have a 24 hour turnaround. Larger pieces are planned as a project with milestones.' },

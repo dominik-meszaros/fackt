@@ -1,6 +1,6 @@
 ---
 title: "Design agency, freelancer or in-house designer: which one a SaaS needs right now"
-seoTitle: "Design agency vs freelancer vs in-house for SaaS"
+seoTitle: "SaaS design agency vs freelancer vs in-house designer"
 description: "The right choice is not about cost per hour. It depends on one thing: whether your design work is a project with an end, or a stream that never stops."
 category: Hiring
 cover: /uploads/blog/cover-14.webp
