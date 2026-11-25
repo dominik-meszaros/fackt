@@ -1,4 +1,5 @@
 ---
+// Homepage = version C ("work first"), the winner of the Nov 2026 homepage test. Old versions: /home-b, /home-c, /home-d (noindex).
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
@@ -20,6 +21,9 @@ import Postcard from '../components/home/Postcard.astro';
 import Notes from '../components/home/Notes.astro';
 import StartLine from '../components/home/StartLine.astro';
 import PhoneBar from '../components/home/PhoneBar.astro';
+import ProofRow from '../components/home/ProofRow.astro';
+import EndCta from '../components/home/EndCta.astro';
+
 import { publishedPosts } from '../data/blog';
 const hasNotes = (await publishedPosts()).length > 0;
 
@@ -37,36 +41,31 @@ import { homeSettings } from '../data/settings';
 const faqLd = (homeSettings.ask as any[]).filter((a) => a.type === 'answer' && a.answer);
 const schema = faqLd.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqLd.map((a) => ({ '@type': 'Question', name: a.question, acceptedAnswer: { '@type': 'Answer', text: a.answer } })) }] : [];
 ---
-<Base lcp={stage[0]?.stageImage ?? stage[0]?.image} schema={schema}>
+<Base lcp={featured[0]?.preview ?? featured[0]?.image} schema={schema}>
   <div class="m-page">
     <SketchDefs />
     <Nav />
     <main>
-      <Hero stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes} />
-      <Logos />
-      <StartLine />
-      <Step />
-      <Work projects={featured} total={all.length} />
+      <Hero variant="c" stage={stage} cats={stageCategories.map((c) => c.label)} all={all} quotes={quotes}
+        title="We help SaaS products grow." text="For founders whose product is good but not growing. We find where users drop off, then design the fix: product, website or brand." />
+      <Work projects={featured} total={all.length} resultChips />
       <Step />
       <Apps apps={all.filter((p) => p.ownApp)} />
-      <Step />
-      <Audience />
-      <Step />
-      <Services />
-      <Step />
-      <Process />
+      <ProofRow variant="c" />
       <Step />
       <Proof videos={videos} reviews={reviews} />
       <Step />
-      <Pricing />
+      <Services short />
       <Step />
-      <Working />
+      <Process />
+      <Step />
+      <Pricing variant="c" />
       <Step />
       {hasNotes && <><Notes /><Step /></>}
-      <Postcard />
+      <EndCta variant="c" />
     </main>
     <Footer />
-    <PhoneBar />
+    <PhoneBar variant="c" />
     <EasterGame />
   </div>
 </Base>

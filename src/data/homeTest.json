@@ -5,31 +5,33 @@
   "variants": [
     {
       "id": "a",
-      "name": "Current homepage",
+      "name": "Homepage (version C since Nov 25)",
       "page": "/",
       "share": 1,
-      "sees": "The live homepage: ask bar and quote switcher in the hero, logos, who we work with, services, process, proof, pricing, working with us, notes and the postcard form."
+      "sees": "Version C made the real homepage: short hero that names the pain, case studies straight away, logos and results, proof, one line services, pricing and a closing call block."
     },
     {
       "id": "b",
       "name": "Simpler",
       "page": "/home-b",
-      "share": 1,
+      "share": 0,
       "sees": "Same design with much less on it: plain headline, results right under the hero, 4 projects as image and name, one line per service, no process, 5 videos and 4 one line quotes, one button everywhere."
     },
     {
       "id": "c",
       "name": "Work first",
       "page": "/home-c",
-      "share": 1,
+      "share": 0,
       "sees": "Short hero that names the pain, then the case studies straight away, logos and results, proof, one line services, pricing and a closing call block."
     },
     {
       "id": "d",
       "name": "Reel, reviews wall and calendar",
       "page": "/home-d",
-      "share": 1,
+      "share": 0,
       "sees": "Same white theme and fonts as the site: a contour pattern behind the hero, a reel of the work that plays like a video, case studies, a wall of video and written reviews, the calendar right on the page, and FAQs."
     }
-  ]
+  ],
+  "ended": "2026-11-25",
+  "winner": "c"
 }

@@ -48,6 +48,16 @@ const ld = [
   },
 ];
 import '../../styles/faq.css';
+// Guides per service: internal links to the blog posts that answer the buyer's questions.
+import { publishedPosts } from '../../data/blog';
+const readMap: Record<string, string[]> = {
+  'product-design': ['saas-product-design-cost', 'saas-redesign-cost', 'saas-dashboard-audit-checklist', 'saas-onboarding-first-win'],
+  'web-design-development': ['framer-website-cost', 'webflow-website-cost', 'framer-vs-webflow-saas-landing-page', 'move-website-to-framer-without-losing-seo'],
+  'motion-design': ['landing-page-specs-not-claims', 'saas-landing-page-above-the-fold', 'framer-vs-webflow-saas-landing-page'],
+  'visual-branding': ['branding-saas-before-series-a', 'design-agency-vs-freelancer-vs-in-house', 'landing-page-specs-not-claims'],
+};
+const posts = await publishedPosts();
+const reads = (readMap[page.slug] ?? []).map((id) => posts.find((x) => x.id === id)).filter(Boolean) as typeof posts;
 ---
 <Base title={page.seoTitle} description={page.seoDescription} image={`/og/service-${page.slug}.jpg`}>
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
@@ -116,6 +126,13 @@ import '../../styles/faq.css';
           <a class="m-btn dk" href="/audit">Get a free audit</a>
         </div>
       </section>
+
+      {reads.length > 0 && (
+        <section class="wrap reads" aria-label="Guides">
+          <span class="eb">Guides</span><h2 class="h2">Read before you hire anyone.</h2>
+          <div class="rl">{reads.map((r) => <a href={`/blog/${r.id}`}><b>{r.data.title}</b><span>{r.data.description}</span></a>)}</div>
+        </section>
+      )}
 
       <section class="wrap faqs">
         <div><span class="eb">Questions</span><h2 class="h2">{sentence}, answered.</h2></div>
@@ -186,6 +203,13 @@ import '../../styles/faq.css';
   .band b { font-weight: 500; font-size: 16px; }
   .band p { margin: 4px 0 0; font-size: 13.5px; color: #6a6a66; }
 
+  .reads { padding: 56px 0 0; }
+  .reads .rl { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px; margin-top: 22px; border-top: 1px solid #dcdcd8; }
+  .reads a { display: flex; flex-direction: column; gap: 6px; padding: 18px 0; border-bottom: 1px solid #dcdcd8; color: inherit; text-decoration: none; }
+  .reads a b { font-weight: 500; font-size: 17px; line-height: 1.3; }
+  .reads a span { font-size: 14px; color: #6a6a66; line-height: 1.45; }
+  .reads a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 720px) { .reads .rl { grid-template-columns: 1fr; } .reads { padding-top: 40px; } }
   .faqs { display: grid; grid-template-columns: 300px 1fr; gap: 56px; padding: 56px 0 8px; }
   .faq { border-top: 1px solid #dcdcd8; }
   details { border-bottom: 1px solid #ececea; padding: 18px 0; }

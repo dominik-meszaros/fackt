@@ -71,7 +71,13 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
             : <><span class="tag">{p.service}</span><h1>{p.name}</h1></>}
           <p class="lede">{p.summary}</p>
           {also.length > 0 && (
-            <p class="also">See also: {also.map((w) => <a href={`/work/${w.id}`}>{w.data.name}, {w.data.service.toLowerCase()} &#8594;</a>)}<a href="/audit">Free audit of your product &#8594;</a></p>
+            <p class="also">See also: {also.map((w) => <a href={`/work/${w.id}`}>{w.data.name}, {w.data.service.toLowerCase()} &#8594;</a>)}</p>
+          )}
+          {!app && p.results.length > 0 && (
+            <div class="hnums">{p.results.slice(0, 3).map((r) => <div><b>{r.value}</b><span>{r.label}</span></div>)}</div>
+          )}
+          {!p.appStore && (
+            <div class="acts"><a class="m-btn dk" href="/audit" data-journey={`Case study top: free audit (${entry.id})`}>Get a free audit of your product</a><a class="m-btn lt" href={site.bookPage} data-journey={`Case study top: book a call (${entry.id})`}>Book a call</a></div>
           )}
           {p.appStore && (
             <div class="acts"><a class="m-btn dk" href={p.appStore} target="_blank" rel="noopener">View on the App Store &#8599;</a><a class="m-btn lt" href={site.bookPage}>Book a call about your app</a></div>
@@ -262,6 +268,10 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
   .appid img { width: 64px; height: 64px; flex-shrink: 0; }
   .appid h1 { margin: 0; }
   .acts { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .hnums { display: flex; gap: 28px; margin-top: 22px; flex-wrap: wrap; }
+  .hnums div { display: flex; flex-direction: column; gap: 2px; max-width: 170px; }
+  .hnums b { font-family: var(--m-serif); font-weight: 400; font-size: 34px; line-height: 1; letter-spacing: -.02em; }
+  .hnums span { font-size: 13px; color: var(--m-mu); line-height: 1.3; }
   .cs-body.app { width: min(1280px, 100% - 32px); grid-template-columns: 220px 1fr; gap: 100px; }
   .app .toc { gap: 8px; top: 96px; }
   .app .toc .eb { margin: 0 0 4px; }

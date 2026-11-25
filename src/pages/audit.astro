@@ -70,19 +70,24 @@ import SketchSteps from '../components/sections/SketchSteps.astro';
               <input type="hidden" name="form-name" value="audit" />
               <p class="hp"><label>Leave this empty <input name="company_site" tabindex="-1" autocomplete="off" /></label></p>
               <div class="g">
-                <label class="f"><span>Name</span><input name="name" required autocomplete="name" /></label>
-                <label class="f"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
                 <label class="f wd"><span>Website or app</span><input name="product" required placeholder="yourproduct.com" autocomplete="url" /></label>
+                <label class="f wd"><span>Email</span><input name="email" type="email" required autocomplete="email" placeholder="you@company.com" /></label>
+              </div>
+              <details class="more">
+                <summary>Add details <em>(optional, helps us prepare)</em></summary>
+              <div class="g">
+                <label class="f"><span>Name</span><input name="name" autocomplete="name" /></label>
                 <label class="f"><span>What should we look at?</span>
-                  <select name="focus" required><option value="" disabled selected>Pick one</option>{audit.focusOptions.map((o) => <option>{o}</option>)}</select>
+                  <select name="focus"><option value="" selected>Not sure yet</option>{audit.focusOptions.map((o) => <option>{o}</option>)}</select>
                 </label>
-                <label class="f"><span>Where is the product now?</span>
-                  <select name="stage" required><option value="" disabled selected>Pick one</option>{audit.stageOptions.map((o) => <option>{o}</option>)}</select>
+                <label class="f wd"><span>Where is the product now?</span>
+                  <select name="stage"><option value="" selected>Skip</option>{audit.stageOptions.map((o) => <option>{o}</option>)}</select>
                 </label>
-                <label class="f wd"><span>Anything we should know? <em>(optional)</em></span>
+                <label class="f wd"><span>Anything we should know?</span>
                   <textarea name="message" rows="4" placeholder="Who it is for, what is bugging you, what you have tried"></textarea>
                 </label>
               </div>
+              </details>
               <button class="m-btn dk go" type="submit" data-audit-btn>{audit.button}</button>
               <p class="sm" role="status" data-audit-status>Free, no call and no commitment.</p>
             </form>
@@ -197,6 +202,11 @@ import SketchSteps from '../components/sections/SketchSteps.astro';
   .f select:invalid { color: #a3a3a0; }
   .f textarea { height: 92px; padding: 10px 12px; resize: vertical; line-height: 1.45; }
   .f input::placeholder, .f textarea::placeholder { color: #a3a3a0; }
+  .more { margin-top: 14px; }
+  .more summary { cursor: pointer; font-size: 14px; color: #111; text-decoration: underline; text-underline-offset: 3px; list-style: none; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more summary em { font-style: normal; color: var(--m-mu); text-decoration: none; display: inline-block; margin-left: 4px; }
+  .more[open] summary { margin-bottom: 4px; }
   .f input:focus, .f select:focus, .f textarea:focus { box-shadow: inset 0 0 0 1.5px #111; background: #fff; }
   .go { margin-top: 18px; width: 100%; height: 46px; font-size: 15px; }
   .go[disabled] { opacity: .7; cursor: default; }
