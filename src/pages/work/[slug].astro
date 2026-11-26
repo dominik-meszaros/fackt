@@ -185,6 +185,12 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
           ))}
         </section>
       )}
+      {p.getIt.length > 0 && (
+        <aside class="getit" aria-label="Use this design">
+          <span><b>Like this design?</b> It is ready to use for your own product.</span>
+          <span class="gl">{p.getIt.map((g) => <a href={g.url} target="_blank" rel="noopener" data-journey={`Get design: ${p.name} (${g.platform})`}>Get it for {g.platform}{g.price && <i> · {g.price}</i>} &#8599;</a>)}</span>
+        </aside>
+      )}
       {also.length > 0 && (
         <nav class="also-end" aria-label="See also">
           {also.map((w) => (
@@ -222,6 +228,12 @@ const paras = (t?: string) => (t ?? '').split(/\n\s*\n/).map((s) => s.trim()).fi
 </Base>
 
 <style>
+  .getit { width: min(960px, 100% - 32px); margin: 48px auto 0; padding: 18px 24px; border: 1px solid #dcdcd8; border-radius: 10px; display: flex; gap: 16px 28px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 15px; box-sizing: border-box; }
+  .getit b { font-weight: 600; }
+  .getit .gl { display: flex; gap: 10px; flex-wrap: wrap; }
+  .getit a { padding: 9px 14px; border-radius: 999px; background: #111; color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .getit a i { font-style: normal; opacity: .65; }
+  .getit a:hover { background: #333; }
   .cs-h, .cs-body { width: min(960px, 100% - 32px); margin: 0 auto; }
   .cs-h { padding: 48px 0 0; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: end; }
   .crumb { font-size: 12.5px; color: var(--m-mu-2); display: flex; gap: 8px; align-items: center; }
